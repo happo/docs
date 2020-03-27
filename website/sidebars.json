@@ -1,10 +1,13 @@
 {
   "docs": {
-    "Overview": ["getting-started", "continuous-integration", "api"],
+    "Overview": [
+      "getting-started",
+      "continuous-integration",
+      "api",
+      "browsers"
+    ],
+    "Configuration": ["configuration", "plugins",  "environment-variables"],
     "Integrations": ["storybook", "cypress", "react", "vanilla", "full-page"],
     "Guides": ["reviewing-diffs", "multi-project", "performance", "debugging"]
-  },
-  "docs-other": {
-    "First Category": ["doc4", "doc5"]
   }
 }

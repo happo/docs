@@ -4,26 +4,70 @@ title: Getting started
 sidebar_label: Getting started
 ---
 
-Check the [documentation](https://docusaurus.io) for how to use Docusaurus.
+Happo is a [cross-browser](browsers.md) screenshot testing service. It helps
+you test the visual appearance of your application by automatically comparing
+the UI with a previous version. [Set it up to run in
+CI](continuous-integration.md) and get build statuses posted directly to your
+pull requests.
 
-## Lorem
+## Choose an integration
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque elementum dignissim ultricies. Fusce rhoncus ipsum tempor eros aliquam consequat. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus elementum massa eget nulla aliquet sagittis. Proin odio tortor, vulputate ut odio in, ultrices ultricies augue. Cras ornare ultrices lorem malesuada iaculis. Etiam sit amet libero tempor, pulvinar mauris sed, sollicitudin sapien.
+The first thing you want to do is to set up a test suite for Happo. A test
+suite consists of a set of components and variants of those components. There
+are many ways to do this, and it all depends on your existing tech stack, your
+application, experience with other test frameworks, and more.
 
-## Mauris In Code
+- A [Storybook](storybook.md) application can serve as the test suite driver for Happo.
+- By integrating Happo with [Cypress](cypress.md), you can turn your end-to-end tests into a Happo test suite.
+- If you're using [React](react.md), you can create a test suite using
+  `*-happo.js` files.
+- If you want to test an existing (public) website, you can use [the `pages`
+  option](full-page.md).
+- For a fully custom test suite, you can set up a [plain js
+  project](vanilla.md) or [use the API directly](api.md).
 
+## Basic setup
+
+Independently of how you end up integrating Happo in your project, there are
+some steps you always need to take care of. The first thing is to install the
+`happo.io` npm module:
+
+```sh
+npm install --save-dev happo.io
 ```
-Mauris vestibulum ullamcorper nibh, ut semper purus pulvinar ut. Donec volutpat orci sit amet mauris malesuada, non pulvinar augue aliquam. Vestibulum ultricies at urna ut suscipit. Morbi iaculis, erat at imperdiet semper, ipsum nulla sodales erat, eget tincidunt justo dui quis justo. Pellentesque dictum bibendum diam at aliquet. Sed pulvinar, dolor quis finibus ornare, eros odio facilisis erat, eu rhoncus nunc dui sed ex. Nunc gravida dui massa, sed ornare arcu tincidunt sit amet. Maecenas efficitur sapien neque, a laoreet libero feugiat ut.
+
+You also need a [configuration](configuration.md) file. Save `.happo.js` in the
+root directory of your project (right next to where the `package.json` file is
+located). This example is showing the minimum required configuration:
+
+```js
+const { RemoteBrowserTarget } = require('happo.io');
+
+module.exports = {
+  apiKey: process.env.HAPPO_API_KEY,
+  apiSecret: process.env.HAPPO_API_SECRET,
+
+  targets: {
+    'chrome-desktop': new RemoteBrowserTarget('chrome', {
+      viewport: '1024x768',
+    }),
+  },
+};
 ```
 
-## Nulla
+_While you can specify `apiKey` and `apiSecret` directly as strings, this
+isn't something we recommend. Use environment variables instead._
 
-Nulla facilisi. Maecenas sodales nec purus eget posuere. Sed sapien quam, pretium a risus in, porttitor dapibus erat. Sed sit amet fringilla ipsum, eget iaculis augue. Integer sollicitudin tortor quis ultricies aliquam. Suspendisse fringilla nunc in tellus cursus, at placerat tellus scelerisque. Sed tempus elit a sollicitudin rhoncus. Nulla facilisi. Morbi nec dolor dolor. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Cras et aliquet lectus. Pellentesque sit amet eros nisi. Quisque ac sapien in sapien congue accumsan. Nullam in posuere ante. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Proin lacinia leo a nibh fringilla pharetra.
+The API tokens (`apiKey`, `apiSecret`) come from your account at
+[happo.io](https://happo.io/account). If you don't have an account already, you
+can sign up for a free trial at [happo.io/signup](https://happo.io/signup)
 
-## Orci
+You can add more than one `target` if you want to run tests across multiple
+browsers and/or screen sizes. See [Supported browsers](browsers.md) for a full
+list of browsers we support.
 
-Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Proin venenatis lectus dui, vel ultrices ante bibendum hendrerit. Aenean egestas feugiat dui id hendrerit. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Curabitur in tellus laoreet, eleifend nunc id, viverra leo. Proin vulputate non dolor vel vulputate. Curabitur pretium lobortis felis, sit amet finibus lorem suscipit ut. Sed non mollis risus. Duis sagittis, mi in euismod tincidunt, nunc mauris vestibulum urna, at euismod est elit quis erat. Phasellus accumsan vitae neque eu placerat. In elementum arcu nec tellus imperdiet, eget maximus nulla sodales. Curabitur eu sapien eget nisl sodales fermentum.
+## Creating your first report
 
-## Phasellus
+All integrations have their own way of executing the test suite. Refer to the
+docs for the integration of your choice for an example of how to proceed.
 
-Phasellus pulvinar ex id commodo imperdiet. Praesent odio nibh, sollicitudin sit amet faucibus id, placerat at metus. Donec vitae eros vitae tortor hendrerit finibus. Interdum et malesuada fames ac ante ipsum primis in faucibus. Quisque vitae purus dolor. Duis suscipit ac nulla et finibus. Phasellus ac sem sed dui dictum gravida. Phasellus eleifend vestibulum facilisis. Integer pharetra nec enim vitae mattis. Duis auctor, lectus quis condimentum bibendum, nunc dolor aliquam massa, id bibendum orci velit quis magna. Ut volutpat nulla nunc, sed interdum magna condimentum non. Sed urna metus, scelerisque vitae consectetur a, feugiat quis magna. Donec dignissim ornare nisl, eget tempor risus malesuada quis.
