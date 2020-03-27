@@ -22,7 +22,6 @@ const siteConfig = {
   headerLinks: [
     {doc: 'getting-started', label: 'Docs'},
     {doc: 'api', label: 'API'},
-    {blog: true, label: 'Blog'},
   ],
 
   /* path to images for header/footer */
@@ -50,7 +49,7 @@ const siteConfig = {
   },
   */
 
-  // This copyright info is used in /core/Footer.js and blog RSS/Atom feeds.
+  // This copyright info is used in /core/Footer.js
   copyright: `Copyright © ${new Date().getFullYear()} Recur AB`,
 
   highlight: {
@@ -58,17 +57,14 @@ const siteConfig = {
     theme: 'default',
   },
 
-  // Add custom scripts here that would be placed in <script> tags.
-  scripts: ['https://buttons.github.io/buttons.js'],
-
   // On page navigation for the current documentation page.
   onPageNav: 'separate',
   // No .html extensions for paths.
   cleanUrl: true,
 
   // Open Graph and Twitter card images.
-  ogImage: 'img/undraw_online.svg',
-  twitterImage: 'img/undraw_tweetstorm.svg',
+  ogImage: 'img/happo-logo.svg',
+  twitterImage: 'img/happo-logo.svg',
 
   // For sites with a sizable amount of content, set collapsible to true.
   // Expand/collapse the links and subcategories under categories.
