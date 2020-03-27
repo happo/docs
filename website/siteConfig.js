@@ -5,6 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+const path = require('path');
+
 // See https://docusaurus.io/docs/site-config for all the possible
 // site configuration options.
 
@@ -13,6 +15,8 @@ const siteConfig = {
   tagline: 'Cross-browser screenshot testing',
   url: 'https://docs.happo.io', // Your website URL
   baseUrl: '/', // Base URL for your project */
+
+  customDocsPath: path.basename(__dirname) + '/docs',
 
   // Used for publishing and more
   projectName: 'happo',
