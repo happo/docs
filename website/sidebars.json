@@ -11,6 +11,7 @@
     "Integrations": ["examples", "storybook", "cypress", "full-page", "native"],
     "Guides": [
       "reviewing-diffs",
+      "compare-threshold",
       "multi-project",
       "performance",
       "spurious-diffs",

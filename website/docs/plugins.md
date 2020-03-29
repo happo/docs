@@ -2,7 +2,6 @@
 id: plugins
 title: Plugins
 ---
-
 ## Storybook
 
 The Happo plugin for [Storybook](https://storybook.js.org/) will automatically

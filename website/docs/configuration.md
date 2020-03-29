@@ -229,8 +229,8 @@ module.exports = {
 
 ## `plugins`
 
-An array of happo plugins. Find available plugins in the [Plugins](#plugins)
-section.
+An array of Happo plugins you want to use. Find available plugins on the
+[Plugins page](plugins.md).
 
 ```js
 const happoPluginStorybook = require('happo-plugin-storybook');
@@ -294,9 +294,6 @@ workers won't be able to find it.
 
 The `title` of a page is used as the "component" identifier in the happo.io UI,
 so make sure it is unique for each page.
-
-_Note:_ when you're using the `pages` config, most other configuration options
-are ignored.
 
 ## `setupScript`
 
@@ -380,8 +377,8 @@ module.exports = {
 
 Happo uses jsdom internally. By default, it provides sane defaults to the
 `JSDOM` constructor. See
-[processSnapsInBundle.js](src/processSnapsInBundle.js). You can override any
-options here but your mileage may vary. See
+[processSnapsInBundle.js](https://github.com/happo/happo.io/blob/master/src/processSnapsInBundle.js).
+You can override any options here but your mileage may vary. See
 https://github.com/jsdom/jsdom#simple-options. Here's an example where the
 document's `referrer` is being set:
 

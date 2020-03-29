@@ -3,7 +3,7 @@ id: api
 title: API reference
 ---
 
-The Happo API is a standard (mostly RESTful) JSON API hosted happo.io. It can
+The Happo API is a (mostly RESTful) JSON API hosted at happo.io. It can
 be used to create deep integrations with Happo. Have a look at the [Native Apps
 integration](native.md) for an example of how you can use the API.
 

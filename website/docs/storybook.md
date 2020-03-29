@@ -147,15 +147,14 @@ storiesOf('PaymentForm', module).add('default', () => <PaymentForm />, {
 When you're using this plugin, some of the regular Happo commands and
 configuration options aren't available. These include:
 
-- [`include`](https://github.com/happo/happo.io#include)
-- [`type`](https://github.com/happo/happo.io#type)
-- [`customizeWebpackConfig`](https://github.com/happo/happo.io#customizewebpackconfig)
-- [`publicFolders`](https://github.com/happo/happo.io#publicfolders)
-- [`setupScript`](https://github.com/happo/happo.io#setupscript)
-- [`renderWrapperModule`](https://github.com/happo/happo.io#renderwrappermodule)
-- [`rootElementSelector`](https://github.com/happo/happo.io#rootelementselector)
-- [`jsdomOptions`](https://github.com/happo/happo.io#jsdomoptions)
-- [The `happo dev` command](https://github.com/happo/happo.io#command-line-interface-cli)
+- [`include`](configuration.md#include)
+- [`type`](configuration.md#type)
+- [`customizeWebpackConfig`](configuration.md#customizewebpackconfig)
+- [`publicFolders`](configuration.md#publicfolders)
+- [`setupScript`](configuration.md#setupscript)
+- [`renderWrapperModule`](configuration.md#renderwrappermodule)
+- [`rootElementSelector`](configuration.md#rootelementselector)
+- [`jsdomOptions`](configuration.md#jsdomoptions)
 
 ## Debugging
 
