@@ -125,8 +125,7 @@ do its best to auto-detect your environment and adapt its behavior accordingly:
 
 To get the results of the Happo jobs back to your PRs/commits, you need to
 install and configure the Happo GitHub app. Instructions are available [in the
-`happo.io`
-README](https://github.com/happo/happo.io#posting-statuses-back-to-prscommits).
+Continuous Integration docs](continuous-integration.md#posting-statuses-back-to-prscommits).
 
 Happo auto-detects the following CI environments:
 

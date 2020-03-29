@@ -28,8 +28,8 @@ module.exports = {
 };
 ```
 
-_Note: The urls to the website need to be publicly available, otherwise Happo
-workers won't be able to access the pages_
+> The urls to the website need to be publicly available, otherwise Happo
+> workers won't be able to access the pages
 
 Add a `happo` script to your `package.json` file:
 

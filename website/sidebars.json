@@ -6,8 +6,14 @@
       "api",
       "browsers"
     ],
-    "Configuration": ["configuration", "plugins",  "environment-variables"],
+    "Configuration": ["configuration", "plugins", "environment-variables"],
     "Integrations": ["storybook", "cypress", "react", "vanilla", "full-page"],
-    "Guides": ["reviewing-diffs", "multi-project", "performance", "debugging"]
+    "Guides": [
+      "reviewing-diffs",
+      "multi-project",
+      "performance",
+      "spurious-diffs",
+      "debugging"
+    ]
   }
 }

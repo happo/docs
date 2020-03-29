@@ -135,7 +135,7 @@ module.exports = {
 This option is available in the `safari` and `internet explorer` targets (it
 has no effect in other targets). By default, these browsers cut off their
 screenshots at window height. If you need to include content "below the fold",
-you can use the `scrollStitch` option.  When enabled, the full screenshot will
+you can use the `scrollStitch` option. When enabled, the full screenshot will
 be constructed by scrolling the page section by section, then stitching
 together a full screenshot when all sections are available.
 
@@ -162,7 +162,7 @@ internally by happo during a run. Make sure to always return the passed in
 
 ```js
 module.exports = {
-  customizeWebpackConfig: (config) => {
+  customizeWebpackConfig: config => {
     config.module.rules.push({
       test: /\.css$/,
       use: [{ loader: cssLoader }],
@@ -179,7 +179,7 @@ get up and running with a project using
 [create-react-app](https://github.com/facebook/create-react-app):
 
 ```js
-const craWebpackConfig = require('react-scripts/config/webpack.config')
+const craWebpackConfig = require('react-scripts/config/webpack.config');
 
 module.exports = {
   customizeWebpackConfig: config => {
@@ -188,7 +188,6 @@ module.exports = {
     return config;
   },
 };
-
 ```
 
 If you need to perform asynchronous actions to generate a webpack
@@ -197,7 +196,7 @@ are done. Here's an example using async/await:
 
 ```js
 module.exports = {
-  customizeWebpackConfig: async (config) => {
+  customizeWebpackConfig: async config => {
     config.module = await doSomethingAsync();
     return config;
   },
@@ -304,7 +303,7 @@ module.exports = {
 import React from 'react';
 import ThemeProvider from '../ThemeProvider';
 
-export default (component) => <ThemeProvider>{component}</ThemeProvider>;
+export default component => <ThemeProvider>{component}</ThemeProvider>;
 ```
 
 ## `rootElementSelector`
@@ -359,7 +358,6 @@ images have one or more different pixels, it will be reported as a diff --
 even if the diff is very small. If you set a `compareThreshold`, a deep
 comparison will be performed instead, where individual pixels are inspected.
 
-
 A color distance is computed for every diffing pixel. If all diffing pixels have
 a color distance smaller than the `compareThreshold`, the diff is considered
 okay and the two images will be considered visually equal.
@@ -380,8 +378,7 @@ module.exports = {
 ```
 
 To help find the right value to use, you can make dry-run comparisons. Find one
-or a few comparisons (via https://happo.io/dashboard) and run `happo compare
-<sha1> <sha2> --dry-run` on the SHAs and look at what's being logged to figure
+or a few comparisons (via https://happo.io/dashboard) and run `happo compare <sha1> <sha2> --dry-run` on the SHAs and look at what's being logged to figure
 out what threshold value you want to use.
 
 ## `asyncTimeout`
@@ -397,7 +394,7 @@ module.exports = {
 ## `githubApiUrl`
 
 Used when you have the CI script configured to [post Happo statuses as
-comments](#posting-statuses-without-installing-the-happo-github-app).
+comments](continuous-integration#posting-statuses-without-installing-the-happo-github-app).
 The default if `https://api.github.com`. If you're using GitHub Enterprise,
 enter the URL to the local GitHub API here, e.g.
 `https://ghe.mycompany.zone/api/v3` (the default for GHE installation is for
