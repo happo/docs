@@ -25,6 +25,10 @@
   max-width: 30px;
 }
 
+.fixedHeaderContainer header .headerTitleWithLogo {
+  flex-shrink: 0;
+}
+
 @media only screen and (min-device-width: 360px) and (max-device-width: 736px) {
 }
 

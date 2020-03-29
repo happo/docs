@@ -11,7 +11,7 @@ const path = require('path');
 // site configuration options.
 
 const siteConfig = {
-  title: 'Happo.io', // Title for your website.
+  title: 'Happo docs', // Title for your website.
   tagline: 'Cross-browser screenshot testing',
   url: 'https://docs.happo.io', // Your website URL
   baseUrl: '/', // Base URL for your project */
@@ -23,10 +23,11 @@ const siteConfig = {
   organizationName: 'happo',
 
   // For no header links in the top nav bar -> headerLinks: [],
-  headerLinks: [
-    { doc: 'getting-started', label: 'Docs' },
-    { doc: 'api', label: 'API' },
-  ],
+  // headerLinks: [
+  //   { doc: 'getting-started', label: 'Docs' },
+  //   { doc: 'api', label: 'API' },
+  // ],
+  headerLinks: [],
 
   /* path to images for header/footer */
   headerIcon: 'img/happo-logo-inverted.svg',
