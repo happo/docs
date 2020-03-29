@@ -4,7 +4,9 @@ title: Happo Examples
 ---
 
 This page outlines how to integrate Happo with an existing javascript codebase
-through the use of "example" files scattered throughout your project.
+through the use of "example" files scattered throughout your project. Both
+React and plain JS can be used here. Control what type you're using through
+[the `type` configuration option](configuration.md#type).
 
 ## Installation
 
@@ -375,6 +377,7 @@ export const asyncComponent = renderInDom => {
   });
 };
 ```
+
 <!--END_DOCUSAURUS_CODE_TABS-->
 
 You can use `async`/`await` here as well:
