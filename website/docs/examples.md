@@ -1,9 +1,10 @@
 ---
-id: react
-title: React
+id: examples
+title: Happo Examples
 ---
 
-This page outlines how to integrate Happo with an existing React codebase.
+This page outlines how to integrate Happo with an existing javascript codebase
+through the use of "example" files scattered throughout your project.
 
 ## Installation
 
@@ -13,7 +14,7 @@ First, install the `happo.io` module:
 npm install --save-dev happo.io
 ```
 
-The React integration for Happo depends on `webpack`, `@babel/core` and
+The Happo Examples integration depends on `webpack`, `@babel/core` and
 `babel-loader` as well. If you don't already have them installed, you need to
 add them.
 
@@ -26,11 +27,14 @@ npm install --save-dev webpack @babel/core babel-loader
 Before you can run your test suite, you need to define one or more component
 example files.
 
-Let's assume there's a `<Button>` component that we're adding examples for.
+Let's assume there's a `Button` component that we're adding examples for.
 First, create a file called `Button-happo.js` and save it next to your
 `Button.js` file (if this doesn't match your naming scheme you can use the
-[`include`](#include) option). Add a few exports to this file (yes, you can use
-ES6 here):
+[`include`](configuration.md#include) option). Add a few exports to this file
+(yes, you can use ES6 here):
+
+<!--DOCUSAURUS_CODE_TABS-->
+<!--React-->
 
 ```jsx
 import React from 'react';
@@ -39,6 +43,25 @@ import Button from './Button';
 export const primary = () => <Button type="primary">Primary</Button>;
 export const secondary = () => <Button type="secondary">Secondary</Button>;
 ```
+
+<!-- Plain JS -->
+
+```js
+export const primary = () => {
+  const button = document.createElement('button');
+  button.className = 'btn-primary';
+  button.textContent = 'Primary';
+  document.body.appendChild(button);
+};
+export const secondary = () => {
+  const button = document.createElement('button');
+  button.className = 'btn-secondary';
+  button.textContent = 'Secondary';
+  document.body.appendChild(button);
+};
+```
+
+<!--END_DOCUSAURUS_CODE_TABS-->
 
 Then, we need to add some configuration. API tokens are used to authenticate
 you with the remote happo.io service: `apiKey` and `apiSecret`. These can be
@@ -101,11 +124,39 @@ that baseline with. A good way to test the whole flow is to make a change to a
 component example and verify that happo will catch that difference. Open one of
 your `*-happo.js` files and make some changes, e.g.
 
-```js
+<!--DOCUSAURUS_CODE_TABS-->
+<!--React-->
+
+```jsx
 export const primary = () => <Button type="primary">PRIMARY</Button>;
 export const secondary = () => <Button type="secondary">Secondary</Button>;
 export const tertiary = () => <Button type="tertiary">Tertiary</Button>;
 ```
+
+<!-- Plain JS -->
+
+```js
+export const primary = () => {
+  const button = document.createElement('button');
+  button.className = 'btn-primary';
+  button.textContent = 'PRIMARY';
+  document.body.appendChild(button);
+};
+export const secondary = () => {
+  const button = document.createElement('button');
+  button.className = 'btn-secondary';
+  button.textContent = 'Secondary';
+  document.body.appendChild(button);
+};
+export const tertiary = () => {
+  const button = document.createElement('button');
+  button.className = 'btn-tertiary';
+  button.textContent = 'Tertiary';
+  document.body.appendChild(button);
+};
+```
+
+<!--END_DOCUSAURUS_CODE_TABS-->
 
 Here, we made primary button have ALL CAPS and added a `tertiary` variant.
 
@@ -156,15 +207,34 @@ PR/commit/branch pushed. When you're ready, jump ahead to the
 ## Conditionally applied stylesheets
 
 An example may conditionally apply styles from certain
-[`stylesheets`](configuration.md) by using a `stylesheets` array:
+[`stylesheets`](configuration.md#stylesheets) by using a `stylesheets` array:
 
-```js
+<!--DOCUSAURUS_CODE_TABS-->
+<!--React-->
+
+```jsx
 // Button-happo.js
 export default () => {
   render: () => <Button>Submit</Button>,
   stylesheets: ['main', 'secondary'],
 }
 ```
+
+<!-- Plain JS -->
+
+```js
+// Button-happo.js
+export default () => {
+  render: () => {
+    const button = document.createElement('button');
+    button.textContent = 'Submit';
+    document.body.appendChild(button);
+  }
+  stylesheets: ['main', 'secondary'],
+}
+```
+
+<!--END_DOCUSAURUS_CODE_TABS-->
 
 The strings in the array need to match `id`s of [`stylesheets`](#stylesheets)
 defined in `.happo.js` config.
@@ -175,15 +245,35 @@ If you want to avoid rendering an example in all targets, you can use a
 `targets` array defined for an example. The example will then be rendered in
 the specified targets exclusively.
 
+<!--DOCUSAURUS_CODE_TABS-->
+<!--React-->
+
 ```jsx
+// Button-happo.js
 export default () => {
   render: () => <Button>Submit</Button>,
   targets: ['chrome-small'],
 }
 ```
 
-The target strings in the array need to match [target keys](#targets) in
-`.happo.js` config.
+<!-- Plain JS -->
+
+```js
+// Button-happo.js
+export default () => {
+  render: () => {
+    const button = document.createElement('button');
+    button.textContent = 'Submit';
+    document.body.appendChild(button);
+  }
+  targets: ['chrome-small'],
+}
+```
+
+<!--END_DOCUSAURUS_CODE_TABS-->
+
+The target strings in the array need to match [target
+keys](configuration.md#targets) in `.happo.js` config.
 
 ## Generated examples
 
@@ -191,6 +281,9 @@ If you want to group multiple components in one file you can export an array
 instead, with objects defining the component and its variants. This can be
 handy if you for some reason want to auto-generate happo examples from another
 source (e.g. a style-guide, a component gallery etc).
+
+<!--DOCUSAURUS_CODE_TABS-->
+<!--React-->
 
 ```jsx
 export default [
@@ -211,6 +304,42 @@ export default [
 ];
 ```
 
+<!-- Plain JS -->
+
+```js
+export default [
+  {
+    component: 'Button',
+    variants: {
+      primary: () => {
+        const button = document.createElement('button');
+        button.className = 'btn-primary';
+        button.textContent = 'Primary';
+        document.body.appendChild(button);
+      },
+      secondary: () => {
+        const button = document.createElement('button');
+        button.className = 'btn-secondary';
+        button.textContent = 'Secondary';
+        document.body.appendChild(button);
+      },
+    },
+  },
+  {
+    component: 'Icon',
+    variants: {
+      small: () => {
+        const icon = document.createElement('div');
+        icon.className = 'icon icon-arrow icon-small';
+        document.body.appendChild(icon);
+      },
+    },
+  },
+];
+```
+
+<!--END_DOCUSAURUS_CODE_TABS-->
+
 ## Asynchronous examples
 
 If you have examples that won't look right on the initial render, you can
@@ -223,37 +352,55 @@ When `type` is `react`, this function is a wrapper around `ReactDOM.render`.
 When `type` is `plain`, this function is a simple `element.innerHTML` call,
 returning a root element where that html got injected.
 
+<!--DOCUSAURUS_CODE_TABS-->
+<!--React-->
+
 ```jsx
-// React example
-export const asyncComponent = (renderInDom) => {
-  return new Promise((resolve) => {
+export const asyncComponent = renderInDom => {
+  return new Promise(resolve => {
     const component = renderInDom(<Foo />);
     component.doSomethingAsync(resolve);
   });
 };
 ```
 
+<!-- Plain JS -->
+
 ```js
 // Plain js example
-export const asyncComponent = (renderInDom) => {
+export const asyncComponent = renderInDom => {
   const rootElement = renderInDOM('<div>Loading...</div>');
   return doSomethingAsync().then(() => {
     rootElement.querySelector('div').innerHTML = 'Done!';
   });
 };
 ```
+<!--END_DOCUSAURUS_CODE_TABS-->
 
 You can use `async`/`await` here as well:
 
+<!--DOCUSAURUS_CODE_TABS-->
+<!--React-->
+
 ```jsx
-export const asyncComponent = async (renderInDom) => {
+export const asyncComponent = async renderInDom => {
   const component = renderInDom(<Foo />);
   await component.doSomethingAsync();
   component.doSomethingSync();
 };
 ```
 
+<!-- Plain JS -->
+
+```js
+export const asyncComponent = async renderInDom => {
+  const rootElement = renderInDOM('<div>Loading...</div>');
+  await doSomethingAsync();
+  rootElement.querySelector('div').innerHTML = 'Done!';
+};
+```
+<!--END_DOCUSAURUS_CODE_TABS-->
+
 Be careful about overusing async rendering as it has a tendency to lead to a
 more complicated setup. In many cases it's better to factor out a "view
 component" which you render synchronously in the Happo test.
-

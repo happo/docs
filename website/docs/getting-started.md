@@ -19,12 +19,12 @@ application, experience with other test frameworks, and more.
 
 - A [Storybook](storybook.md) application can serve as the test suite driver for Happo.
 - By integrating Happo with [Cypress](cypress.md), you can turn your end-to-end tests into a Happo test suite.
-- If you're using [React](react.md), you can create a test suite using
-  `*-happo.js` files.
 - If you want to test an existing (public) website, you can use [the `pages`
   option](full-page.md).
-- For a fully custom test suite, you can set up a [plain js
-  project](vanilla.md) or [use the API directly](api.md).
+- If you want to create a custom test suite for React or other js framework
+  apps, you can use [Happo Examples](examples.md).
+- For native apps and others not running in a browser, use [the API](native.md)
+  directly.
 
 ## Basic setup
 

@@ -8,7 +8,7 @@
       "browsers"
     ],
     "Configuration": ["configuration", "plugins", "environment-variables"],
-    "Integrations": ["storybook", "cypress", "react", "vanilla", "full-page"],
+    "Integrations": ["examples", "storybook", "cypress", "full-page"],
     "Guides": [
       "reviewing-diffs",
       "multi-project",
