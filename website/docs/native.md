@@ -4,7 +4,7 @@ title: Native Apps
 ---
 
 Happo is mainly targeted at web applications and websites, but its underlying
-visual testing system is agnostic about the underlying tech. This means that
+visual testing system is agnostic about the technologies used. This means that
 anything that can produce screenshots can make use of Happo. If you have native
 apps (like iOS, Android or other platforms) you can leverage Happo for
 screenshot testing with a little bit of custom setup. In this integration
