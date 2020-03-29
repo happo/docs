@@ -407,3 +407,40 @@ export const asyncComponent = async renderInDom => {
 Be careful about overusing async rendering as it has a tendency to lead to a
 more complicated setup. In many cases it's better to factor out a "view
 component" which you render synchronously in the Happo test.
+
+# Image loading
+
+Examples can reference images in a few different ways:
+
+- Through external URLs, e.g. `<img src="http://domain/image.png" />`. Happo
+  will wait for these to be downloaded before the screenshot is taken.
+- With internal paths, combined with `publicFolders` configuration. E.g.
+  `<img src="/assets/images/foo.png" />`. Make sure to add an (absolute) path
+  to the folder containing your assets in the `publicFolders` config option.
+  Happo will automatically include these images.
+- With images inlined as base64 URLs. This is often automated using webpack
+  config, so that you can `import fooImage from './images/foo.png'`
+  directly.
+
+# CSS Loading Strategies
+
+Happo works best when CSS code is co-located with the components. In some
+cases, you'll get away with zero configuration to get this working. But in other
+cases, you'll have to add a little webpack config to the mix. Happo uses
+webpack under the hood when generating browser-executable javascript. The
+[`customizeWebpackConfig` config
+option](configuration.md#customizeWebpackConfig) will let you inject things
+like webpack loaders to the happo run. E.g.
+
+```js
+module.exports = {
+  customizeWebpackConfig: (config) => {
+    config.module.rules.push({
+      test: /\.css$/,
+      use: [{ loader: cssLoader }],
+    });
+    // it's important that we return the modified config
+    return config;
+  },
+};
+```
