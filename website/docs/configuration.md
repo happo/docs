@@ -11,47 +11,17 @@ syntax unless you're on the very latest Node version. The configuration file
 can either export an object containing the configuration options or an (async)
 function that resolves with the configuration options.
 
-## `project`
+## `apiKey` and `apiSecret`
 
-If you have multiple projects configured for your happo.io account, you can
-specify the name of the project you want to associate with. If you leave this
-empty, the default project will be used.
-
-## `include`
-
-Controls what files happo will grab examples from. The default is
-`'**/@(*-happo|happo).@(js|jsx)'`. This option is useful if you want to apply a
-different naming scheme, e.g. `**/*-examples.js`.
-
-## `stylesheets`
-
-If you rely on external stylesheets, list their URLs or (absolute) file paths
-in this config option, e.g. `['/path/to/file.css', 'http://cdn/style.css']`. If
-you're using [conditionally applied
-stylesheets](#conditionally-applied-stylesheets), you need to use objects
-instead of paths:
+These tokens will authenticate you with happo.io. It is recommended to never
+store these tokens in plain text. Use environment variables instead.
 
 ```js
 module.exports = {
-  stylesheets: [
-    { id: 'main', source: '/path/to/main.css' },
-    { id: 'secondary', source: '/path/to/conditional.css', conditional: true },
-  ],
+  apiKey: process.env.HAPPO_API_KEY,
+  apiSecret: process.env.HAPPO_API_SECRET,
 };
 ```
-
-By default, all stylesheets are applied at render time. If you specify
-`conditional: true`, only those examples that conditionally apply the
-stylesheet will get styles applied from that stylesheet.
-
-## `type`
-
-Either `react` (default) or `plain`. Decides what strategy happo will use when
-rendering examples. When the value is `react`, it is assumed that example
-functions return a React component (e.g. `export default () => <Foo />`). When
-the value is `plain`, it is assumed that example functions write things
-straight to `document`, e.g.
-`export default () => { document.body.appendChild(foo()) }`.
 
 ## `targets`
 
@@ -154,7 +124,61 @@ module.exports = {
 };
 ```
 
+## `project`
+
+If you have multiple projects configured for your happo.io account, you can
+specify the name of the project you want to associate with. If you leave this
+empty, the default project will be used.
+
+## `include`
+
+> This option only applies when you're using [the Happo Examples
+> integration](examples.md)
+
+Controls what files happo will grab examples from. The default is
+`'**/@(*-happo|happo).@(js|jsx)'`. This option is useful if you want to apply a
+different naming scheme, e.g. `**/*-examples.js`.
+
+## `stylesheets`
+
+> This option only applies when you're using [the Happo Examples
+> integration](examples.md)
+
+If you rely on external stylesheets, list their URLs or (absolute) file paths
+in this config option, e.g. `['/path/to/file.css', 'http://cdn/style.css']`. If
+you're using [conditionally applied
+stylesheets](#conditionally-applied-stylesheets), you need to use objects
+instead of paths:
+
+```js
+module.exports = {
+  stylesheets: [
+    { id: 'main', source: '/path/to/main.css' },
+    { id: 'secondary', source: '/path/to/conditional.css', conditional: true },
+  ],
+};
+```
+
+By default, all stylesheets are applied at render time. If you specify
+`conditional: true`, only those examples that conditionally apply the
+stylesheet will get styles applied from that stylesheet.
+
+## `type`
+
+> This option only applies when you're using [the Happo Examples
+> integration](examples.md)
+
+Either `react` (default) or `plain`. Decides what strategy happo will use when
+rendering examples. When the value is `react`, it is assumed that example
+functions return a React component (e.g. `export default () => <Foo />`). When
+the value is `plain`, it is assumed that example functions write things
+straight to `document`, e.g.
+`export default () => { document.body.appendChild(foo()) }`.
+
 ## `customizeWebpackConfig`
+
+> This option only applies when you're using [the Happo Examples
+> integration](examples.md)
 
 A function you can use to override or modify the default webpack config used
 internally by happo during a run. Make sure to always return the passed in
@@ -218,6 +242,9 @@ module.exports = {
 
 ## `publicFolders`
 
+> This option only applies when you're using [the Happo Examples
+> integration](examples.md)
+
 An array of (absolute) paths specifying the places where public assets are
 located. Useful if you have examples that depend on publicly available images
 (e.g. `<img src="/foo.png" />`).
@@ -230,7 +257,10 @@ module.exports = {
 };
 ```
 
-## `prerender` (experimental)
+## `prerender`
+
+> This option only applies when you're using [the Happo Examples
+> integration](examples.md)
 
 Controls whether or not examples are pre-rendered in a JSDOM environment (or
 Chrome if you are using
@@ -270,6 +300,9 @@ are ignored.
 
 ## `setupScript`
 
+> This option only applies when you're using [the Happo Examples
+> integration](examples.md)
+
 An absolute path to a file that will be executed before rendering your
 components. This is useful if you for instance want to inject global css
 styling (e.g. a css reset), custom fonts, polyfills etc. This script is
@@ -284,6 +317,9 @@ module.exports = {
 ```
 
 ## `renderWrapperModule`
+
+> This option only applies when you're using [the Happo Examples
+> integration](examples.md)
 
 An absolute path to a file exporting a function where you can wrap rendering of
 Happo examples. This can be useful if you for instance have a theme provider or
@@ -307,6 +343,9 @@ export default component => <ThemeProvider>{component}</ThemeProvider>;
 ```
 
 ## `rootElementSelector`
+
+> This option only applies when you're using [the Happo Examples
+> integration](examples.md)
 
 A selector used to find a DOM element that Happo will use as the container. In
 most cases, you should leave this empty and let Happo figure out the root
@@ -336,6 +375,9 @@ module.exports = {
 
 ## `jsdomOptions`
 
+> This option only applies when you're using [the Happo Examples
+> integration](examples.md)
+
 Happo uses jsdom internally. By default, it provides sane defaults to the
 `JSDOM` constructor. See
 [processSnapsInBundle.js](src/processSnapsInBundle.js). You can override any
@@ -351,7 +393,7 @@ module.exports = {
 };
 ```
 
-## `compareThreshold` (experimental)
+## `compareThreshold`
 
 By default, a shallow comparison is made when `happo compare` is called. If two
 images have one or more different pixels, it will be reported as a diff --
@@ -382,6 +424,9 @@ or a few comparisons (via https://happo.io/dashboard) and run `happo compare <sh
 out what threshold value you want to use.
 
 ## `asyncTimeout`
+
+> This option only applies when you're using [the Happo Examples
+> integration](examples.md)
 
 If an example renders nothing to the DOM, Happo will wait a short while for content to appear. Specified in milliseconds, the default is `200`.
 

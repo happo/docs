@@ -1,7 +1,7 @@
 ---
 id: cli
 title: Command-Line-Interface (CLI)
-sidebar_label: CLI
+sidebar_label: CLI reference
 ---
 
 While you are most likely getting most value from the ready-made CI integration
