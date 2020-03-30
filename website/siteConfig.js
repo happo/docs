@@ -27,7 +27,7 @@ const siteConfig = {
   //   { doc: 'getting-started', label: 'Docs' },
   //   { doc: 'api', label: 'API' },
   // ],
-  headerLinks: [],
+  headerLinks: [{ href: 'https://happo.io/', label: 'To happo.io »' }],
 
   /* path to images for header/footer */
   headerIcon: 'img/happo-logo-inverted.svg',

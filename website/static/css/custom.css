@@ -29,6 +29,12 @@
   flex-shrink: 0;
 }
 
+@media (max-width: 480px) {
+  .headerTitleWithLogo {
+    display: block !important;
+  }
+}
+
 @media only screen and (min-device-width: 360px) and (max-device-width: 736px) {
 }
 
