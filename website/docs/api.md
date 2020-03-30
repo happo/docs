@@ -36,6 +36,8 @@ client](https://github.com/happo/happo.io/blob/fc8cece91d811d/src/makeRequest.js
 
 ## Endpoints
 
+[Full list of API endpoints »](https://happo.io/docs/api#endpoints)
+
 > To help ensure that API docs are always up-to-date, we auto-generate and
 > publish a full reference at
 > [happo.io/docs/api](https://happo.io/docs/api#endpoints)
