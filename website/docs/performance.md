@@ -29,6 +29,8 @@ average time it takes to produce a screenshot on a Happo worker is 200 ms.
 
 ## Examples in the wild
 
+### Mineral UI
+
 [Mineral UI](https://github.com/mineral-ui/mineral-ui/) is a UI toolkit.
 They have ~350 snapshots in their test suite. Happo runs take about 4 mins in
 CI. Out of that, ~3 mins is spent `npm install`ing and building files, then
@@ -37,6 +39,8 @@ approach where they use an already-existing style guide to generate happo
 examples. The `.happo.js` config and a call to the `happo-ci-travis` script
 provided by the happo.io library is what's required to get things working in
 CI.
+
+### Airbnb's Lunar project
 
 [Airbnb's Lunar project](https://github.com/airbnb/lunar) has a slightly more
 complex setup.  They have ~600 snapshots. Happo tests are split up in two
