@@ -55,8 +55,9 @@ module.exports = {
 };
 ```
 
-_While you can specify `apiKey` and `apiSecret` directly as strings, this
-isn't something we recommend. Use environment variables instead._
+> While you can specify `apiKey` and `apiSecret` directly as strings, this
+> isn't something we recommend. Use [environment
+> variables](configuration.md#apikey-and-apisecret) instead.
 
 The API tokens (`apiKey`, `apiSecret`) come from your account at
 [happo.io](https://happo.io/account). If you don't have an account already, you
@@ -70,4 +71,3 @@ list of browsers we support.
 
 All integrations have their own way of executing the test suite. Refer to the
 docs for the integration of your choice for an example of how to proceed.
-

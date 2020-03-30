@@ -7,14 +7,22 @@
       "cli",
       "browsers"
     ],
-    "Configuration": ["configuration", "plugins", "environment-variables"],
-    "Integrations": ["examples", "storybook", "cypress", "full-page", "native"],
+    "Configuration": ["configuration", "plugins"],
+    "Integrations": [
+      "examples",
+      "storybook",
+      "cypress",
+      "stencil",
+      "full-page",
+      "native"
+    ],
     "Guides": [
       "reviewing-diffs",
       "compare-threshold",
       "multi-project",
       "performance",
       "spurious-diffs",
+      "ignoring-diffs",
       "debugging"
     ]
   }

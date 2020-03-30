@@ -2,6 +2,9 @@
 id: plugins
 title: Plugins
 ---
+
+Plugins are configured through [the `plugins` configuration option](configuration.md#plugins). The following is a list of officially supported plugins.
+
 ## Storybook
 
 The Happo plugin for [Storybook](https://storybook.js.org/) will automatically
