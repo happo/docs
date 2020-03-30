@@ -71,6 +71,12 @@ const siteConfig = {
   ogImage: 'img/happo-logo.svg',
   twitterImage: 'img/happo-logo.svg',
 
+  scripts: [
+    {
+      src: 'https://hosted.okayanalytics.com/tracker.js?tid=OA-5496GAON',
+      async: true,
+    },
+  ],
   // For sites with a sizable amount of content, set collapsible to true.
   // Expand/collapse the links and subcategories under categories.
   // docsSideNavCollapsible: true,
