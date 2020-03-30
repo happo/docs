@@ -1,6 +1,7 @@
 ---
 id: configuration
 title: Configuration
+sidebar_label: List of options
 ---
 
 Happo will look for configuration in a `.happo.js` file in the current working
