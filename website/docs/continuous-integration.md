@@ -176,12 +176,27 @@ env:
 > there is an alternative solution described in the [next
 > section](#posting-statuses-without-installing-the-happo-github-app)
 
+### Step 1: Install Happo GitHub app
+
 First you need to install the [Happo GitHub App](https://github.com/apps/happo)
-in the repository/repositories you want to run Happo in. Once you're done with
-that, you need to connect the repository with your Happo.io account on the
-[GitHub integration page on happo.io](https://happo.io/github-integration).
-Once you're done with that, you're all set to have Happo automatically post
-statuses on your PRs/commits.
+in the repository/repositories you want to run Happo in.
+
+![Installing the Happo GitHub App](/img/happo-github-app.gif)
+*Installing the Happo app at https://github.com/apps/happo*
+
+### Step 2: Connect with repository
+
+Once you have the Happo GitHub app installed, you need to connect/activate the
+right repository with your Happo.io account on the [GitHub integration page on
+happo.io](https://happo.io/github-integration). Once you're done with that,
+you're all set to have Happo automatically post statuses on your PRs/commits.
+
+![Connecting repository with the Happo account](/img/happo-github-integration.gif)
+*Activating the GitHub repository at https://happo.io/github-integration*
+
+### Happo statuses
+
+Here's what it looks like when Happo posts a status on a pull request:
 
 ![Happo status posted on a commit on github](/img/happo-status-diffs.png)
 
