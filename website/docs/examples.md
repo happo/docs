@@ -24,7 +24,7 @@ add them.
 npm install --save-dev webpack @babel/core babel-loader
 ```
 
-# Adding test files
+## Adding test files
 
 Before you can run your test suite, you need to define one or more component
 example files.
@@ -408,7 +408,7 @@ Be careful about overusing async rendering as it has a tendency to lead to a
 more complicated setup. In many cases it's better to factor out a "view
 component" which you render synchronously in the Happo test.
 
-# Image loading
+## Image loading
 
 Examples can reference images in a few different ways:
 
@@ -422,7 +422,7 @@ Examples can reference images in a few different ways:
   config, so that you can `import fooImage from './images/foo.png'`
   directly.
 
-# CSS Loading Strategies
+## CSS Loading Strategies
 
 Happo works best when CSS code is co-located with the components. In some
 cases, you'll get away with zero configuration to get this working. But in other
@@ -444,3 +444,19 @@ module.exports = {
   },
 };
 ```
+
+## Framework integration
+
+### Next.JS
+
+Here's an example repo integration a [Next.JS](https://nextjs.org/) app with
+Happo Examples:
+https://github.com/happo/happo-next-demo
+
+### Create-React-App
+
+This repo demonstrates how to use Happo Examples with
+[Create-React-App](https://github.com/facebook/create-react-app). It uses
+TypeScript but the instructions apply to non-TypeScript projects as well:
+https://github.com/happo/happo-cra-typescript
+
