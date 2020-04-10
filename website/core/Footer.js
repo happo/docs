@@ -53,7 +53,7 @@ class Footer extends React.Component {
           </div>
           <div>
             <h5>More</h5>
-            <a href="happo.io">Happo.io website</a>
+            <a href="https://happo.io">Happo.io website</a>
             <a href="https://github.com/happo">Happo on GitHub</a>
           </div>
         </section>
