@@ -1,0 +1,27 @@
+version: 2.1
+
+jobs:
+  publish-docker:
+    docker:
+      - image: circleci/buildpack-deps:stretch
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: Publish Docker image
+          command: |
+            echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
+            IMAGE_TAG=${CIRCLE_TAG/v/''}
+            docker build -t enduire/happo-docs:$IMAGE_TAG .
+            docker push enduire/happo-docs:$IMAGE_TAG
+workflows:
+  version: 2.1
+  release:
+    jobs:
+      - publish-docker:
+          context: docker
+          filters:
+            tags:
+              only: /^v.*/
+            branches:
+              ignore: /.*/
