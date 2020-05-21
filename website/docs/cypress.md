@@ -138,8 +138,9 @@ variables before invoking the test suite:
 - `HAPPO_PREVIOUS_SHA` the commit sha that the branch/PR is based on (usually a
   commit on master). Only set this for PR builds.
 - `HAPPO_CURRENT_SHA` the sha of the commit currently under test. Always set this.
-- `HAPPO_BASE_BRANCH` the default/base branch you use. Defaults to "master", so
-  you only need to set this if you are using a different base branch.
+- `HAPPO_BASE_BRANCH` the default/base branch you use, e.g. `origin/dev`.
+  Defaults to `origin/master`, so you only need to set this if you are using a
+  different base branch.
 - `HAPPO_CHANGE_URL` a url to the PR/commit. Optional.
 
 ## Troubleshooting
