@@ -75,6 +75,18 @@ module.exports = {
 };
 ```
 
+Lastly, you'll need to wrap your calls to `cypress run` with a call to
+`happo-cypress`. Here's an example:
+
+```sh
+npx happo-cypress -- npx cypress run
+```
+
+Your tests won't fail if you forget this call, but the behavior will be slightly
+different. Without the `happo-cypress` prefix, each test file will yield a Happo
+report (a set of screenshots). With the prefix, the whole test suite will yield
+one Happo report.
+
 ## Usage
 
 To record Happo screenshots in your test suite, use `happoScreenshot`:
