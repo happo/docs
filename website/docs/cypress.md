@@ -127,6 +127,19 @@ cy.get('.footer').happoScreenshot({ variant: 'dark' });
 cy.get('.footer').happoScreenshot();
 ```
 
+## Limiting targets
+
+If you want to avoid rendering an example in all targets, you can use the
+`targets` option. The example will then be rendered in the specified targets
+exclusively.
+
+```js
+cy.get('.footer').happoScreenshot({
+  component: 'Footer',
+  targets: ['chrome-small'],
+});
+```
+
 ## Continuous Integration
 
 If you run the test suite in a CI environment, the `happo-cypress` module will
