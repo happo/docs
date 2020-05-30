@@ -2,6 +2,7 @@
 id: cypress
 title: Cypress
 ---
+
 The `happo-cypress` module adds [Happo.io](https://happo.io) cross-browser
 screenshots to your [Cypress.io](https://cypress.io) test suite.
 
@@ -92,8 +93,8 @@ one Happo report.
 To record Happo screenshots in your test suite, use `happoScreenshot`:
 
 ```js
-describe('Home page', function() {
-  it('loads properly', function() {
+describe('Home page', function () {
+  it('loads properly', function () {
     cy.visit('/');
     cy.get('.header').happoScreenshot();
   });
@@ -167,6 +168,24 @@ variables before invoking the test suite:
   Defaults to `origin/master`, so you only need to set this if you are using a
   different base branch.
 - `HAPPO_CHANGE_URL` a url to the PR/commit. Optional.
+
+### Parallel builds
+
+If you're running your [Cypress test suite across multiple
+machines](https://docs.cypress.io/guides/guides/parallelization.html), you'll
+need to do two things:
+
+- Set a `HAPPO_NONCE` environment variable, to tie individual runs together. Any
+  string unique to the build will do.
+- After the whole test suite is done, call `npx happo-cypress finalize`. Make
+  sure that the same `HAPPO_NONCE` environment variable is set as for the
+  individual builds.
+
+In some CI tools, you can use a built-in environment variable as `HAPPO_NONCE`.
+In CircleCI for instance, you can use [
+`HAPPO_NONCE=${CIRCLE_WORKFLOW_ID}`](https://circleci.com/docs/2.0/env-vars/#built-in-environment-variables).
+You can also use a timestamp or a randomly generated string. The important thing
+is that it's unique to the current CI run.
 
 ## Troubleshooting
 
