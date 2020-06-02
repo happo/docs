@@ -83,6 +83,13 @@ Lastly, you'll need to wrap your calls to `cypress run` with a call to
 npx happo-cypress -- npx cypress run
 ```
 
+If you're using [`yarn`](https://yarnpkg.com/), you might have to specify the
+double dashes twice (the first one is consumed by `yarn` itself):
+
+```sh
+yarn happo-cypress -- -- yarn cypress run
+```
+
 Your tests won't fail if you forget this call, but the behavior will be slightly
 different. Without the `happo-cypress` prefix, each test file will yield a Happo
 report (a set of screenshots). With the prefix, the whole test suite will yield
