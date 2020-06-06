@@ -21,6 +21,7 @@
       "compare-threshold",
       "multi-project",
       "performance",
+      "browser-updates",
       "spurious-diffs",
       "ignoring-diffs",
       "debugging"
