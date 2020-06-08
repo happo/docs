@@ -25,11 +25,14 @@ _Example of a Happo status posted to a GitHub pull request._
 Since a lot of projects these days follow a pull-request model using GitHub,
 Happo provides ready-made scripts that you can run in CI:
 
-- `happo-ci-travis` - a script designed to be run in a Travis environment.
-- `happo-ci-circleci` - a script designed to be run in a CircleCI environment.
-- `happo-ci` - a generic script designed to work in any CI environment. This
-  script is used by both `happo-ci-travis` and `happo-ci-circleci` under the
-  hood.
+- [`happo-ci-travis`](#happo-ci-travis) - a script designed to be run in a
+  Travis environment.
+- [`happo-ci-circleci`](#happo-ci-circleci) - a script designed to be run in a
+  CircleCI environment.
+- [`happo-ci-github-actions`](#happo-ci-github-actions) - a script designed to
+  be used with GitHub Actions.
+- [`happo-ci`](#happo-ci) - a generic script designed to work in any CI
+  environment. This script is used by all the other CI scripts under the hood.
 
 These scripts will all:
 
@@ -38,9 +41,10 @@ These scripts will all:
 3. Compare the two reports
 4. If allowed to, post back a status to the PR (the HEAD commit)
 
-These scripts will detect your npm client (yarn or npm) and run `npm install`/`yarn install` before running happo on the commits. If you have other
-dependencies/preprocessing steps that need to happen, you can override this
-with the `INSTALL_CMD` environment variable. E.g.
+These scripts will detect your npm client (yarn or npm) and run `npm
+install`/`yarn install` before running happo on the commits. If you have other
+dependencies/preprocessing steps that need to happen, you can override this with
+the `INSTALL_CMD` environment variable. E.g.
 
 ```bash
 INSTALL_CMD="lerna bootstrap" npm run happo-ci-travis
@@ -140,6 +144,46 @@ branch. If you're using a different default branch, you can set the
 }
 ```
 
+### `happo-ci-github-actions`
+
+This script knows about the [GitHub
+Actions](https://github.com/features/actions) build environment, assuming a PR
+based model. To run it, first add this to your `package.json`:
+
+```json
+{
+  "scripts": {
+    "happo": "happo",
+    "happo-ci-github-actions": "happo-ci-github-actions"
+  }
+}
+```
+
+Then, configure your workflow file to run this script. Here's an example:
+
+```yaml
+name: Happo CI
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+jobs:
+  happo:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+      - run: npm ci
+      - run: npm run happo-ci-github-actions
+        env:
+          HAPPO_API_KEY: ${{ secrets.HAPPO_API_KEY }}
+          HAPPO_API_SECRET: ${{ secrets.HAPPO_API_SECRET }}
+```
+
+Make sure that the workflow is configured to run on pushes to your default
+branch.  This will ensure that baselines exist for PR builds to compare against.
+
 ### `happo-ci`
 
 This is a generic script that can run in most CI environments. Before using it,
@@ -157,16 +201,6 @@ you need to set a few environment variables:
     "happo-ci": "happo-ci"
   }
 }
-```
-
-If you are using [GitHub Actions](https://github.com/features/actions) you can
-use the following variables in your workflow config:
-
-```yaml
-env:
-  PREVIOUS_SHA: ${{ github.event.pull_request.base.sha }}
-  CURRENT_SHA: ${{ github.event.pull_request.head.sha }}
-  CHANGE_URL: ${{ github.event.pull_request.html_url }}
 ```
 
 ## Posting statuses back to PRs/commits
