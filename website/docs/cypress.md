@@ -194,6 +194,45 @@ In CircleCI for instance, you can use [
 You can also use a timestamp or a randomly generated string. The important thing
 is that it's unique to the current CI run.
 
+## Advanced usage
+
+### Setting a port for `happo-cypress`
+
+When you're running the `happo-cypress --` wrapper, a web server is used
+internally. By default, this server is listening on port 5339. If you need to
+change that, pass a `--port` argument, like so:
+
+```bash
+npx happo-cypress --port 5432 -- npx cypress run
+```
+
+### Transforming the DOM
+
+If you need to transform the DOM in some way before a snapshot is taken, you can
+use the `transformDOM` option. Here's an example where `<iframe>`s are replaced
+with a div placeholder.
+
+```js
+cy.get('.main').happoScreenshot({
+  component: 'Main',
+  transformDOM: {
+    selector: 'iframe',
+    transform: (element, doc) => {
+      // element here is an iframe
+      const div = doc.createElement('div');
+      div.innerHTML = '[iframe placeholder]';
+      return div; // return the element you want to replace the iframe with
+    }
+  },
+});
+```
+
+The options passed to `transformDOM` are:
+- `selector`: an argument passed to `querySelectorAll` that describes what
+  elements to transform.
+- `transform`: a function that is called for each element matching the selector
+  (there can be more than one). Make sure you return a replacement element.
+
 ## Troubleshooting
 
 ### I need support!
