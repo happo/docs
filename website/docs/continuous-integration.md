@@ -22,7 +22,7 @@ _Example of a Happo status posted to a GitHub pull request._
 > page](cypress.md#continuous-integration) for instructions on how to integrate
 > with CI there.
 
-Since a lot of projects these days follow a pull-request model using GitHub,
+Since a lot of projects these days follow a pull-request/merge-request model,
 Happo provides ready-made scripts that you can run in CI:
 
 - [`happo-ci-travis`](#happo-ci-travis) - a script designed to be run in a
@@ -203,14 +203,21 @@ you need to set a few environment variables:
 }
 ```
 
-## Posting statuses back to PRs/commits
+## Posting build statuses
+
+Your Happo account can be configured to post build statuses to your PRs/commits.
+Happo currently integrates with [GitHub](https://github.com) and
+[Bitbucket](https://bitbucket.org). See specific instructions for the different
+providers below.
+
+### GitHub
 
 > The instructions in this section only work if you are using github.com or the
 > on-premise version of happo.io. If you're using a local GitHub Enterprise setup,
 > there is an alternative solution described in the [next
 > section](#posting-statuses-without-installing-the-happo-github-app)
 
-### Step 1: Install Happo GitHub app
+#### Step 1: Install Happo GitHub app
 
 First you need to install the [Happo GitHub App](https://github.com/apps/happo)
 in the repository/repositories you want to run Happo in.
@@ -218,7 +225,7 @@ in the repository/repositories you want to run Happo in.
 ![Installing the Happo GitHub App](/img/happo-github-app.gif)
 *Installing the Happo app at https://github.com/apps/happo*
 
-### Step 2: Connect with repository
+#### Step 2: Connect with repository
 
 Once you have the Happo GitHub app installed, you need to connect/activate the
 right repository with your Happo.io account on the [GitHub integration page on
@@ -228,7 +235,7 @@ you're all set to have Happo automatically post statuses on your PRs/commits.
 ![Connecting repository with the Happo account](/img/happo-github-integration.gif)
 *Activating the GitHub repository at https://happo.io/github-integration*
 
-### Happo statuses
+#### Happo build statuses
 
 Here's what it looks like when Happo posts a status on a pull request:
 
@@ -247,7 +254,7 @@ The status over on github.com will then change to success (green) for the PR/com
 
 If there are no diffs, the status is automatically set to success.
 
-## Posting statuses without installing the Happo GitHub App
+#### Posting statuses without installing the Happo GitHub App
 
 If you for some reason can't install the Happo GitHub App (e.g. when using
 GitHub Enterprise) you can still get the Happo status posted to your PR -- as a
@@ -268,3 +275,37 @@ personal access token, separated by a colon.
 
 If you're using GitHub Enterprise, apart from defining the environment variable
 you also need to add [`githubApiUrl` to `.happo.js`](configuration.md#githubapiurl).
+
+### Bitbucket
+
+#### Step 1: Generate an app password
+
+To authorize Happo to post statuses to your PRs/commits, you need to generate an
+[app
+password](https://support.atlassian.com/bitbucket-cloud/docs/app-passwords/).
+
+![Generating a Bitbucket app password](/img/happo-bitbucket-app-password.gif)
+*Generating an app password through the Bitbucket UI*
+
+
+#### Step 2: Fill in form at Happo.io
+
+Once you have the app password, you can go to the [Bitbucket integration page on
+happo.io](https://happo.io/bitbucket-integration) and fill out the form. Once
+you're done with that, you're all set to have Happo automatically post statuses
+on your PRs/commits.
+
+#### Happo build statuses
+
+Here's what it looks like when Happo posts a status on a pull request:
+
+![Happo status posted on a commit on github](/img/happo-status-bitbucket.png)
+
+If there is a diff, the status will be set to failure. To manually flip this to
+a success status, just go to the Happo comparison page (linked to from the
+status) and accept the diffs.
+
+![Accepting diffs](/img/happo-status-accept.gif)
+
+The status over on bitbucket.org will then change to success (green) for the
+PR/commit. If there are no diffs, the status is automatically set to success.
