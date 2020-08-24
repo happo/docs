@@ -33,10 +33,11 @@ module.exports = {
 };
 ```
 
-Add this to `.storybook/config.js`:
+Add this to `.storybook/preview.js` (or `.storybook/config.js` if you're using
+Storybook < v5):
 
 ```js
-// .storybook/config.js
+// .storybook/preview.js
 
 import 'happo-plugin-storybook/register';
 ```
@@ -77,7 +78,6 @@ loaded you can make use of the `isHappoRun` function exported by
 `happo-plugin-storybook/register`:
 
 ```js
-// .storybook/config.js
 import { isHappoRun } from 'happo-plugin-storybook/register';
 
 if (!isHappoRun()) {
@@ -184,5 +184,5 @@ renderIter();
 
 ## Troubleshooting
 
-- Getting a `Failed on worker` error? Make sure you are making a call to `import 'happo-plugin-storybook/register'` in your `.storybook/config.js` file.
+- Getting a `Failed on worker` error? Make sure you are making a call to `import 'happo-plugin-storybook/register'` in your `.storybook/preview.js` file.
 - Getting spurious diffs from fonts not loading? Happo workers will wait for fonts to load before taking the screenshot, but it assumes that fonts it has already seen are already available. Make sure the `@font-face` declaration is declared globally and not part of the stories themselves.
