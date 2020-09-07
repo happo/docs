@@ -135,6 +135,17 @@ cy.get('.footer').happoScreenshot({ variant: 'dark' });
 cy.get('.footer').happoScreenshot();
 ```
 
+## Allowing failures
+
+By default, no Happo reports are produced when the Cypress run fails. In some
+cases, you might want to allow Happo to succeed even if the overall test run
+fails. The `--allow-failures` flag for the `happo-cypress` command can then be
+used:
+
+```sh
+npx happo-cypress --allow-failures -- npx cypress run
+```
+
 ## Limiting targets
 
 If you want to avoid rendering an example in all targets, you can use the
