@@ -24,3 +24,11 @@ Examples of where you _should avoid_ using the permanently ignore feature:
   report](reviewing-diffs.md#acceptingrejecting-a-report) instead).
 - ❌ You're having spurious diffs where some images/fonts won't load (reach out
   to us instead — this might be a bug)
+
+## Global effect
+
+Ignored diffs apply to all future and past Happo reports. This can lead to some
+confusion when your Happo build status (in e.g. GitHub) shows a number of diffs,
+but the Happo report page shows fewer diffs (or even none). Build statuses
+aren't updated when you ignore a diff, you still need to [manually approve or
+reject](reviewing-diffs.md).
