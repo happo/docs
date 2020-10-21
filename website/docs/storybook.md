@@ -59,8 +59,12 @@ These options are available to the `happoPluginStorybook` function:
 - `outputDir` the name of the directory where compiled files are saved. The
   default is '.out'.
 - `staticDir` directory where to load static files from, comma-separated list.
+- `usePrebuiltPackage` set to `true` to skip building storybook and instead use
+  an already built package. It's important that the `outputDir` matches the
+  place where the prebuilt package is located. Default is `false`.
 
-These options are the same ones used for the `build-storybook` CLI command. See
+These options are mostly the same ones used for the `build-storybook` CLI
+command. See
 https://storybook.js.org/configurations/cli-options/#for-build-storybook
 
 ## Running
