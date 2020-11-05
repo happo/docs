@@ -146,6 +146,30 @@ storiesOf('PaymentForm', module).add('default', () => <PaymentForm />, {
 });
 ```
 
+### Waiting for a condition to be truthy
+
+To make Happo wait with the screenshot until a condition has been met, use the
+`waitFor` option. Specify a function that returns true (or anything truthy) when
+the time is right to take the screenshot.
+
+Here's an example that waits for a specific element (`.credit-card`) to appear:
+
+```js
+storiesOf('PaymentForm', module).add('default', () => <PaymentForm />, {
+  happo: { waitFor: () => document.querySelector('.credit-card') },
+});
+```
+
+Here's another example that waits for a specific number of elements:
+
+```js
+storiesOf('PaymentForm', module).add('default', () => <PaymentForm />, {
+  happo: {
+    waitFor: () => document.querySelectorAll('.validation-output').length === 5,
+  },
+});
+```
+
 ## Caveats
 
 When you're using this plugin, some of the regular Happo commands and
@@ -174,8 +198,8 @@ If you want to debug your test suite similar to how the Happo browser workers do
 To quickly run through all examples, follow steps 1-4, then paste this script instead:
 
 ```js
-var renderIter = function() {
-  window.happo.nextExample().then(function(a) {
+var renderIter = function () {
+  window.happo.nextExample().then(function (a) {
     if (!a) {
       return;
     }
