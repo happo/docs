@@ -93,10 +93,30 @@ if (!isHappoRun()) {
 
 ### Disabling a story
 
-In a perfect case scenario, your stories should be built in such a way that all of them work well in Happo environment. Sometimes though you might want to disable some of the stories in Happo preview, i.e. because they depend on dynamic data that can't be accessed from Happo environment.
+If some of your stories aren't well suited for Happo, you can disable them by
+setting a `happo: false` parameter. This can be done in the default export to
+globally disable all stories in the same file, or individually on certain
+stories.
 
-In such case you can pass `happo: false` story parameter to it:
+<!--DOCUSAURUS_CODE_TABS-->
+<!-- CSF -->
+```js
+export default {
+  title: 'FooComponent',
+  parameters: {
+    happo: false, // this will disable all `FooComponent` stories
+  },
+};
 
+const WithBorder = () => <FooComponent bordered />;
+
+WithBorder.parameters = {
+  happo: false, // this will disable the `WithBorder` story
+};
+
+export { WithBorder };
+```
+<!-- storiesOf -->
 ```js
 storiesOf('FooComponent', module)
   .add('Default', () => <FooComponent />);
@@ -108,6 +128,7 @@ storiesOf('FooComponent', module)
   .addParameters({ happo: false })
   .add('Dynamic', () => <DynamicFooComponent />);
 ```
+<!--END_DOCUSAURUS_CODE_TABS-->
 
 ### Setting delay for a story
 
@@ -117,18 +138,43 @@ set delays: one global and one per story. Here's an example of setting a global
 delay:
 
 ```js
+// .storybook/preview.js
 import { setDefaultDelay } from 'happo-plugin-storybook/register';
 
 setDefaultDelay(100); // in milliseconds
 ```
 
-Here's how you set an individual delay:
+Use the `happo.delay` parameter to set an individual delay for a story:
 
+<!--DOCUSAURUS_CODE_TABS-->
+<!-- CSF -->
+```js
+export default {
+  title: 'FooComponent',
+  parameters: {
+    happo: {
+      delay: 200, // set a 200ms delay for all FooComponent stories
+    },
+  },
+};
+
+const WithBorder = () => <FooComponent bordered />;
+
+WithBorder.parameters = {
+  happo: {
+    delay: 1000, // Set a 1000ms delay for the WithBorder story
+  },
+};
+
+export { WithBorder };
+```
+<!-- storiesOf -->
 ```js
 storiesOf('FooComponent', module).add('delayed', () => <FooComponent />, {
   happo: { delay: 200 },
 });
 ```
+<!--END_DOCUSAURUS_CODE_TABS-->
 
 ### Waiting for content
 
@@ -140,11 +186,24 @@ iframe that you have no control over, loading a credit card form. In order to
 wait for the iframe to finish, we can add a `waitForContent` parameter with
 some unique string in the iframe.
 
+<!--DOCUSAURUS_CODE_TABS-->
+<!-- CSF -->
+```js
+const Basic = () => <PaymentForm />;
+Basic.parameters = {
+  happo: {
+    waitForContent: 'Credit card',
+  },
+};
+export { Basic };
+```
+<!-- storiesOf -->
 ```js
 storiesOf('PaymentForm', module).add('default', () => <PaymentForm />, {
   happo: { waitForContent: 'Credit card' },
 });
 ```
+<!--END_DOCUSAURUS_CODE_TABS-->
 
 ### Waiting for a condition to be truthy
 
@@ -154,14 +213,39 @@ the time is right to take the screenshot.
 
 Here's an example that waits for a specific element (`.credit-card`) to appear:
 
+<!--DOCUSAURUS_CODE_TABS-->
+<!-- CSF -->
+```js
+const Basic = () => <PaymentForm />;
+Basic.parameters = {
+  happo: {
+    waitFor: () => document.querySelector('.credit-card'),
+  },
+};
+export { Basic };
+```
+<!-- storiesOf -->
 ```js
 storiesOf('PaymentForm', module).add('default', () => <PaymentForm />, {
   happo: { waitFor: () => document.querySelector('.credit-card') },
 });
 ```
+<!--END_DOCUSAURUS_CODE_TABS-->
 
 Here's another example that waits for a specific number of elements:
 
+<!--DOCUSAURUS_CODE_TABS-->
+<!-- CSF -->
+```js
+const Basic = () => <PaymentForm />;
+Basic.parameters = {
+  happo: {
+    waitFor: () => document.querySelectorAll('.validation-output').length === 5,
+  },
+};
+export { Basic };
+```
+<!-- storiesOf -->
 ```js
 storiesOf('PaymentForm', module).add('default', () => <PaymentForm />, {
   happo: {
@@ -169,6 +253,7 @@ storiesOf('PaymentForm', module).add('default', () => <PaymentForm />, {
   },
 });
 ```
+<!--END_DOCUSAURUS_CODE_TABS-->
 
 ## Caveats
 
