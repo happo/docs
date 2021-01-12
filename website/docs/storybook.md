@@ -130,51 +130,6 @@ storiesOf('FooComponent', module)
 ```
 <!--END_DOCUSAURUS_CODE_TABS-->
 
-### Setting delay for a story
-
-Happo will make its best to wait for your stories to render, but at times you
-might need a little more control in the form of delays. There are two ways to
-set delays: one global and one per story. Here's an example of setting a global
-delay:
-
-```js
-// .storybook/preview.js
-import { setDefaultDelay } from 'happo-plugin-storybook/register';
-
-setDefaultDelay(100); // in milliseconds
-```
-
-Use the `happo.delay` parameter to set an individual delay for a story:
-
-<!--DOCUSAURUS_CODE_TABS-->
-<!-- CSF -->
-```js
-export default {
-  title: 'FooComponent',
-  parameters: {
-    happo: {
-      delay: 200, // set a 200ms delay for all FooComponent stories
-    },
-  },
-};
-
-const WithBorder = () => <FooComponent bordered />;
-
-WithBorder.parameters = {
-  happo: {
-    delay: 1000, // Set a 1000ms delay for the WithBorder story
-  },
-};
-
-export { WithBorder };
-```
-<!-- storiesOf -->
-```js
-storiesOf('FooComponent', module).add('delayed', () => <FooComponent />, {
-  happo: { delay: 200 },
-});
-```
-<!--END_DOCUSAURUS_CODE_TABS-->
 
 ### Waiting for content
 
@@ -251,6 +206,55 @@ storiesOf('PaymentForm', module).add('default', () => <PaymentForm />, {
   happo: {
     waitFor: () => document.querySelectorAll('.validation-output').length === 5,
   },
+});
+```
+<!--END_DOCUSAURUS_CODE_TABS-->
+
+### Setting delay for a story
+
+> Use delays only as a last resort. They slow down your test suite and rarely
+> get to the bottom of the issue.
+
+Happo will make its best to wait for your stories to render, but at times you
+might need a little more control in the form of delays. There are two ways to
+set delays: one global and one per story. Here's an example of setting a global
+delay:
+
+```js
+// .storybook/preview.js
+import { setDefaultDelay } from 'happo-plugin-storybook/register';
+
+setDefaultDelay(100); // in milliseconds
+```
+
+Use the `happo.delay` parameter to set an individual delay for a story:
+
+<!--DOCUSAURUS_CODE_TABS-->
+<!-- CSF -->
+```js
+export default {
+  title: 'FooComponent',
+  parameters: {
+    happo: {
+      delay: 200, // set a 200ms delay for all FooComponent stories
+    },
+  },
+};
+
+const WithBorder = () => <FooComponent bordered />;
+
+WithBorder.parameters = {
+  happo: {
+    delay: 1000, // Set a 1000ms delay for the WithBorder story
+  },
+};
+
+export { WithBorder };
+```
+<!-- storiesOf -->
+```js
+storiesOf('FooComponent', module).add('delayed', () => <FooComponent />, {
+  happo: { delay: 200 },
 });
 ```
 <!--END_DOCUSAURUS_CODE_TABS-->
