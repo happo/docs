@@ -75,9 +75,10 @@ module.exports = {
   // ... more config
 };
 ```
+### Usage with `cypress run`
 
-Lastly, you'll need to wrap your calls to `cypress run` with a call to
-`happo-cypress`. Here's an example:
+To enable Happo in your test suites triggered via `cypress run`, you'll need to
+use the `happo-cypress` wrapper. Here's an example:
 
 ```sh
 npx happo-cypress -- npx cypress run
@@ -90,10 +91,24 @@ double dashes twice (the first one is consumed by `yarn` itself):
 yarn happo-cypress -- -- yarn cypress run
 ```
 
-Your tests won't fail if you forget this call, but the behavior will be slightly
-different. Without the `happo-cypress` prefix, each test file will yield a Happo
-report (a set of screenshots). With the prefix, the whole test suite will yield
-one Happo report.
+If you're not using the `happo-cypress` wrapper with `cypress run`, Happo will
+be disabled for the whole test suite.
+
+### Usage with `cypress open`
+
+When running Cypress tests locally using the `cypress open` command, Happo is
+disabled by default. The `happo-cypress` wrapper won't work with `cypress open`
+since it depends on the Cypress command to finish after a test run (which won't
+happen with `cypress open`). To enable Happo in these scenarios, set
+`HAPPO_ENABLED=true` as an environment variable. Here's an example with the
+environment variable inlined with the command:
+
+```sh
+HAPPO_ENABLED=true npx cypress open
+```
+
+When Happo is enabled with `cypress open`, Happo reports are created every time
+you trigger a test run. Check your console logs for a link to the reports.
 
 ## Usage
 
