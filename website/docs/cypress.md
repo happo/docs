@@ -174,6 +174,77 @@ cy.get('.footer').happoScreenshot({
 });
 ```
 
+## Hiding dynamic content
+
+If you have dynamic content that changes often, you can ask Happo to hide it
+from the screenshot. This can help prevent unwanted diffs caused by e.g.
+timestamps, dates, randomized content.
+
+```js
+cy.happoHideDynamicElements();
+```
+
+Confusingly enough, elements keep being visible while you run the Cypress test
+suite. Instead, a `data-happo-hide` attribute is added. This will inform Happo's
+workers to hide the elements before taking the screenshot.
+
+You can use `data-happo-hide` manually in your source code as well if you prefer
+to hide certain elements without using `happoHideDynamicElements`.
+
+### Selectors
+
+By default `happoHideDynamicElements` will attempt to find `<time>` elements to
+hide. You can add your own selectors using the `selectors` option.
+
+```js
+cy.happoHideDynamicElements({
+  selectors: [
+    '.date',
+  ],
+});
+```
+
+Using `selectors` will not affect the default. To remove the default selectors,
+you can set `defaultSelectors` to an empty array:
+
+```js
+cy.happoHideDynamicElements({
+  defaultSelectors: [],
+  selectors: [
+    '.date',
+  ],
+});
+```
+
+### Matchers
+
+The default implementation of `happoHideDynamicElements` will attempt to find
+things like `"2 days ago"`, `"2:45 PM"`, etc. You can supply your own content
+matchers (regular expressions) if the default implementation isn't working for
+you.
+
+```js
+cy.happoHideDynamicElements({
+  matchers: [
+    /liked by [0-9]+ people/,
+  ],
+});
+```
+
+To minimize false negatives, only leaf nodes are hidden by matchers.
+
+Using `matchers` will not affect the default. To remove the default matchers,
+you can set `defaultMatchers` to an empty array:
+
+```js
+cy.happoHideDynamicElements({
+  defaultMatchers: [],
+  matchers: [
+    /liked by [0-9]+ people/,
+  ],
+});
+```
+
 ## Continuous Integration
 
 If you run the test suite in a CI environment, the `happo-cypress` module will
