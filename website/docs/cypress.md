@@ -259,6 +259,21 @@ The options passed to `transformDOM` are:
 - `transform`: a function that is called for each element matching the selector
   (there can be more than one). Make sure you return a replacement element.
 
+### Download all assets
+
+By default, happo-cypress will download assets found locally and include in an
+assets package sent to happo.io. Any external URL will be left as-is, which
+means they are expected to be publicly accessible by Happo workers. To include
+external assets in the assets package as well, set a `HAPPO_DOWNLOAD_ALL`
+environment variable.
+
+```bash
+HAPPO_DOWNLOAD_ALL=true npx happo-cypress -- npx cypress run
+```
+
+With this environment variable set, all assets are assumed to be private (i.e.
+not publicly accessible).
+
 ## Troubleshooting
 
 ### I need support!
