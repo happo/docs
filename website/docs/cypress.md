@@ -75,6 +75,7 @@ module.exports = {
   // ... more config
 };
 ```
+
 ### Usage with `cypress run`
 
 To enable Happo in your test suites triggered via `cypress run`, you'll need to
@@ -161,11 +162,11 @@ used:
 npx happo-cypress --allow-failures -- npx cypress run
 ```
 
-## Limiting targets
+## Selecting targets
 
-If you want to avoid rendering an example in all targets, you can use the
-`targets` option. The example will then be rendered in the specified targets
-exclusively.
+If you want to avoid rendering an example in all browser targets (found in
+.happo.js), you can use the `targets` option. The example will then be rendered
+in the specified targets exclusively.
 
 ```js
 cy.get('.footer').happoScreenshot({
@@ -173,6 +174,40 @@ cy.get('.footer').happoScreenshot({
   targets: ['chrome-small'],
 });
 ```
+
+In this example, the "Footer" snapshot will only be rendered in the target named
+`'chrome-small'` found in `.happo.js`.
+
+### Dynamic targets
+
+If you want to create a snapshot in a target that isn't defined in the
+`.happo.js` config, you can use an object with `name`, `browser` and `viewport`
+properties. Here's an example where a snapshot is taken in a dynamically
+generated target:
+
+```js
+cy.get('.footer').happoScreenshot({
+  component: 'Footer',
+  targets: [{ name: 'firefox-small', browser: 'firefox', viewport: '400x800' }],
+});
+```
+
+Here, "Footer" will only be rendered in a 400x800px Firefox window.
+
+You can mix and match dynamic targets and target names as well:
+
+```js
+cy.get('.footer').happoScreenshot({
+  component: 'Footer',
+  targets: [
+    'chrome-small',
+    { name: 'firefox-small', browser: 'firefox', viewport: '400x800' },
+  ],
+});
+```
+
+"Footer" is now rendered in Chrome (target specified in `.happo.js`) and Firefox
+(dynamic target).
 
 ## Hiding dynamic content
 
@@ -198,9 +233,7 @@ hide. You can add your own selectors using the `selectors` option.
 
 ```js
 cy.happoHideDynamicElements({
-  selectors: [
-    '.date',
-  ],
+  selectors: ['.date'],
 });
 ```
 
@@ -210,9 +243,7 @@ you can set `defaultSelectors` to an empty array:
 ```js
 cy.happoHideDynamicElements({
   defaultSelectors: [],
-  selectors: [
-    '.date',
-  ],
+  selectors: ['.date'],
 });
 ```
 
@@ -225,9 +256,7 @@ you.
 
 ```js
 cy.happoHideDynamicElements({
-  matchers: [
-    /liked by [0-9]+ people/,
-  ],
+  matchers: [/liked by [0-9]+ people/],
 });
 ```
 
@@ -239,9 +268,7 @@ you can set `defaultMatchers` to an empty array:
 ```js
 cy.happoHideDynamicElements({
   defaultMatchers: [],
-  matchers: [
-    /liked by [0-9]+ people/,
-  ],
+  matchers: [/liked by [0-9]+ people/],
 });
 ```
 
@@ -319,12 +346,13 @@ cy.get('.main').happoScreenshot({
       const div = doc.createElement('div');
       div.innerHTML = '[iframe placeholder]';
       return div; // return the element you want to replace the iframe with
-    }
+    },
   },
 });
 ```
 
 The options passed to `transformDOM` are:
+
 - `selector`: an argument passed to `querySelectorAll` that describes what
   elements to transform.
 - `transform`: a function that is called for each element matching the selector
