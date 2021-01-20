@@ -327,6 +327,14 @@ In CircleCI for instance, you can use [
 You can also use a timestamp or a randomly generated string. The important thing
 is that it's unique to the current CI run.
 
+### Email notifications
+
+If you set a `HAPPO_NOTIFY` environment variable as part of your Cypress run, an
+email will be sent out when the Happo comparison report is ready.
+
+Usage instructions for `HAPPO_NOTIFY` is available in [the Continuous Integration
+docs](continuous-integration.md#email-notifications).
+
 ## Advanced usage
 
 ### Setting a port for `happo-cypress`

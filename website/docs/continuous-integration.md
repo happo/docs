@@ -309,3 +309,44 @@ status) and accept the diffs.
 
 The status over on bitbucket.org will then change to success (green) for the
 PR/commit. If there are no diffs, the status is automatically set to success.
+
+## Email notifications
+
+You can set up the CI integration to send email notifications when comparison
+reports are ready. Set a`HAPPO_NOTIFY` environment variable to one or more
+(comma-separated) email addresses and emails will be sent from Happo when
+results are available.
+
+```bash
+export HAPPO_NOTIFY=user@example.com
+```
+
+In many cases, you want to send the email to the person responsible for the
+change/PR that triggered the Happo tests. You can do that via a `git show`
+one-liner. This example is for Circle CI:
+
+```yaml
+  steps:
+    - checkout
+    - run: npm ci
+    - run: echo 'export HAPPO_NOTIFY=$(git show -s --format=%ce HEAD)' >> $BASH_ENV
+    - happo/run_happo
+```
+
+Here's an example for GitHub Actions:
+
+```yaml
+  - name: Set Happo notification email address
+    run: echo "HAPPO_NOTIFY=$(git show -s --format=%ce HEAD)" >> $GITHUB_ENV
+```
+
+### Multiple recipients
+
+Use a comma-separated list of email addresses to send the notification to
+several recipients:
+
+
+```bash
+export HAPPO_NOTIFY=user@example.com,service-account@mycompany.com
+```
+
