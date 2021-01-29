@@ -22,3 +22,13 @@ outlining the changes made to Happo infrastructure that might have caused the
 diffs. Annoying as this might be, it's usually safe to simply accept the report
 and move on (once you're confident that the changes are solely caused by the
 browser update).
+
+### No-diff diffs
+
+As a result of some browser updates, diffs can appear that aren't showing any
+pixel differences at all. When this happens, the most probable cause is that the
+underlying browser driver has changed how it creates screenshots, causing
+different bytes in the captured PNG image than it used to do. This confuses
+Happo's diff resolution, since it relies on computed hashes of the PNG images
+(known as "bitmap hashing"). If the hashes are different, Happo assumes the
+pixels are different.
