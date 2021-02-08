@@ -63,6 +63,22 @@ This is a list of all supported browsers:
 - `safari`
 - `ios-safari` (runs on iPhone 7)
 
+### Target `freezeAnimations`
+
+By default, Happo will freeze CSS animations on the first frame. If you want to
+freeze things on the last frame, use the `freezeAnimations` option.
+
+```js
+module.exports = {
+  targets: {
+    ie: new RemoteBrowserTarget('internet explorer', {
+      viewport: '1024x768',
+      freezeAnimations: 'last-frame'
+    }),
+  },
+};
+```
+
 ### Target `chunks`
 
 Targets are executed in parallel by default. If you want to split up a specific
