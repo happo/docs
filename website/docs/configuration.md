@@ -141,7 +141,7 @@ module.exports = {
 };
 ```
 
-### Target `useFullPageFallbackForTallScreenshot`
+### Target `useFullPageFallbackForTallScreenshots`
 
 This option applies to Chrome and Firefox only.
 
@@ -152,19 +152,19 @@ content below the bottom edge of the viewport can disappear (inconsistently). In
 some cases, this workaround can lead to other issues. Especially when you are
 using the `vh` CSS unit. A page with an element of `height: 100vh` will take up
 the entire screenshot when the viewport-altering fallback is in effect. To turn
-off the workaround completely, set `useFullPageFallbackForTallScreenshot:
-false`.
+off the workaround completely, set
+`useFullPageFallbackForTallScreenshots: false`.
 
 ```js
 module.exports = {
   targets: {
     chrome: new RemoteBrowserTarget('chrome', {
       viewport: '1024x768',
-      useFullPageFallbackForTallScreenshot: false,
+      useFullPageFallbackForTallScreenshots: false,
     }),
     firefox: new RemoteBrowserTarget('firefox', {
       viewport: '1024x768',
-      useFullPageFallbackForTallScreenshot: false,
+      useFullPageFallbackForTallScreenshots: false,
     }),
   },
 };
