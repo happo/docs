@@ -141,6 +141,35 @@ module.exports = {
 };
 ```
 
+### Target `useFullPageFallbackForTallScreenshot`
+
+This option applies to Chrome and Firefox only.
+
+When Chrome and Firefox workers are to take a screenshot of a page taller than
+4000 pixels, they apply a workaround that involves resizing the viewport briefly
+so that all the content fits inside it. Without this workaround, some of the
+content below the bottom edge of the viewport can disappear (inconsistently). In
+some cases, this workaround can lead to other issues. Especially when you are
+using the `vh` CSS unit. A page with an element of `height: 100vh` will take up
+the entire screenshot when the viewport-altering fallback is in effect. To turn
+off the workaround completely, set `useFullPageFallbackForTallScreenshot:
+false`.
+
+```js
+module.exports = {
+  targets: {
+    chrome: new RemoteBrowserTarget('chrome', {
+      viewport: '1024x768',
+      useFullPageFallbackForTallScreenshot: false,
+    }),
+    firefox: new RemoteBrowserTarget('firefox', {
+      viewport: '1024x768',
+      useFullPageFallbackForTallScreenshot: false,
+    }),
+  },
+};
+```
+
 ## `project`
 
 If you have multiple projects configured for your happo.io account, you can
