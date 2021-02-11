@@ -295,6 +295,7 @@ Continuous Integration docs](continuous-integration.md#posting-statuses-back-to-
 
 Happo auto-detects the following CI environments:
 
+- GitHub Actions
 - Circle CI
 - Travis CI
 
@@ -308,6 +309,81 @@ variables before invoking the test suite:
   Defaults to `origin/master`, so you only need to set this if you are using a
   different base branch.
 - `HAPPO_CHANGE_URL` a url to the PR/commit. Optional.
+
+### GitHub Actions example
+
+Here's an example of how you can use Happo with Cypress in a GitHub Actions
+workflow. It makes use of the [Cypress GitHub
+action](https://github.com/cypress-io/github-action).
+
+```yaml
+name: Cypress with Happo workflow
+
+on:
+  # Configure this workflow to trigger on pull requests and pushes to master
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  cypress:
+    name: Cypress with Happo
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Run cypress
+        uses: cypress-io/github-action@v2
+        with:
+          command-prefix: npx happo-cypress -- npx
+        env:
+          # Inject secrets to the build
+          HAPPO_API_KEY: ${{ secrets.HAPPO_API_KEY }}
+          HAPPO_API_SECRET: ${{ secrets.HAPPO_API_SECRET }}
+```
+
+### Circle CI example
+
+This example triggers a Cypress with Happo run in a Circle CI environment. It
+uses the [Cypress Circle CI
+Orb](https://circleci.com/developer/orbs/orb/cypress-io/cypress). Separately,
+you'll need to configure the Circle CI project to inject the Happo API key and
+secret through environment variables.
+
+```yaml
+version: 2.1
+orbs:
+  node: circleci/node@4.1.0
+  cypress: cypress-io/cypress@1.27.0
+
+workflows:
+  cypress:
+    jobs:
+      - cypress/run:
+          name: Run Cypress with Happo
+          command-prefix: 'npx happo-cypress -- npx'
+```
+
+### Travis CI example
+
+This is a simplified example of using Cypress with Happo in Travis CI. For a
+more in-depth explanation of how to set up Cypress with Travis, see
+https://docs.cypress.io/guides/guides/continuous-integration.html#Travis
+
+```yaml
+language: node_js
+node_js:
+  - 12
+install:
+  - npm ci
+script:
+  - $(npm bin)/happo-cypress -- $(npm bin)/cypress run
+```
 
 ### Parallel builds
 
@@ -326,6 +402,35 @@ In CircleCI for instance, you can use [
 `HAPPO_NONCE=${CIRCLE_WORKFLOW_ID}`](https://circleci.com/docs/2.0/env-vars/#built-in-environment-variables).
 You can also use a timestamp or a randomly generated string. The important thing
 is that it's unique to the current CI run.
+
+Here's an example configuration for a parallel build running in Circle CI
+(adapted from the config used for the [happo-cypress test
+suite](https://github.com/happo/happo-cypress/blob/8bed49c6a3768ca56d4cd8720c3948ae2cc59c9f/.circleci/config.yml)):
+
+```yaml
+version: 2.1
+orbs:
+  node: circleci/node@4.1.0
+  cypress: cypress-io/cypress@1.27.0
+workflows:
+  cypress:
+    jobs:
+      - cypress/install
+
+      - cypress/run:
+          name: cypress-parallel
+          requires:
+            - cypress/install
+          start: npm run start-dev-server
+          parallel: true
+          parallelism: 4
+          command-prefix: 'HAPPO_NONCE=${CIRCLE_WORKFLOW_ID} npx happo-cypress -- npx'
+          post-steps:
+            - run: 'HAPPO_NONCE=${CIRCLE_WORKFLOW_ID} node bin/happo-cypress.js finalize'
+```
+
+Notice how the same `HAPPO_NONCE` is used in both the Cypress run itself and the
+finalize call.
 
 ### Email notifications
 
