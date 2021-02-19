@@ -438,6 +438,10 @@ module.exports = {
 
 ## `compareThreshold`
 
+> This option is deprecated (since February 2021). The setting has moved into
+> deep-compare settings for projects. See [the Compare Threshold
+> guide](compare-threshold.md) for more information on how to set things up.
+
 By default, a shallow comparison is made when `happo compare` is called. If two
 images have one or more different pixels, it will be reported as a diff --
 even if the diff is very small. If you set a `compareThreshold`, a deep
