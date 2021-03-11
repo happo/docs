@@ -329,7 +329,7 @@ one-liner. This example is for Circle CI:
   steps:
     - checkout
     - run: npm ci
-    - run: echo 'export HAPPO_NOTIFY=$(git show -s --format=%ce HEAD)' >> $BASH_ENV
+    - run: echo 'export HAPPO_NOTIFY=$(git show -s --format=%ae HEAD)' >> $BASH_ENV
     - happo/run_happo
 ```
 
@@ -337,7 +337,7 @@ Here's an example for GitHub Actions:
 
 ```yaml
   - name: Set Happo notification email address
-    run: echo "HAPPO_NOTIFY=$(git show -s --format=%ce HEAD)" >> $GITHUB_ENV
+    run: echo "HAPPO_NOTIFY=$(git show -s --format=%ae HEAD)" >> $GITHUB_ENV
 ```
 
 ### Multiple recipients
