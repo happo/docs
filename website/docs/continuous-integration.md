@@ -173,6 +173,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 100
       - uses: actions/setup-node@v1
       - run: npm ci
       - run: npm run happo-ci-github-actions
