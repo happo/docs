@@ -259,6 +259,32 @@ storiesOf('FooComponent', module).add('delayed', () => <FooComponent />, {
 ```
 <!--END_DOCUSAURUS_CODE_TABS-->
 
+### The `beforeScreenshot` hook
+
+If you need to interact with the DOM before a screenshot is taken you can use
+the `beforeScreenshot` option. This parameter, expected to be a function, is
+called right before Happo takes the screenshot. You can use this to e.g. click
+a button, enter text in an input field, remove certain elements, etc.
+
+Here's an example where a button is clicked to open a modal:
+
+```js
+const BasicModal = () => <ModalExample />;
+BasicModal.parameters = {
+  happo: {
+     beforeScreenshot: () => {
+        const clickEvent = new MouseEvent('click', {
+          view: window,
+          bubbles: true,
+          cancelable: false,
+        });
+        document.querySelector('button.open-modal').dispatchEvent(clickEvent);
+      },
+  },
+};
+export { BasicModal };
+```
+
 ## Caveats
 
 When you're using this plugin, some of the regular Happo commands and
