@@ -285,6 +285,25 @@ BasicModal.parameters = {
 export { BasicModal };
 ```
 
+### The `afterScreenshot` hook
+
+Similar to `beforeScreenshot`, this hook can be used to clean up things from the
+DOM after a story has been fully processed.
+
+Here's an example where a lingering DOM element is removed.
+
+```js
+const Foo = () => <FooExample />;
+Foo.parameters = {
+  happo: {
+     afterScreenshot: () => {
+       document.querySelector('.some-selector').remove();
+     },
+  },
+};
+export { Foo };
+```
+
 ## Caveats
 
 When you're using this plugin, some of the regular Happo commands and
@@ -301,7 +320,8 @@ configuration options aren't available. These include:
 
 ## Debugging
 
-If you want to debug your test suite similar to how the Happo browser workers do it, you can follow these steps:
+If you want to debug your test suite similar to how Happo workers process jobs,
+you can follow these steps:
 
 1. In a browser, go to the storybook URL. E.g. http://localhost:3000
 2. The URL will change to something like http://localhost:3000/?selectedKind=foo&selectedStory=default
