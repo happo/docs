@@ -495,6 +495,59 @@ HAPPO_DOWNLOAD_ALL=true npx happo-cypress -- npx cypress run
 With this environment variable set, all assets are assumed to be private (i.e.
 not publicly accessible).
 
+### Locally produced images
+
+The way happo-cypress takes screenshots is to take a DOM snapshot of the current
+page/element and send that snapshot to Happo's workers for screenshots (in
+different browsers). In some cases, DOM snapshotting doesn't always work. One
+such case is if you are using web components/custom elements. The snapshots will
+then not contain all the state needed to "reproduce" the elements on Happo's
+workers. In this situation, and similar ones, you can use `localSnapshots:
+true`. When this option is enabled, screenshots are produced directly on the
+machine running the Cypress test run.
+
+Here's how to enable local snapshots:
+
+1. In `cypress/support/commands.js`, enable the `localSnapshots` option:
+
+```js
+import { configure } from 'happo-cypress';
+
+configure({
+  localSnapshots: true
+});
+```
+
+2. Then, make happo listen for `after:screenshot` events (in
+   `cypress/plugins/index.js`):
+
+```js
+const happoTask = require('happo-cypress/task');
+
+module.exports = (on) => {
+  on('task', happoTask);
+  on('after:screenshot', happoTask.handleAfterScreenshot);
+};
+```
+
+Once you have these two things configured, the `happoScreenshot()` method will
+take a local screenshot (using `cy.screenshot()`) and upload images to Happo.
+The rest of the flow is the same as a normal happo-cypress run, meaning you get
+a link to a report to review, etc.
+
+The downside of this approach is that you can only get screenshots in the
+browser that Cypress currently runs. If you want cross-browser, you'll have to
+make sure to run Cypress in the browsers you are interested in.
+
+There might also be consistency issues with the screenshots. Happo's browser
+workers do a lot of work to ensure that screenshots are consistently produced,
+and leaving that work over to Cypress could potentially lead to more spurious
+diffs.
+
+When you use `localSnapshots: true`, we ignore the target configuration in
+`.happo.js`. Instead, a dynamically resolved target is used based on the browser
+and the viewport size used during the test.
+
 ## Troubleshooting
 
 ### I need support!
