@@ -34,14 +34,14 @@ Import the `happo-cypress` module in your `cypress/support/commands.js` file:
 import 'happo-cypress';
 ```
 
-Then, add the provided `happoTask` in your `cypress/plugins/index.js` file:
+Then, register the provided `happoTask` in your `cypress/plugins/index.js` file:
 
 ```js
 // In cypress/plugins/index.js
 const happoTask = require('happo-cypress/task');
 
-module.exports = (on, config) => {
-  on('task', happoTask);
+module.exports = (on) => {
+  happoTask.register(on);
 };
 ```
 
@@ -508,7 +508,7 @@ machine running the Cypress test run.
 
 Here's how to enable local snapshots:
 
-1. In `cypress/support/commands.js`, enable the `localSnapshots` option:
+In `cypress/support/commands.js`, enable the `localSnapshots` option:
 
 ```js
 import { configure } from 'happo-cypress';
@@ -518,22 +518,10 @@ configure({
 });
 ```
 
-2. Then, make happo listen for `after:screenshot` events (in
-   `cypress/plugins/index.js`):
-
-```js
-const happoTask = require('happo-cypress/task');
-
-module.exports = (on) => {
-  on('task', happoTask);
-  on('after:screenshot', happoTask.handleAfterScreenshot);
-};
-```
-
-Once you have these two things configured, the `happoScreenshot()` method will
-take a local screenshot (using `cy.screenshot()`) and upload images to Happo.
-The rest of the flow is the same as a normal happo-cypress run, meaning you get
-a link to a report to review, etc.
+With this configuration, the `happoScreenshot()` method will take a local
+screenshot (using `cy.screenshot()`) and upload images to Happo.  The rest of
+the flow is the same as a normal happo-cypress run, meaning you get a link to a
+report to review, etc.
 
 The downside of this approach is that you can only get screenshots in the
 browser that Cypress currently runs. If you want cross-browser, you'll have to
