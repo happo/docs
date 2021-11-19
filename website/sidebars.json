@@ -12,6 +12,7 @@
       "examples",
       "storybook",
       "cypress",
+      "playwright",
       "stencil",
       "full-page",
       "native"

@@ -157,7 +157,7 @@ cy.get('.footer').happoScreenshot();
 
 By default, no Happo reports are produced when the Cypress run fails. In some
 cases, you might want to allow Happo to succeed even if the overall test run
-fails. The `--allow-failures` flag for the `happo-cypress` command can then be
+fails. The `--allow-failures` flag for the `happo-e2e` command can then be
 used:
 
 ```sh
