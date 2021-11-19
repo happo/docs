@@ -19,10 +19,11 @@ and a [Happo account](https://happo.io/signup).
 
 ## Installation
 
-In your project, install the `happo-cypress` and the `happo.io` npm modules.
+In your project, install the `happo-cypress`, `happo-e2e`, and the `happo.io`
+npm modules.
 
 ```sh
-npm install --save-dev happo-cypress happo.io
+npm install --save-dev happo-cypress happo-e2e happo.io
 ```
 
 ## Setup
@@ -79,20 +80,20 @@ module.exports = {
 ### Usage with `cypress run`
 
 To enable Happo in your test suites triggered via `cypress run`, you'll need to
-use the `happo-cypress` wrapper. Here's an example:
+use the `happo-e2e` wrapper. Here's an example:
 
 ```sh
-npx happo-cypress -- npx cypress run
+npx happo-e2e -- npx cypress run
 ```
 
 If you're using [`yarn`](https://yarnpkg.com/), you might have to specify the
 double dashes twice (the first one is consumed by `yarn` itself):
 
 ```sh
-yarn happo-cypress -- -- yarn cypress run
+yarn happo-e2e -- -- yarn cypress run
 ```
 
-If you're not using the `happo-cypress` wrapper with `cypress run`, Happo will
+If you're not using the `happo-e2e` wrapper with `cypress run`, Happo will
 be disabled for the whole test suite.
 
 ### Usage with `cypress open`
@@ -101,11 +102,12 @@ When running Cypress tests locally using the `cypress open` command, Happo is
 disabled by default. The `happo-cypress` wrapper won't work with `cypress open`
 since it depends on the Cypress command to finish after a test run (which won't
 happen with `cypress open`). To enable Happo in these scenarios, set
-`HAPPO_ENABLED=true` as an environment variable. Here's an example with the
+`HAPPO_ENABLED=true` as an environment variable and set the
+`experimentalInteractiveRunEvents` config flag. Here's an example with the
 environment variable inlined with the command:
 
 ```sh
-HAPPO_ENABLED=true npx cypress open
+HAPPO_ENABLED=true npx cypress open --config experimentalInteractiveRunEvents=true
 ```
 
 When Happo is enabled with `cypress open`, Happo reports are created every time
@@ -159,7 +161,7 @@ fails. The `--allow-failures` flag for the `happo-cypress` command can then be
 used:
 
 ```sh
-npx happo-cypress --allow-failures -- npx cypress run
+npx happo-e2e --allow-failures -- npx cypress run
 ```
 
 ## Selecting targets
@@ -340,7 +342,7 @@ jobs:
       - name: Run cypress
         uses: cypress-io/github-action@v2
         with:
-          command-prefix: npx happo-cypress -- npx
+          command-prefix: npx happo-e2e -- npx
         env:
           # Inject secrets to the build
           HAPPO_API_KEY: ${{ secrets.HAPPO_API_KEY }}
@@ -366,7 +368,7 @@ workflows:
     jobs:
       - cypress/run:
           name: Run Cypress with Happo
-          command-prefix: 'npx happo-cypress -- npx'
+          command-prefix: 'npx happo-e2e -- npx'
 ```
 
 ### Travis CI example
@@ -382,7 +384,7 @@ node_js:
 install:
   - npm ci
 script:
-  - $(npm bin)/happo-cypress -- $(npm bin)/cypress run
+  - $(npm bin)/happo-e2e -- $(npm bin)/cypress run
 ```
 
 ### Parallel builds
@@ -393,7 +395,7 @@ need to do two things:
 
 - Set a `HAPPO_NONCE` environment variable, to tie individual runs together. Any
   string unique to the build will do.
-- After the whole test suite is done, call `npx happo-cypress finalize`. Make
+- After the whole test suite is done, call `npx happo-e2e finalize`. Make
   sure that the same `HAPPO_NONCE` environment variable is set as for the
   individual builds.
 
@@ -424,9 +426,9 @@ workflows:
           start: npm run start-dev-server
           parallel: true
           parallelism: 4
-          command-prefix: 'HAPPO_NONCE=${CIRCLE_WORKFLOW_ID} npx happo-cypress -- npx'
+          command-prefix: 'HAPPO_NONCE=${CIRCLE_WORKFLOW_ID} npx happo-e2e -- npx'
           post-steps:
-            - run: 'HAPPO_NONCE=${CIRCLE_WORKFLOW_ID} node bin/happo-cypress.js finalize'
+            - run: 'HAPPO_NONCE=${CIRCLE_WORKFLOW_ID} node bin/happo-e2e.js finalize'
 ```
 
 Notice how the same `HAPPO_NONCE` is used in both the Cypress run itself and the
@@ -442,14 +444,14 @@ docs](continuous-integration.md#email-notifications).
 
 ## Advanced usage
 
-### Setting a port for `happo-cypress`
+### Setting a port for `happo-e2e`
 
-When you're running the `happo-cypress --` wrapper, a web server is used
+When you're running the `happo-e2e --` wrapper, a web server is used
 internally. By default, this server is listening on port 5339. If you need to
 change that, pass a `--port` argument, like so:
 
 ```bash
-npx happo-cypress --port 5432 -- npx cypress run
+npx happo-e2e --port 5432 -- npx cypress run
 ```
 
 ### Transforming the DOM
@@ -489,7 +491,7 @@ external assets in the assets package as well, set a `HAPPO_DOWNLOAD_ALL`
 environment variable.
 
 ```bash
-HAPPO_DOWNLOAD_ALL=true npx happo-cypress -- npx cypress run
+HAPPO_DOWNLOAD_ALL=true npx happo-e2e -- npx cypress run
 ```
 
 With this environment variable set, all assets are assumed to be private (i.e.
