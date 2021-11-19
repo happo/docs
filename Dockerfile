@@ -1,11 +1,11 @@
 FROM node:14
 
-WORKDIR /app/website
+WORKDIR /app
 
-COPY ./website/package.json ./website/yarn.lock /app/website/
+COPY ./package.json ./yarn.lock /app/
 RUN yarn install
 
-COPY ./website /app/website
+COPY ./ /app/
 
 RUN yarn build
 
