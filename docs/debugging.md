@@ -42,13 +42,13 @@ When you get a zip file source, you can debug the source locally by following th
 3. Check the URL where the server is started and open
    [`http://localhost:8080/iframe.html`](http://localhost:8080/iframe.html) in
    your browser (replace `8080` with the port used for your server).
-4. Wait for the page to load, then open up a javascript console and run
+4. Wait for the page to load, then open up a JavaScript console and run
    `window.happo.nextExample()`.
 5. See your first component load.
 6. Keep calling `window.happo.nextExample()` to iterate through your components.
 
 If you quickly want to iterate through all components, copy and paste this
-script in the javascript console:
+script in the JavaScript console:
 
 ```js
 var renderIter = function() {
