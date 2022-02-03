@@ -34,7 +34,7 @@ dealing with spurious diffs:
 - If a component depends on external data (via some API), consider splitting
   out the data-fetching from the component and test the component without data
   fetching, injecting the data needed to render it.
-- If you have animations controlled from javascript, find a way to disable them
+- If you have animations controlled from JavaScript, find a way to disable them
   for the Happo test suite.
 - If individual elements are known to cause spuriousness, consider adding the
   `data-happo-hide` attribute. This will render the element invisible in the

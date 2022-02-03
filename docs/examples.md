@@ -3,7 +3,7 @@ id: examples
 title: Happo Examples
 ---
 
-This page outlines how to integrate Happo with an existing javascript codebase
+This page outlines how to integrate Happo with an existing JavaScript codebase
 through the use of "example" files scattered throughout your project. Both
 React and plain JS can be used here. Control what type you're using through
 [the `type` configuration option](configuration.md#type).
@@ -427,7 +427,7 @@ Examples can reference images in a few different ways:
 Happo works best when CSS code is co-located with the components. In some
 cases, you'll get away with zero configuration to get this working. But in other
 cases, you'll have to add a little webpack config to the mix. Happo uses
-webpack under the hood when generating browser-executable javascript. The
+webpack under the hood when generating browser-executable JavaScript. The
 [`customizeWebpackConfig` config
 option](configuration.md#customizeWebpackConfig) will let you inject things
 like webpack loaders to the happo run. E.g.
