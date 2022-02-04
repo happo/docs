@@ -7,8 +7,8 @@ Happo is mainly targeted at web applications and websites, but its underlying
 visual testing system is agnostic about the technologies used. This means that
 anything that can produce screenshots can make use of Happo. If you have native
 apps (like iOS, Android or other platforms) you can leverage Happo for
-screenshot testing with a little bit of custom setup. In this integration
-guide, we'll use [the Happo API](api.md) directly.
+screenshot testing with a little bit of custom setup. In this integration guide,
+we'll use [the Happo API](api.md) directly.
 
 ## Creating a test runner
 
@@ -24,11 +24,11 @@ screenshots.
 
 ## Uploading screenshot images
 
-A key aspect for Happo is the ability to quickly diff two image snapshots
-purely based on the URL to the image. If the URLs aren't equal, we assume the
-two images are different. If you end up using the Happo API directly, you are
-responsible for providing bitmap-unique URLs when you upload reports. If you
-use the Happo client, this is automatically taken care of.
+A key aspect for Happo is the ability to quickly diff two image snapshots purely
+based on the URL to the image. If the URLs aren't equal, we assume the two
+images are different. If you end up using the Happo API directly, you are
+responsible for providing bitmap-unique URLs when you upload reports. If you use
+the Happo client, this is automatically taken care of.
 
 ### Bitmap hashing
 
@@ -51,15 +51,15 @@ https://docs.aws.amazon.com/AmazonS3/latest/dev/cors.html
 
 ## Uploading a report
 
-Use the ["Create report" API
-endpoint](https://happo.io/docs/api#Create%20report) to upload your report once
-the test run is complete.
+Use the
+["Create report" API endpoint](https://happo.io/docs/api#Create%20report) to
+upload your report once the test run is complete.
 
 ## Comparing two reports
 
-Use the ["Compare reports" API
-endpoint](https://happo.io/docs/api#Compare%20reports) to compare two reports.
-This is especially useful in CI. This call will trigger a Happo status to be
-posted to your pull request/commit, given that you've enabled [the Happo GitHub
-integration](continuous-integration.md##posting-statuses-back-to-prscommits)
+Use the
+["Compare reports" API endpoint](https://happo.io/docs/api#Compare%20reports) to
+compare two reports. This is especially useful in CI. This call will trigger a
+Happo status to be posted to your pull request/commit, given that you've enabled
+[the Happo GitHub integration](continuous-integration.md##posting-statuses-back-to-prscommits)
 correctly.

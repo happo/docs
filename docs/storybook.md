@@ -4,9 +4,8 @@ title: Storybook
 ---
 
 The `happo-plugin-storybook` library is a
-[happo.io](https://github.com/enduire/happo.io) plugin for Storybook. See [this
-blog
-post](https://medium.com/happo-io/cross-browser-screenshot-testing-with-happo-io-and-storybook-bfb0b848a97a)
+[happo.io](https://github.com/enduire/happo.io) plugin for Storybook. See
+[this blog post](https://medium.com/happo-io/cross-browser-screenshot-testing-with-happo-io-and-storybook-bfb0b848a97a)
 for a lengthier introduction to this plugin.
 
 ## Installation
@@ -77,8 +76,8 @@ npm run happo run
 
 ## Tips and Tricks
 
-If you want to have better control over what addons and/or decorators get
-loaded you can make use of the `isHappoRun` function exported by
+If you want to have better control over what addons and/or decorators get loaded
+you can make use of the `isHappoRun` function exported by
 `happo-plugin-storybook/register`:
 
 ```js
@@ -141,8 +140,8 @@ screenshot. Adding a delay might help, but only if the asynchronous event is
 consistently timed. In these cases the `waitForContent` parameter might help.
 Let's assume that `PaymentForm` in the example below loads some third-party
 iframe that you have no control over, loading a credit card form. In order to
-wait for the iframe to finish, we can add a `waitForContent` parameter with
-some unique string in the iframe.
+wait for the iframe to finish, we can add a `waitForContent` parameter with some
+unique string in the iframe.
 
 <!--DOCUSAURUS_CODE_TABS-->
 <!-- CSF -->
@@ -282,8 +281,8 @@ storiesOf('FooComponent', module).add('delayed', () => <FooComponent />, {
 
 If you need to interact with the DOM before a screenshot is taken you can use
 the `beforeScreenshot` option. This parameter, expected to be a function, is
-called right before Happo takes the screenshot. You can use this to e.g. click
-a button, enter text in an input field, remove certain elements, etc.
+called right before Happo takes the screenshot. You can use this to e.g. click a
+button, enter text in an input field, remove certain elements, etc.
 
 Here's an example where a button is clicked to open a modal:
 
@@ -343,13 +342,18 @@ If you want to debug your test suite similar to how Happo workers process jobs,
 you can follow these steps:
 
 1. In a browser, go to the storybook URL. E.g. http://localhost:3000
-2. The URL will change to something like http://localhost:3000/?selectedKind=foo&selectedStory=default
-3. Change the URL to point to `/iframe.html`, e.g. http://localhost:3000/iframe.html
+2. The URL will change to something like
+   http://localhost:3000/?selectedKind=foo&selectedStory=default
+3. Change the URL to point to `/iframe.html`, e.g.
+   http://localhost:3000/iframe.html
 4. Open the JavaScript console
-5. Paste this JavaScript snippet and hit enter: `happo.nextExample().then((item) => console.log(item))`
-6. Run that code again repeatedly to step through each example (use the arrow up key to reuse the last command)
+5. Paste this JavaScript snippet and hit enter:
+   `happo.nextExample().then((item) => console.log(item))`
+6. Run that code again repeatedly to step through each example (use the arrow up
+   key to reuse the last command)
 
-To quickly run through all examples, follow steps 1-4, then paste this script instead:
+To quickly run through all examples, follow steps 1-4, then paste this script
+instead:
 
 ```js
 var renderIter = function () {
@@ -366,5 +370,10 @@ renderIter();
 
 ## Troubleshooting
 
-- Getting a `Failed on worker` error? Make sure you are making a call to `import 'happo-plugin-storybook/register'` in your `.storybook/preview.js` file.
-- Getting spurious diffs from fonts not loading? Happo workers will wait for fonts to load before taking the screenshot, but it assumes that fonts it has already seen are already available. Make sure the `@font-face` declaration is declared globally and not part of the stories themselves.
+- Getting a `Failed on worker` error? Make sure you are making a call to
+  `import 'happo-plugin-storybook/register'` in your `.storybook/preview.js`
+  file.
+- Getting spurious diffs from fonts not loading? Happo workers will wait for
+  fonts to load before taking the screenshot, but it assumes that fonts it has
+  already seen are already available. Make sure the `@font-face` declaration is
+  declared globally and not part of the stories themselves.

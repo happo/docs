@@ -3,9 +3,8 @@ id: reviewing-diffs
 title: Reviewing diffs
 ---
 
-When Happo finds diffs, it's up to you to either accept or reject that diff.
-The diffs are presented in a Happo report, and the UI looks something like
-this:
+When Happo finds diffs, it's up to you to either accept or reject that diff. The
+diffs are presented in a Happo report, and the UI looks something like this:
 
 ![Happo compare page](/img/happo-report.png)
 
@@ -34,8 +33,8 @@ status will also be posted back to the PR/commit on github.com.
 ## Alerts
 
 In rare cases you will see an alert message at the top of the compare page
-informing you about updates made. This is Happo informing you about changes
-made to internal infrastructure that might affect the screenshots and cause
-diffs. These could be e.g. browser updates, internal bug fixes, etc. You'll
-only be alerted about changes that were made in the timespan between when the
-"before" report and the "after" report were created.
+informing you about updates made. This is Happo informing you about changes made
+to internal infrastructure that might affect the screenshots and cause diffs.
+These could be e.g. browser updates, internal bug fixes, etc. You'll only be
+alerted about changes that were made in the timespan between when the "before"
+report and the "after" report were created.

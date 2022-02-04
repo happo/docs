@@ -16,8 +16,8 @@ the mix.
 | ![Safari](/img/browser-icons/safari.svg)                       | Safari                            |
 | ![iOS Safari](/img/browser-icons/ios-safari.svg)               | iOS Safari (running on an iPhone) |
 
-We keep these browsers up-to-date on a regular basis, and we try to keep them
-at the latest versions. In some cases though, we might have to keep with a
-slightly older version. If we for instance can't get newer browser versions to
-perform well, we'll often hold off on making the update until we've figured out
-a way to adjust for the performance hit.
+We keep these browsers up-to-date on a regular basis, and we try to keep them at
+the latest versions. In some cases though, we might have to keep with a slightly
+older version. If we for instance can't get newer browser versions to perform
+well, we'll often hold off on making the update until we've figured out a way to
+adjust for the performance hit.

@@ -3,24 +3,23 @@ id: continuous-integration
 title: Continuous Integration
 ---
 
-Adding Happo to your Continuous Integration setup is a great way to catch
-visual regressions early. Happo will compare your PRs with the base branch and
-let you know exactly what has changed in your UI.
+Adding Happo to your Continuous Integration setup is a great way to catch visual
+regressions early. Happo will compare your PRs with the base branch and let you
+know exactly what has changed in your UI.
 
 <img
   src="/img/happo-in-ci.png"
   alt="Happo status on a GitHub pull request"
   width="1290"
   height="494"
-/>
-_Example of a Happo status posted to a GitHub pull request._
+/> _Example of a Happo status posted to a GitHub pull request._
 
 ## Setup
 
 > The instructions on this page apply to all integrations except the Cypress
-> integration. Refer to [the Cypress integration
-> page](cypress.md#continuous-integration) for instructions on how to integrate
-> with CI there.
+> integration. Refer to
+> [the Cypress integration page](cypress.md#continuous-integration) for
+> instructions on how to integrate with CI there.
 
 Since a lot of projects these days follow a pull-request/merge-request model,
 Happo provides ready-made scripts that you can run in CI:
@@ -41,9 +40,10 @@ These scripts will all:
 3. Compare the two reports
 4. If allowed to, post back a status to the PR (the HEAD commit)
 
-These scripts will detect your npm client (yarn or npm) and run `npm install`/`yarn install` before running happo on the commits. If you have other
-dependencies/preprocessing steps that need to happen, you can override this with
-the `INSTALL_CMD` environment variable. E.g.
+These scripts will detect your npm client (yarn or npm) and run
+`npm install`/`yarn install` before running happo on the commits. If you have
+other dependencies/preprocessing steps that need to happen, you can override
+this with the `INSTALL_CMD` environment variable. E.g.
 
 ```bash
 INSTALL_CMD="lerna bootstrap" npm run happo-ci-travis
@@ -53,11 +53,11 @@ In this example, the `lerna bootstrap` command will be invoked before running
 `happo run` on each commit, instead of `yarn install`/`npm install`.
 
 By default, all `happo-ci` commands will wait for screenshots to be done before
-finishing. If you have [authorized your Happo account to post statuses back to
-PRs/commits](#posting-statuses-back-to-prscommits), you can set a
-`HAPPO_IS_ASYNC=true` environment variable to instruct Happo to finish the CI
-task as soon as possible and then instead wait for the status to come back via
-happo.io.
+finishing. If you have
+[authorized your Happo account to post statuses back to PRs/commits](#posting-statuses-back-to-prscommits),
+you can set a `HAPPO_IS_ASYNC=true` environment variable to instruct Happo to
+finish the CI task as soon as possible and then instead wait for the status to
+come back via happo.io.
 
 ```bash
 HAPPO_IS_ASYNC=true npm run happo-ci-circleci
@@ -65,8 +65,8 @@ HAPPO_IS_ASYNC=true npm run happo-ci-circleci
 
 ### `happo-ci-travis`
 
-This script knows about the Travis build environment, assuming a PR based
-model. To run it, first add this to your `package.json`:
+This script knows about the Travis build environment, assuming a PR based model.
+To run it, first add this to your `package.json`:
 
 ```json
 {
@@ -100,9 +100,10 @@ branch. If you're using a different default branch, you can set the
 
 ### `happo-ci-circleci`
 
-_Before you start using this script, have a look at the [Happo CircleCI
-Orb](https://circleci.com/orbs/registry/orb/happo/happo). It simplifies some of
-the setup required if you use the `happo-ci-circleci` script._
+_Before you start using this script, have a look at the
+[Happo CircleCI Orb](https://circleci.com/orbs/registry/orb/happo/happo). It
+simplifies some of the setup required if you use the `happo-ci-circleci`
+script._
 
 This script knows about the CircleCI build environment, assuming a PR based
 model. To run it, first add this to your `package.json`:
@@ -145,9 +146,9 @@ branch. If you're using a different default branch, you can set the
 
 ### `happo-ci-github-actions`
 
-This script knows about the [GitHub
-Actions](https://github.com/features/actions) build environment, assuming a PR
-based model. To run it, first add this to your `package.json`:
+This script knows about the
+[GitHub Actions](https://github.com/features/actions) build environment,
+assuming a PR based model. To run it, first add this to your `package.json`:
 
 ```json
 {
@@ -192,8 +193,8 @@ you need to set a few environment variables:
 
 - `PREVIOUS_SHA` - the sha of the baseline commit
 - `CURRENT_SHA` - the sha of the current HEAD
-- `CHANGE_URL` - a link back to the change ([further
-  instructions](#setting-the-right---linkchange_url))
+- `CHANGE_URL` - a link back to the change
+  ([further instructions](#setting-the-right---linkchange_url))
 
 ```json
 {
@@ -214,24 +215,25 @@ providers below.
 ### GitHub
 
 > The instructions in this section only work if you are using github.com or the
-> on-premise version of happo.io. If you're using a local GitHub Enterprise setup,
-> there is an alternative solution described in the [next
-> section](#posting-statuses-without-installing-the-happo-github-app)
+> on-premise version of happo.io. If you're using a local GitHub Enterprise
+> setup, there is an alternative solution described in the
+> [next section](#posting-statuses-without-installing-the-happo-github-app)
 
 #### Step 1: Install Happo GitHub app
 
 First you need to install the [Happo GitHub App](https://github.com/apps/happo)
 in the repository/repositories you want to run Happo in.
 
-![Installing the Happo GitHub App](/img/happo-github-app.gif)
-_Installing the Happo app at https://github.com/apps/happo_
+![Installing the Happo GitHub App](/img/happo-github-app.gif) _Installing the
+Happo app at https://github.com/apps/happo_
 
 #### Step 2: Connect with repository
 
 Once you have the Happo GitHub app installed, you need to connect/activate the
-right repository with your Happo.io account on the [GitHub integration page on
-happo.io](https://happo.io/github-integration). Once you're done with that,
-you're all set to have Happo automatically post statuses on your PRs/commits.
+right repository with your Happo.io account on the
+[GitHub integration page on happo.io](https://happo.io/github-integration). Once
+you're done with that, you're all set to have Happo automatically post statuses
+on your PRs/commits.
 
 ![Connecting repository with the Happo account](/img/happo-github-integration.gif)
 _Activating the GitHub repository at https://happo.io/github-integration_
@@ -244,12 +246,12 @@ Here's what it looks like when Happo posts a status on a pull request:
 
 If there is a diff, the status will be set to failure. To manually flip this to
 a success status, just go to the Happo comparison page (linked to by the
-"Details" link next to the Happo status) and click the Accept button at the
-top.
+"Details" link next to the Happo status) and click the Accept button at the top.
 
 ![Accepting diffs](/img/happo-status-accept.gif)
 
-The status over on github.com will then change to success (green) for the PR/commit.
+The status over on github.com will then change to success (green) for the
+PR/commit.
 
 ![Happo status manually accepted cross-posted to github](/img/happo-status-accepted.png)
 
@@ -267,33 +269,32 @@ token, through `HAPPO_GITHUB_USER_CREDENTIALS`. E.g.
 HAPPO_GITHUB_USER_CREDENTIALS="trotzig:21A4XgnSkt7f36ehlK5"
 ```
 
-[Here's a guide from
-github.com](https://help.github.com/en/articles/creating-a-personal-access-token-for-the-command-line)
+[Here's a guide from github.com](https://help.github.com/en/articles/creating-a-personal-access-token-for-the-command-line)
 on how to generate the personal token.
 
 The environment variable must contain both the username of the profile and the
 personal access token, separated by a colon.
 
 If you're using GitHub Enterprise, apart from defining the environment variable
-you also need to add [`githubApiUrl` to `.happo.js`](configuration.md#githubapiurl).
+you also need to add
+[`githubApiUrl` to `.happo.js`](configuration.md#githubapiurl).
 
 ### Bitbucket
 
 #### Step 1: Generate an app password
 
 To authorize Happo to post statuses to your PRs/commits, you need to generate an
-[app
-password](https://support.atlassian.com/bitbucket-cloud/docs/app-passwords/).
+[app password](https://support.atlassian.com/bitbucket-cloud/docs/app-passwords/).
 
 ![Generating a Bitbucket app password](/img/happo-bitbucket-app-password.gif)
 _Generating an app password through the Bitbucket UI_
 
 #### Step 2: Fill in form at Happo.io
 
-Once you have the app password, you can go to the [Bitbucket integration page on
-happo.io](https://happo.io/bitbucket-integration) and fill out the form. Once
-you're done with that, you're all set to have Happo automatically post statuses
-on your PRs/commits.
+Once you have the app password, you can go to the
+[Bitbucket integration page on happo.io](https://happo.io/bitbucket-integration)
+and fill out the form. Once you're done with that, you're all set to have Happo
+automatically post statuses on your PRs/commits.
 
 #### Happo build statuses
 
@@ -329,7 +330,8 @@ one-liner. This example is for Circle CI:
 steps:
   - checkout
   - run: npm ci
-  - run: echo 'export HAPPO_NOTIFY=$(git show -s --format=%ae HEAD)' >> $BASH_ENV
+  - run:
+      echo 'export HAPPO_NOTIFY=$(git show -s --format=%ae HEAD)' >> $BASH_ENV
   - happo/run_happo
 ```
 

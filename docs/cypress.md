@@ -12,9 +12,8 @@ for a demo of how this module is used.
 
 ## Pre-requisites
 
-Before you start following the instructions here, you'll need [a working
-Cypress test
-suite](https://docs.cypress.io/guides/getting-started/installing-cypress.html)
+Before you start following the instructions here, you'll need
+[a working Cypress test suite](https://docs.cypress.io/guides/getting-started/installing-cypress.html)
 and a [Happo account](https://happo.io/signup).
 
 ## Installation
@@ -93,8 +92,8 @@ double dashes twice (the first one is consumed by `yarn` itself):
 yarn happo-e2e -- -- yarn cypress run
 ```
 
-If you're not using the `happo-e2e` wrapper with `cypress run`, Happo will
-be disabled for the whole test suite.
+If you're not using the `happo-e2e` wrapper with `cypress run`, Happo will be
+disabled for the whole test suite.
 
 ### Usage with `cypress open`
 
@@ -126,10 +125,10 @@ describe('Home page', function () {
 });
 ```
 
-Happo focuses more on component screenshots as opposed to full-page
-screenshots. Because of that, you always need to select a child before you
-call `happoScreenshot`. If you still need a full-page screenshot you can use
-the `<body>` element:
+Happo focuses more on component screenshots as opposed to full-page screenshots.
+Because of that, you always need to select a child before you call
+`happoScreenshot`. If you still need a full-page screenshot you can use the
+`<body>` element:
 
 ```js
 cy.get('body').happoScreenshot();
@@ -157,8 +156,7 @@ cy.get('.footer').happoScreenshot();
 
 By default, no Happo reports are produced when the Cypress run fails. In some
 cases, you might want to allow Happo to succeed even if the overall test run
-fails. The `--allow-failures` flag for the `happo-e2e` command can then be
-used:
+fails. The `--allow-failures` flag for the `happo-e2e` command can then be used:
 
 ```sh
 npx happo-e2e --allow-failures -- npx cypress run
@@ -292,8 +290,8 @@ do its best to auto-detect your environment and adapt its behavior accordingly:
 - On master builds, simply create the Happo report
 
 To get the results of the Happo jobs back to your PRs/commits, you need to
-install and configure the Happo GitHub app. Instructions are available [in the
-Continuous Integration docs](continuous-integration.md#posting-statuses-back-to-prscommits).
+install and configure the Happo GitHub app. Instructions are available
+[in the Continuous Integration docs](continuous-integration.md#posting-statuses-back-to-prscommits).
 
 Happo auto-detects the following CI environments:
 
@@ -306,7 +304,8 @@ variables before invoking the test suite:
 
 - `HAPPO_PREVIOUS_SHA` the commit sha that the branch/PR is based on (usually a
   commit on master). Only set this for PR builds.
-- `HAPPO_CURRENT_SHA` the sha of the commit currently under test. Always set this.
+- `HAPPO_CURRENT_SHA` the sha of the commit currently under test. Always set
+  this.
 - `HAPPO_BASE_BRANCH` the default/base branch you use, e.g. `origin/dev`.
   Defaults to `origin/master`, so you only need to set this if you are using a
   different base branch.
@@ -315,8 +314,8 @@ variables before invoking the test suite:
 ### GitHub Actions example
 
 Here's an example of how you can use Happo with Cypress in a GitHub Actions
-workflow. It makes use of the [Cypress GitHub
-action](https://github.com/cypress-io/github-action).
+workflow. It makes use of the
+[Cypress GitHub action](https://github.com/cypress-io/github-action).
 
 ```yaml
 name: Cypress with Happo workflow
@@ -352,10 +351,10 @@ jobs:
 ### Circle CI example
 
 This example triggers a Cypress with Happo run in a Circle CI environment. It
-uses the [Cypress Circle CI
-Orb](https://circleci.com/developer/orbs/orb/cypress-io/cypress). Separately,
-you'll need to configure the Circle CI project to inject the Happo API key and
-secret through environment variables.
+uses the
+[Cypress Circle CI Orb](https://circleci.com/developer/orbs/orb/cypress-io/cypress).
+Separately, you'll need to configure the Circle CI project to inject the Happo
+API key and secret through environment variables.
 
 ```yaml
 version: 2.1
@@ -389,25 +388,25 @@ script:
 
 ### Parallel builds
 
-If you're running your [Cypress test suite across multiple
-machines](https://docs.cypress.io/guides/guides/parallelization.html), you'll
-need to do two things:
+If you're running your
+[Cypress test suite across multiple machines](https://docs.cypress.io/guides/guides/parallelization.html),
+you'll need to do two things:
 
 - Set a `HAPPO_NONCE` environment variable, to tie individual runs together. Any
   string unique to the build will do.
-- After the whole test suite is done, call `npx happo-e2e finalize`. Make
-  sure that the same `HAPPO_NONCE` environment variable is set as for the
-  individual builds.
+- After the whole test suite is done, call `npx happo-e2e finalize`. Make sure
+  that the same `HAPPO_NONCE` environment variable is set as for the individual
+  builds.
 
 In some CI tools, you can use a built-in environment variable as `HAPPO_NONCE`.
-In CircleCI for instance, you can use [
-`HAPPO_NONCE=${CIRCLE_WORKFLOW_ID}`](https://circleci.com/docs/2.0/env-vars/#built-in-environment-variables).
+In CircleCI for instance, you can use
+[ `HAPPO_NONCE=${CIRCLE_WORKFLOW_ID}`](https://circleci.com/docs/2.0/env-vars/#built-in-environment-variables).
 You can also use a timestamp or a randomly generated string. The important thing
 is that it's unique to the current CI run.
 
 Here's an example configuration for a parallel build running in Circle CI
-(adapted from the config used for the [happo-cypress test
-suite](https://github.com/happo/happo-cypress/blob/8bed49c6a3768ca56d4cd8720c3948ae2cc59c9f/.circleci/config.yml)):
+(adapted from the config used for the
+[happo-cypress test suite](https://github.com/happo/happo-cypress/blob/8bed49c6a3768ca56d4cd8720c3948ae2cc59c9f/.circleci/config.yml)):
 
 ```yaml
 version: 2.1
@@ -426,9 +425,12 @@ workflows:
           start: npm run start-dev-server
           parallel: true
           parallelism: 4
-          command-prefix: 'HAPPO_NONCE=${CIRCLE_WORKFLOW_ID} npx happo-e2e -- npx'
+          command-prefix:
+            'HAPPO_NONCE=${CIRCLE_WORKFLOW_ID} npx happo-e2e -- npx'
           post-steps:
-            - run: 'HAPPO_NONCE=${CIRCLE_WORKFLOW_ID} node bin/happo-e2e.js finalize'
+            - run:
+                'HAPPO_NONCE=${CIRCLE_WORKFLOW_ID} node bin/happo-e2e.js
+                finalize'
 ```
 
 Notice how the same `HAPPO_NONCE` is used in both the Cypress run itself and the
@@ -439,16 +441,16 @@ finalize call.
 If you set a `HAPPO_NOTIFY` environment variable as part of your Cypress run, an
 email will be sent out when the Happo comparison report is ready.
 
-Usage instructions for `HAPPO_NOTIFY` is available in [the Continuous Integration
-docs](continuous-integration.md#email-notifications).
+Usage instructions for `HAPPO_NOTIFY` is available in
+[the Continuous Integration docs](continuous-integration.md#email-notifications).
 
 ## Advanced usage
 
 ### Setting a port for `happo-e2e`
 
-When you're running the `happo-e2e --` wrapper, a web server is used
-internally. By default, this server is listening on port 5339. If you need to
-change that, pass a `--port` argument, like so:
+When you're running the `happo-e2e --` wrapper, a web server is used internally.
+By default, this server is listening on port 5339. If you need to change that,
+pass a `--port` argument, like so:
 
 ```bash
 npx happo-e2e --port 5432 -- npx cypress run
@@ -504,8 +506,9 @@ page/element and send that snapshot to Happo's workers for screenshots (in
 different browsers). In some cases, DOM snapshotting doesn't always work. One
 such case is if you are using web components/custom elements. The snapshots will
 then not contain all the state needed to "reproduce" the elements on Happo's
-workers. In this situation, and similar ones, you can use `localSnapshots: true`. When this option is enabled, screenshots are produced directly on the
-machine running the Cypress test run.
+workers. In this situation, and similar ones, you can use
+`localSnapshots: true`. When this option is enabled, screenshots are produced
+directly on the machine running the Cypress test run.
 
 Here's how to enable local snapshots:
 
@@ -520,8 +523,8 @@ configure({
 ```
 
 With this configuration, the `happoScreenshot()` method will take a local
-screenshot (using `cy.screenshot()`) and upload images to Happo. The rest of
-the flow is the same as a normal happo-cypress run, meaning you get a link to a
+screenshot (using `cy.screenshot()`) and upload images to Happo. The rest of the
+flow is the same as a normal happo-cypress run, meaning you get a link to a
 report to review, etc.
 
 The downside of this approach is that you can only get screenshots in the
@@ -545,17 +548,17 @@ We're here to help — send an email to support@happo.io and we'll assist you.
 
 ### Happo isn't producing any screenshots
 
-The `happo-cypress` module will disable itself if it can't detect any api
-tokens (`apiKey` and `apiSecret` in config). Check to make sure your
-`.happo.js` config is properly set up. There might also be more information in
-the console logs from Cypress. Look for lines starting with `[HAPPO]`.
+The `happo-cypress` module will disable itself if it can't detect any api tokens
+(`apiKey` and `apiSecret` in config). Check to make sure your `.happo.js` config
+is properly set up. There might also be more information in the console logs
+from Cypress. Look for lines starting with `[HAPPO]`.
 
 ### Where are my screenshots?
 
-During test suite execution, Happo will only record information. All
-screenshots are taken asynchronously outside of the test run. This means that
-your test suite will finish sooner than the Happo job is done. To follow along
-the progress, look for a url logged by Happo:
+During test suite execution, Happo will only record information. All screenshots
+are taken asynchronously outside of the test run. This means that your test
+suite will finish sooner than the Happo job is done. To follow along the
+progress, look for a url logged by Happo:
 
 ```bash
 [HAPPO] https://happo.io/a/284/async-reports/34
@@ -564,11 +567,12 @@ the progress, look for a url logged by Happo:
 ### Styles are missing from my screenshots
 
 Styles and assets are collected automatically during your test suite. If you
-notice styles/images/fonts etc are missing, one of a few things might have happened:
+notice styles/images/fonts etc are missing, one of a few things might have
+happened:
 
 - CSS selectors depend on context that is missing to Happo. If you e.g. have
-  something like `#start-page .header { color: red }` and screenshoot
-  `.header`, the red color will be missing. This is because Happo only sees the
-  `.header` element, never the surrounding page.
+  something like `#start-page .header { color: red }` and screenshoot `.header`,
+  the red color will be missing. This is because Happo only sees the `.header`
+  element, never the surrounding page.
 - There could be a bug in how `happo-cypress` collects styles and assets. Reach
   out to support@happo.io and we'll triage.
