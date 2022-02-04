@@ -43,7 +43,7 @@ CI.
 ### Airbnb's Lunar project
 
 [Airbnb's Lunar project](https://github.com/airbnb/lunar) has a slightly more
-complex setup.  They have ~600 snapshots. Happo tests are split up in two
+complex setup. They have ~600 snapshots. Happo tests are split up in two
 projects — one with a light theme and one with a dark theme. Happo CI runs take
 10 mins in total (5 mins installing and building, 5 mins taking screenshots).
 They use the happo-plugin-storybook plugin where happo examples are taken

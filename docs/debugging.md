@@ -51,8 +51,8 @@ If you quickly want to iterate through all components, copy and paste this
 script in the JavaScript console:
 
 ```js
-var renderIter = function() {
-  window.happo.nextExample().then(function(a) {
+var renderIter = function () {
+  window.happo.nextExample().then(function (a) {
     if (!a) {
       return;
     }
@@ -85,7 +85,7 @@ dashboard](https://happo.io/dashboard), look under "Snap-requests" and click on
 the one that has a failure icon.
 
 ### `Timed out while waiting for window.happo`
-A common error when using [the Storybook integration](storybook.md) is `Timed
-out while waiting for window.happo`. This is often caused by missing to
+
+A common error when using [the Storybook integration](storybook.md) is `Timed out while waiting for window.happo`. This is often caused by missing to
 register the `happo-plugin-storybook` plugin. See how to get rid of this in
 [the Storybook docs](storybook.md#troubleshooting).

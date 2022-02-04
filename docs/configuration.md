@@ -73,7 +73,7 @@ module.exports = {
   targets: {
     ie: new RemoteBrowserTarget('internet explorer', {
       viewport: '1024x768',
-      freezeAnimations: 'last-frame'
+      freezeAnimations: 'last-frame',
     }),
   },
 };

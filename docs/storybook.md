@@ -100,6 +100,7 @@ stories.
 
 <!--DOCUSAURUS_CODE_TABS-->
 <!-- CSF -->
+
 ```js
 export default {
   title: 'FooComponent',
@@ -116,7 +117,9 @@ WithBorder.parameters = {
 
 export { WithBorder };
 ```
+
 <!-- storiesOf -->
+
 ```js
 storiesOf('FooComponent', module)
   .add('Default', () => <FooComponent />);
@@ -128,8 +131,8 @@ storiesOf('FooComponent', module)
   .addParameters({ happo: false })
   .add('Dynamic', () => <DynamicFooComponent />);
 ```
-<!--END_DOCUSAURUS_CODE_TABS-->
 
+<!--END_DOCUSAURUS_CODE_TABS-->
 
 ### Waiting for content
 
@@ -143,6 +146,7 @@ some unique string in the iframe.
 
 <!--DOCUSAURUS_CODE_TABS-->
 <!-- CSF -->
+
 ```js
 const Basic = () => <PaymentForm />;
 Basic.parameters = {
@@ -152,12 +156,15 @@ Basic.parameters = {
 };
 export { Basic };
 ```
+
 <!-- storiesOf -->
+
 ```js
 storiesOf('PaymentForm', module).add('default', () => <PaymentForm />, {
   happo: { waitForContent: 'Credit card' },
 });
 ```
+
 <!--END_DOCUSAURUS_CODE_TABS-->
 
 ### Waiting for a condition to be truthy
@@ -170,6 +177,7 @@ Here's an example that waits for a specific element (`.credit-card`) to appear:
 
 <!--DOCUSAURUS_CODE_TABS-->
 <!-- CSF -->
+
 ```js
 const Basic = () => <PaymentForm />;
 Basic.parameters = {
@@ -179,18 +187,22 @@ Basic.parameters = {
 };
 export { Basic };
 ```
+
 <!-- storiesOf -->
+
 ```js
 storiesOf('PaymentForm', module).add('default', () => <PaymentForm />, {
   happo: { waitFor: () => document.querySelector('.credit-card') },
 });
 ```
+
 <!--END_DOCUSAURUS_CODE_TABS-->
 
 Here's another example that waits for a specific number of elements:
 
 <!--DOCUSAURUS_CODE_TABS-->
 <!-- CSF -->
+
 ```js
 const Basic = () => <PaymentForm />;
 Basic.parameters = {
@@ -200,7 +212,9 @@ Basic.parameters = {
 };
 export { Basic };
 ```
+
 <!-- storiesOf -->
+
 ```js
 storiesOf('PaymentForm', module).add('default', () => <PaymentForm />, {
   happo: {
@@ -208,6 +222,7 @@ storiesOf('PaymentForm', module).add('default', () => <PaymentForm />, {
   },
 });
 ```
+
 <!--END_DOCUSAURUS_CODE_TABS-->
 
 ### Setting delay for a story
@@ -231,6 +246,7 @@ Use the `happo.delay` parameter to set an individual delay for a story:
 
 <!--DOCUSAURUS_CODE_TABS-->
 <!-- CSF -->
+
 ```js
 export default {
   title: 'FooComponent',
@@ -251,12 +267,15 @@ WithBorder.parameters = {
 
 export { WithBorder };
 ```
+
 <!-- storiesOf -->
+
 ```js
 storiesOf('FooComponent', module).add('delayed', () => <FooComponent />, {
   happo: { delay: 200 },
 });
 ```
+
 <!--END_DOCUSAURUS_CODE_TABS-->
 
 ### The `beforeScreenshot` hook
@@ -272,14 +291,14 @@ Here's an example where a button is clicked to open a modal:
 const BasicModal = () => <ModalExample />;
 BasicModal.parameters = {
   happo: {
-     beforeScreenshot: () => {
-        const clickEvent = new MouseEvent('click', {
-          view: window,
-          bubbles: true,
-          cancelable: false,
-        });
-        document.querySelector('button.open-modal').dispatchEvent(clickEvent);
-      },
+    beforeScreenshot: () => {
+      const clickEvent = new MouseEvent('click', {
+        view: window,
+        bubbles: true,
+        cancelable: false,
+      });
+      document.querySelector('button.open-modal').dispatchEvent(clickEvent);
+    },
   },
 };
 export { BasicModal };
@@ -296,9 +315,9 @@ Here's an example where a lingering DOM element is removed.
 const Foo = () => <FooExample />;
 Foo.parameters = {
   happo: {
-     afterScreenshot: () => {
-       document.querySelector('.some-selector').remove();
-     },
+    afterScreenshot: () => {
+      document.querySelector('.some-selector').remove();
+    },
   },
 };
 export { Foo };

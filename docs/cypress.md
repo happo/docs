@@ -41,7 +41,7 @@ Then, register the provided `happoTask` in your `cypress/plugins/index.js` file:
 // In cypress/plugins/index.js
 const happoTask = require('happo-cypress/task');
 
-module.exports = (on) => {
+module.exports = on => {
   happoTask.register(on);
 };
 ```
@@ -504,8 +504,7 @@ page/element and send that snapshot to Happo's workers for screenshots (in
 different browsers). In some cases, DOM snapshotting doesn't always work. One
 such case is if you are using web components/custom elements. The snapshots will
 then not contain all the state needed to "reproduce" the elements on Happo's
-workers. In this situation, and similar ones, you can use `localSnapshots:
-true`. When this option is enabled, screenshots are produced directly on the
+workers. In this situation, and similar ones, you can use `localSnapshots: true`. When this option is enabled, screenshots are produced directly on the
 machine running the Cypress test run.
 
 Here's how to enable local snapshots:
@@ -516,12 +515,12 @@ In `cypress/support/commands.js`, enable the `localSnapshots` option:
 import { configure } from 'happo-cypress';
 
 configure({
-  localSnapshots: true
+  localSnapshots: true,
 });
 ```
 
 With this configuration, the `happoScreenshot()` method will take a local
-screenshot (using `cy.screenshot()`) and upload images to Happo.  The rest of
+screenshot (using `cy.screenshot()`) and upload images to Happo. The rest of
 the flow is the same as a normal happo-cypress run, meaning you get a link to a
 report to review, etc.
 

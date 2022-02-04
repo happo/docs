@@ -41,8 +41,7 @@ These scripts will all:
 3. Compare the two reports
 4. If allowed to, post back a status to the PR (the HEAD commit)
 
-These scripts will detect your npm client (yarn or npm) and run `npm
-install`/`yarn install` before running happo on the commits. If you have other
+These scripts will detect your npm client (yarn or npm) and run `npm install`/`yarn install` before running happo on the commits. If you have other
 dependencies/preprocessing steps that need to happen, you can override this with
 the `INSTALL_CMD` environment variable. E.g.
 
@@ -165,9 +164,9 @@ Then, configure your workflow file to run this script. Here's an example:
 name: Happo CI
 on:
   push:
-    branches: [ master ]
+    branches: [master]
   pull_request:
-    branches: [ master ]
+    branches: [master]
 jobs:
   happo:
     runs-on: ubuntu-latest
@@ -184,7 +183,7 @@ jobs:
 ```
 
 Make sure that the workflow is configured to run on pushes to your default
-branch.  This will ensure that baselines exist for PR builds to compare against.
+branch. This will ensure that baselines exist for PR builds to compare against.
 
 ### `happo-ci`
 
@@ -225,7 +224,7 @@ First you need to install the [Happo GitHub App](https://github.com/apps/happo)
 in the repository/repositories you want to run Happo in.
 
 ![Installing the Happo GitHub App](/img/happo-github-app.gif)
-*Installing the Happo app at https://github.com/apps/happo*
+_Installing the Happo app at https://github.com/apps/happo_
 
 #### Step 2: Connect with repository
 
@@ -235,7 +234,7 @@ happo.io](https://happo.io/github-integration). Once you're done with that,
 you're all set to have Happo automatically post statuses on your PRs/commits.
 
 ![Connecting repository with the Happo account](/img/happo-github-integration.gif)
-*Activating the GitHub repository at https://happo.io/github-integration*
+_Activating the GitHub repository at https://happo.io/github-integration_
 
 #### Happo build statuses
 
@@ -287,8 +286,7 @@ To authorize Happo to post statuses to your PRs/commits, you need to generate an
 password](https://support.atlassian.com/bitbucket-cloud/docs/app-passwords/).
 
 ![Generating a Bitbucket app password](/img/happo-bitbucket-app-password.gif)
-*Generating an app password through the Bitbucket UI*
-
+_Generating an app password through the Bitbucket UI_
 
 #### Step 2: Fill in form at Happo.io
 
@@ -328,18 +326,18 @@ change/PR that triggered the Happo tests. You can do that via a `git show`
 one-liner. This example is for Circle CI:
 
 ```yaml
-  steps:
-    - checkout
-    - run: npm ci
-    - run: echo 'export HAPPO_NOTIFY=$(git show -s --format=%ae HEAD)' >> $BASH_ENV
-    - happo/run_happo
+steps:
+  - checkout
+  - run: npm ci
+  - run: echo 'export HAPPO_NOTIFY=$(git show -s --format=%ae HEAD)' >> $BASH_ENV
+  - happo/run_happo
 ```
 
 Here's an example for GitHub Actions:
 
 ```yaml
-  - name: Set Happo notification email address
-    run: echo "HAPPO_NOTIFY=$(git show -s --format=%ae HEAD)" >> $GITHUB_ENV
+- name: Set Happo notification email address
+  run: echo "HAPPO_NOTIFY=$(git show -s --format=%ae HEAD)" >> $GITHUB_ENV
 ```
 
 ### Multiple recipients
@@ -347,8 +345,6 @@ Here's an example for GitHub Actions:
 Use a comma-separated list of email addresses to send the notification to
 several recipients:
 
-
 ```bash
 export HAPPO_NOTIFY=user@example.com,service-account@mycompany.com
 ```
-

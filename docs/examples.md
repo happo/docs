@@ -402,6 +402,7 @@ export const asyncComponent = async renderInDom => {
   rootElement.querySelector('div').innerHTML = 'Done!';
 };
 ```
+
 <!--END_DOCUSAURUS_CODE_TABS-->
 
 Be careful about overusing async rendering as it has a tendency to lead to a
@@ -434,7 +435,7 @@ like webpack loaders to the happo run. E.g.
 
 ```js
 module.exports = {
-  customizeWebpackConfig: (config) => {
+  customizeWebpackConfig: config => {
     config.module.rules.push({
       test: /\.css$/,
       use: [{ loader: cssLoader }],
@@ -459,4 +460,3 @@ This repo demonstrates how to use Happo Examples with
 [Create-React-App](https://github.com/facebook/create-react-app). It uses
 TypeScript but the instructions apply to non-TypeScript projects as well:
 https://github.com/happo/happo-cra-typescript
-
