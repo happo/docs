@@ -9,9 +9,9 @@ it easy to integrate a [Playwright](https://playwright.dev/) test suite with
 
 ## Pre-requisites
 
-Before you start following the instructions here, you'll need [a working
-Playwright setup](https://playwright.dev/docs/intro) and a [Happo
-account](https://happo.io/signup).
+Before you start following the instructions here, you'll need
+[a working Playwright setup](https://playwright.dev/docs/intro) and a
+[Happo account](https://happo.io/signup).
 
 ## Installation
 
@@ -26,8 +26,8 @@ npm install --save-dev happo-playwright happo-e2e happo.io
 
 Below is an example Playwright spec file. It takes a screenshot of a Hero image
 on an imaginary page. To make the whole flow work, it's important that you call
-the `init` and `finish` methods. In this example, we're using a `beforeAll`
-hook for initialization and an `afterAll` hook to finish the happo session.
+the `init` and `finish` methods. In this example, we're using a `beforeAll` hook
+for initialization and an `afterAll` hook to finish the happo session.
 
 ```js
 const happoPlaywright = require('happo-playwright');
@@ -106,8 +106,7 @@ whole test suite.
 
 By default, no Happo reports are produced when the Playwright run fails. In some
 cases, you might want to allow Happo to succeed even if the overall test run
-fails. The `--allow-failures` flag for the `happo-e2e` command can then be
-used:
+fails. The `--allow-failures` flag for the `happo-e2e` command can then be used:
 
 ```sh
 npx happo-e2e --allow-failures -- npx playwright test
@@ -115,15 +114,16 @@ npx happo-e2e --allow-failures -- npx playwright test
 
 ## Continuous Integration
 
-If you run the test suite in a CI environment, the `happo-playwright` module will
-do its best to auto-detect your environment and adapt its behavior accordingly:
+If you run the test suite in a CI environment, the `happo-playwright` module
+will do its best to auto-detect your environment and adapt its behavior
+accordingly:
 
 - On PR builds, compare the screenshots against the main branch
 - On main branch builds, simply create the Happo report
 
 To get the results of the Happo jobs back to your PRs/commits, you need to
-install and configure the Happo GitHub app. Instructions are available [in the
-Continuous Integration docs](continuous-integration.md#posting-statuses-back-to-prscommits).
+install and configure the Happo GitHub app. Instructions are available
+[in the Continuous Integration docs](continuous-integration.md#posting-statuses-back-to-prscommits).
 
 Happo auto-detects the following CI environments:
 
@@ -136,7 +136,8 @@ variables before invoking the test suite:
 
 - `HAPPO_PREVIOUS_SHA` the commit sha that the branch/PR is based on (usually a
   commit on master). Only set this for PR builds.
-- `HAPPO_CURRENT_SHA` the sha of the commit currently under test. Always set this.
+- `HAPPO_CURRENT_SHA` the sha of the commit currently under test. Always set
+  this.
 - `HAPPO_BASE_BRANCH` the default/base branch you use, e.g. `origin/dev`.
   Defaults to `origin/master`, so you only need to set this if you are using a
   different base branch.
@@ -149,13 +150,13 @@ get a combined Happo report for all the test runs, you can do the following:
 
 - Set a `HAPPO_NONCE` environment variable, to tie individual runs together. Any
   string unique to the build will do.
-- After the whole test suite is done, call `npx happo-e2e finalize`. Make
-  sure that the same `HAPPO_NONCE` environment variable is set as for the
-  individual builds.
+- After the whole test suite is done, call `npx happo-e2e finalize`. Make sure
+  that the same `HAPPO_NONCE` environment variable is set as for the individual
+  builds.
 
 In some CI tools, you can use a built-in environment variable as `HAPPO_NONCE`.
-In CircleCI for instance, you can use [
-`HAPPO_NONCE=${CIRCLE_WORKFLOW_ID}`](https://circleci.com/docs/2.0/env-vars/#built-in-environment-variables).
+In CircleCI for instance, you can use
+[ `HAPPO_NONCE=${CIRCLE_WORKFLOW_ID}`](https://circleci.com/docs/2.0/env-vars/#built-in-environment-variables).
 You can also use a timestamp or a randomly generated string. The important thing
 is that it's unique to the current CI run.
 
@@ -164,16 +165,16 @@ is that it's unique to the current CI run.
 If you set a `HAPPO_NOTIFY` environment variable as part of your Cypress run, an
 email will be sent out when the Happo comparison report is ready.
 
-Usage instructions for `HAPPO_NOTIFY` is available in [the Continuous Integration
-docs](continuous-integration.md#email-notifications).
+Usage instructions for `HAPPO_NOTIFY` is available in
+[the Continuous Integration docs](continuous-integration.md#email-notifications).
 
 ## Advanced usage
 
 ### Setting a port for `happo-e2e`
 
-When you're running the `happo-e2e --` wrapper, a web server is used
-internally. By default, this server is listening on port 5339. If you need to
-change that, pass a `--port` argument, like so:
+When you're running the `happo-e2e --` wrapper, a web server is used internally.
+By default, this server is listening on port 5339. If you need to change that,
+pass a `--port` argument, like so:
 
 ```bash
 npx happo-e2e --port 5432 -- npx cypress run
@@ -203,16 +204,16 @@ We're here to help — send an email to support@happo.io and we'll assist you.
 ### Happo isn't producing any screenshots
 
 The `happo-playwright` module will disable itself if it can't detect any api
-tokens (`apiKey` and `apiSecret` in config). Check to make sure your
-`.happo.js` config is properly set up. There might also be more information in
-the console logs from Cypress. Look for lines starting with `[HAPPO]`.
+tokens (`apiKey` and `apiSecret` in config). Check to make sure your `.happo.js`
+config is properly set up. There might also be more information in the console
+logs from Cypress. Look for lines starting with `[HAPPO]`.
 
 ### Where are my screenshots?
 
-During test suite execution, Happo will only record information. All
-screenshots are taken asynchronously outside of the test run. This means that
-your test suite will finish sooner than the Happo job is done. To follow along
-the progress, look for a url logged by Happo:
+During test suite execution, Happo will only record information. All screenshots
+are taken asynchronously outside of the test run. This means that your test
+suite will finish sooner than the Happo job is done. To follow along the
+progress, look for a url logged by Happo:
 
 ```bash
 [HAPPO] https://happo.io/a/284/async-reports/34
@@ -221,11 +222,12 @@ the progress, look for a url logged by Happo:
 ### Styles are missing from my screenshots
 
 Styles and assets are collected automatically during your test suite. If you
-notice styles/images/fonts etc are missing, one of a few things might have happened:
+notice styles/images/fonts etc are missing, one of a few things might have
+happened:
 
 - CSS selectors depend on context that is missing to Happo. If you e.g. have
-  something like `#start-page .header { color: red }` and screenshoot
-  `.header`, the red color will be missing. This is because Happo only sees the
-  `.header` element, never the surrounding page.
+  something like `#start-page .header { color: red }` and screenshoot `.header`,
+  the red color will be missing. This is because Happo only sees the `.header`
+  element, never the surrounding page.
 - There could be a bug in how `happo-cypress` collects styles and assets. Reach
   out to support@happo.io and we'll triage.

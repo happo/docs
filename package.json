@@ -5,10 +5,13 @@
     "build": "docusaurus-build",
     "publish-gh-pages": "docusaurus-publish",
     "write-translations": "docusaurus-write-translations",
-    "rename-version": "docusaurus-rename-version"
+    "rename-version": "docusaurus-rename-version",
+    "prettier-fix": "prettier --write .",
+    "lint": "prettier --check ."
   },
   "devDependencies": {
-    "docusaurus": "^1.14.4"
+    "docusaurus": "^1.14.4",
+    "prettier": "2.5.1"
   },
   "version": "2.5.1"
 }

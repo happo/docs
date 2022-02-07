@@ -11,15 +11,17 @@ the way you've intended.
 If the screenshots aren't looking right you can use the "View source" feature.
 You'll find it in the overflow menu to the right of a diff/screenshot:
 
-![How to find the "View source" option](/img/happo-view-source.gif)
-_This is where you find the "View source" option for a Happo report._
+![How to find the "View source" option](/img/happo-view-source.gif) _This is
+where you find the "View source" option for a Happo report._
 
-Depending on the type of integration you are using, the view source option
-leads to one of two things:
+Depending on the type of integration you are using, the view source option leads
+to one of two things:
 
 - For [Happo Examples](examples.md) and [Cypress setups](cypress.md), you'll
   land on a page where the source html and css is rendered.
-- For [Storybook integrations](storybook.md) and [when using `prerender: false`](configuration.md#prerender), the source is a zip file.
+- For [Storybook integrations](storybook.md) and
+  [when using `prerender: false`](configuration.md#prerender), the source is a
+  zip file.
 
 ### Rendered source
 
@@ -29,12 +31,13 @@ present. It is an estimation though, and there are some caveats:
 
 - Assets (images/fonts/etc) aren't available (although you'll see them
   referenced in the source)
-- There will be an additional wrapper element that the Happo workers won't
-  have. This elemet can affect styling.
+- There will be an additional wrapper element that the Happo workers won't have.
+  This elemet can affect styling.
 
 ### Zip file sources
 
-When you get a zip file source, you can debug the source locally by following these steps:
+When you get a zip file source, you can debug the source locally by following
+these steps:
 
 1. Unzip the downloaded file
 2. Start a http server in the unzipped folder
@@ -51,8 +54,8 @@ If you quickly want to iterate through all components, copy and paste this
 script in the JavaScript console:
 
 ```js
-var renderIter = function() {
-  window.happo.nextExample().then(function(a) {
+var renderIter = function () {
+  window.happo.nextExample().then(function (a) {
     if (!a) {
       return;
     }
@@ -80,12 +83,13 @@ can inspect the html and css created
 
 In some cases, your happo runs will fail with a `Failed on worker` message. In
 some cases, there's an additional error message that might hint at why the job
-failed. To see this error message, go to your [Happo
-dashboard](https://happo.io/dashboard), look under "Snap-requests" and click on
-the one that has a failure icon.
+failed. To see this error message, go to your
+[Happo dashboard](https://happo.io/dashboard), look under "Snap-requests" and
+click on the one that has a failure icon.
 
 ### `Timed out while waiting for window.happo`
-A common error when using [the Storybook integration](storybook.md) is `Timed
-out while waiting for window.happo`. This is often caused by missing to
+
+A common error when using [the Storybook integration](storybook.md) is
+`Timed out while waiting for window.happo`. This is often caused by missing to
 register the `happo-plugin-storybook` plugin. See how to get rid of this in
 [the Storybook docs](storybook.md#troubleshooting).

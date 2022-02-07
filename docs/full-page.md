@@ -7,7 +7,8 @@ The full-page integration helps you get screenshots of an existing website.
 
 ## Installation
 
-No other libraries than `happo.io` need to be installed for a full-page integration:
+No other libraries than `happo.io` need to be installed for a full-page
+integration:
 
 ```sh
 npm install --save-dev happo.io
@@ -28,8 +29,8 @@ module.exports = {
 };
 ```
 
-> The urls to the website need to be publicly available, otherwise Happo
-> workers won't be able to access the pages
+> The urls to the website need to be publicly available, otherwise Happo workers
+> won't be able to access the pages
 
 Add a `happo` script to your `package.json` file:
 

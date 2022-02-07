@@ -4,9 +4,8 @@ title: Storybook
 ---
 
 The `happo-plugin-storybook` library is a
-[happo.io](https://github.com/enduire/happo.io) plugin for Storybook. See [this
-blog
-post](https://medium.com/happo-io/cross-browser-screenshot-testing-with-happo-io-and-storybook-bfb0b848a97a)
+[happo.io](https://github.com/enduire/happo.io) plugin for Storybook. See
+[this blog post](https://medium.com/happo-io/cross-browser-screenshot-testing-with-happo-io-and-storybook-bfb0b848a97a)
 for a lengthier introduction to this plugin.
 
 ## Installation
@@ -77,8 +76,8 @@ npm run happo run
 
 ## Tips and Tricks
 
-If you want to have better control over what addons and/or decorators get
-loaded you can make use of the `isHappoRun` function exported by
+If you want to have better control over what addons and/or decorators get loaded
+you can make use of the `isHappoRun` function exported by
 `happo-plugin-storybook/register`:
 
 ```js
@@ -100,6 +99,7 @@ stories.
 
 <!--DOCUSAURUS_CODE_TABS-->
 <!-- CSF -->
+
 ```js
 export default {
   title: 'FooComponent',
@@ -116,7 +116,9 @@ WithBorder.parameters = {
 
 export { WithBorder };
 ```
+
 <!-- storiesOf -->
+
 ```js
 storiesOf('FooComponent', module)
   .add('Default', () => <FooComponent />);
@@ -128,8 +130,8 @@ storiesOf('FooComponent', module)
   .addParameters({ happo: false })
   .add('Dynamic', () => <DynamicFooComponent />);
 ```
-<!--END_DOCUSAURUS_CODE_TABS-->
 
+<!--END_DOCUSAURUS_CODE_TABS-->
 
 ### Waiting for content
 
@@ -138,11 +140,12 @@ screenshot. Adding a delay might help, but only if the asynchronous event is
 consistently timed. In these cases the `waitForContent` parameter might help.
 Let's assume that `PaymentForm` in the example below loads some third-party
 iframe that you have no control over, loading a credit card form. In order to
-wait for the iframe to finish, we can add a `waitForContent` parameter with
-some unique string in the iframe.
+wait for the iframe to finish, we can add a `waitForContent` parameter with some
+unique string in the iframe.
 
 <!--DOCUSAURUS_CODE_TABS-->
 <!-- CSF -->
+
 ```js
 const Basic = () => <PaymentForm />;
 Basic.parameters = {
@@ -152,12 +155,15 @@ Basic.parameters = {
 };
 export { Basic };
 ```
+
 <!-- storiesOf -->
+
 ```js
 storiesOf('PaymentForm', module).add('default', () => <PaymentForm />, {
   happo: { waitForContent: 'Credit card' },
 });
 ```
+
 <!--END_DOCUSAURUS_CODE_TABS-->
 
 ### Waiting for a condition to be truthy
@@ -170,6 +176,7 @@ Here's an example that waits for a specific element (`.credit-card`) to appear:
 
 <!--DOCUSAURUS_CODE_TABS-->
 <!-- CSF -->
+
 ```js
 const Basic = () => <PaymentForm />;
 Basic.parameters = {
@@ -179,18 +186,22 @@ Basic.parameters = {
 };
 export { Basic };
 ```
+
 <!-- storiesOf -->
+
 ```js
 storiesOf('PaymentForm', module).add('default', () => <PaymentForm />, {
   happo: { waitFor: () => document.querySelector('.credit-card') },
 });
 ```
+
 <!--END_DOCUSAURUS_CODE_TABS-->
 
 Here's another example that waits for a specific number of elements:
 
 <!--DOCUSAURUS_CODE_TABS-->
 <!-- CSF -->
+
 ```js
 const Basic = () => <PaymentForm />;
 Basic.parameters = {
@@ -200,7 +211,9 @@ Basic.parameters = {
 };
 export { Basic };
 ```
+
 <!-- storiesOf -->
+
 ```js
 storiesOf('PaymentForm', module).add('default', () => <PaymentForm />, {
   happo: {
@@ -208,6 +221,7 @@ storiesOf('PaymentForm', module).add('default', () => <PaymentForm />, {
   },
 });
 ```
+
 <!--END_DOCUSAURUS_CODE_TABS-->
 
 ### Setting delay for a story
@@ -231,6 +245,7 @@ Use the `happo.delay` parameter to set an individual delay for a story:
 
 <!--DOCUSAURUS_CODE_TABS-->
 <!-- CSF -->
+
 ```js
 export default {
   title: 'FooComponent',
@@ -251,20 +266,23 @@ WithBorder.parameters = {
 
 export { WithBorder };
 ```
+
 <!-- storiesOf -->
+
 ```js
 storiesOf('FooComponent', module).add('delayed', () => <FooComponent />, {
   happo: { delay: 200 },
 });
 ```
+
 <!--END_DOCUSAURUS_CODE_TABS-->
 
 ### The `beforeScreenshot` hook
 
 If you need to interact with the DOM before a screenshot is taken you can use
 the `beforeScreenshot` option. This parameter, expected to be a function, is
-called right before Happo takes the screenshot. You can use this to e.g. click
-a button, enter text in an input field, remove certain elements, etc.
+called right before Happo takes the screenshot. You can use this to e.g. click a
+button, enter text in an input field, remove certain elements, etc.
 
 Here's an example where a button is clicked to open a modal:
 
@@ -272,14 +290,14 @@ Here's an example where a button is clicked to open a modal:
 const BasicModal = () => <ModalExample />;
 BasicModal.parameters = {
   happo: {
-     beforeScreenshot: () => {
-        const clickEvent = new MouseEvent('click', {
-          view: window,
-          bubbles: true,
-          cancelable: false,
-        });
-        document.querySelector('button.open-modal').dispatchEvent(clickEvent);
-      },
+    beforeScreenshot: () => {
+      const clickEvent = new MouseEvent('click', {
+        view: window,
+        bubbles: true,
+        cancelable: false,
+      });
+      document.querySelector('button.open-modal').dispatchEvent(clickEvent);
+    },
   },
 };
 export { BasicModal };
@@ -296,9 +314,9 @@ Here's an example where a lingering DOM element is removed.
 const Foo = () => <FooExample />;
 Foo.parameters = {
   happo: {
-     afterScreenshot: () => {
-       document.querySelector('.some-selector').remove();
-     },
+    afterScreenshot: () => {
+      document.querySelector('.some-selector').remove();
+    },
   },
 };
 export { Foo };
@@ -324,13 +342,18 @@ If you want to debug your test suite similar to how Happo workers process jobs,
 you can follow these steps:
 
 1. In a browser, go to the storybook URL. E.g. http://localhost:3000
-2. The URL will change to something like http://localhost:3000/?selectedKind=foo&selectedStory=default
-3. Change the URL to point to `/iframe.html`, e.g. http://localhost:3000/iframe.html
+2. The URL will change to something like
+   http://localhost:3000/?selectedKind=foo&selectedStory=default
+3. Change the URL to point to `/iframe.html`, e.g.
+   http://localhost:3000/iframe.html
 4. Open the JavaScript console
-5. Paste this JavaScript snippet and hit enter: `happo.nextExample().then((item) => console.log(item))`
-6. Run that code again repeatedly to step through each example (use the arrow up key to reuse the last command)
+5. Paste this JavaScript snippet and hit enter:
+   `happo.nextExample().then((item) => console.log(item))`
+6. Run that code again repeatedly to step through each example (use the arrow up
+   key to reuse the last command)
 
-To quickly run through all examples, follow steps 1-4, then paste this script instead:
+To quickly run through all examples, follow steps 1-4, then paste this script
+instead:
 
 ```js
 var renderIter = function () {
@@ -347,5 +370,10 @@ renderIter();
 
 ## Troubleshooting
 
-- Getting a `Failed on worker` error? Make sure you are making a call to `import 'happo-plugin-storybook/register'` in your `.storybook/preview.js` file.
-- Getting spurious diffs from fonts not loading? Happo workers will wait for fonts to load before taking the screenshot, but it assumes that fonts it has already seen are already available. Make sure the `@font-face` declaration is declared globally and not part of the stories themselves.
+- Getting a `Failed on worker` error? Make sure you are making a call to
+  `import 'happo-plugin-storybook/register'` in your `.storybook/preview.js`
+  file.
+- Getting spurious diffs from fonts not loading? Happo workers will wait for
+  fonts to load before taking the screenshot, but it assumes that fonts it has
+  already seen are already available. Make sure the `@font-face` declaration is
+  declared globally and not part of the stories themselves.
