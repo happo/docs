@@ -10,6 +10,7 @@
     "Configuration": ["configuration", "plugins"],
     "Integrations": [
       "examples",
+      "static",
       "storybook",
       "cypress",
       "playwright",

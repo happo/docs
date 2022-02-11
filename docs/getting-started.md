@@ -18,6 +18,8 @@ application, experience with other test frameworks, and more.
 
 - A [Storybook](storybook.md) application can serve as the test suite driver for
   Happo.
+- By using the [Static bundle integration](static.md), you can bring your own
+  javascript bundle and have full control over the build phase and execution.
 - By integrating Happo with [Cypress](cypress.md) or
   [Playwright](playwright.md), you can turn your end-to-end tests into a Happo
   test suite.

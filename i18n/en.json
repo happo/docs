@@ -68,6 +68,9 @@
       "spurious-diffs": {
         "title": "Spurious diffs"
       },
+      "static": {
+        "title": "Static bundle"
+      },
       "stencil": {
         "title": "Stencil"
       },
