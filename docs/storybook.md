@@ -133,6 +133,45 @@ storiesOf('FooComponent', module)
 
 <!--END_DOCUSAURUS_CODE_TABS-->
 
+### Limiting targets
+
+If you want to avoid rendering an example in all targets, you can use a
+`targets` array defined for an example. The example will then be rendered in the
+specified targets exclusively.
+
+<!--DOCUSAURUS_CODE_TABS-->
+<!-- CSF -->
+
+```js
+export default {
+  title: 'FooComponent',
+  parameters: {
+    happo: {
+      targets: ['chrome-small'],
+    },
+  },
+};
+```
+
+<!-- storiesOf -->
+
+```js
+storiesOf('FooComponent', module)
+  .add('Default', () => <FooComponent />, { happo: { targets: ['chrome-small'] });
+
+// or
+
+storiesOf('FooComponent', module)
+  .addParameters({ happo: { targets: ['chrome-small'] })
+  .add('Default', () => <FooComponent />);
+```
+
+<!--END_DOCUSAURUS_CODE_TABS-->
+
+In the example above, the FooComponent > Default story will only be rendered in
+the target named `chrome-small` (defined in
+[`.happo.js`](configuration.md#targets)).
+
 ### Waiting for content
 
 In some cases, examples might not be ready by the time Happo takes the
