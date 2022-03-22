@@ -40,7 +40,6 @@ All these scrips will:
 3. Compare the baseline with the new report
 4. If allowed to, post back a status to the commit/PR
 
-
 By default, all `happo-ci` commands will wait for screenshots to be done before
 finishing. If you have
 [authorized your Happo account to post statuses back to PRs/commits](#posting-statuses-back-to-prscommits),
@@ -220,9 +219,9 @@ you need to set a few environment variables:
 ## Posting build statuses
 
 Your Happo account can be configured to post build statuses to your PRs/commits.
-Happo currently integrates with [GitHub](https://github.com) and
-[Bitbucket](https://bitbucket.org). See specific instructions for the different
-providers below.
+Happo currently integrates with [GitHub](https://github.com),
+[Bitbucket](https://bitbucket.org), and [Azure DevOps](https://dev.azure.com/).
+See specific instructions for the different providers below.
 
 ### GitHub
 
@@ -312,7 +311,7 @@ automatically post statuses on your PRs/commits.
 
 Here's what it looks like when Happo posts a status on a pull request:
 
-![Happo status posted on a commit on github](/img/happo-status-bitbucket.png)
+![Happo status posted on a bitbucket commit](/img/happo-status-bitbucket.png)
 
 If there is a diff, the status will be set to failure. To manually flip this to
 a success status, just go to the Happo comparison page (linked to from the
@@ -321,6 +320,42 @@ status) and accept the diffs.
 ![Accepting diffs](/img/happo-status-accept.gif)
 
 The status over on bitbucket.org will then change to success (green) for the
+PR/commit. If there are no diffs, the status is automatically set to success.
+
+### Azure
+
+#### Step 1: Generate a Personal Access Token (PAT)
+
+To authorize Happo to post statuses to your PRs/commits, you need to generate an
+[Personal Access Token](https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate).
+
+![Generating an Azure Personal Access Token](/img/happo-azure-pat.gif)
+_Generating a Personal Access Token through the Azure UI_
+
+Set the "Code" scope to `Read` and `Status`. We need the read scope to figure
+out the right baseline reports to use. The status scope is used when posting
+build statuses to PRs.
+
+#### Step 2: Fill in form at Happo.io
+
+Once you have the PAT, you can go to the
+[Azure integration page on happo.io](https://happo.io/azure-integration) and
+fill out the form. Once you're done with that, you're all set to have Happo
+automatically post statuses on your PRs/commits.
+
+#### Happo build statuses
+
+Here's what it looks like when Happo posts a status on a pull request:
+
+![Happo status posted on an azure PR](/img/happo-status-azure.png)
+
+If there is a diff, the status will be set to failure. To manually flip this to
+a success status, just go to the Happo comparison page (linked to from the
+status) and accept the diffs.
+
+![Accepting diffs](/img/happo-status-accept.gif)
+
+The status over on Azure DevOps will then change to success (green) for the
 PR/commit. If there are no diffs, the status is automatically set to success.
 
 ## Email notifications
