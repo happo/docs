@@ -27,31 +27,18 @@ Happo provides ready-made scripts that you can run in CI:
 
 - [`happo-ci-travis`](#happo-ci-travis) - a script designed to be run in a
   Travis environment.
-- [`happo-ci-circleci`](#happo-ci-circleci) - a script designed to be run in a
-  CircleCI environment.
-- [`happo-ci-github-actions`](#happo-ci-github-actions) - a script designed to
-  be used with GitHub Actions.
+- [`happo-ci-circleci`](#happo-ci-circleci) - for CircleCI environments.
+- [`happo-ci-github-actions`](#happo-ci-github-actions) - used with GitHub
+  Actions.
 - [`happo-ci`](#happo-ci) - a generic script designed to work in any CI
   environment. This script is used by all the other CI scripts under the hood.
 
-These scripts will all:
+All these scrips will:
 
-1. Run happo on the commit which the PR is based on (if needed)
-2. Run happo on the current HEAD commit
-3. Compare the two reports
-4. If allowed to, post back a status to the PR (the HEAD commit)
-
-These scripts will detect your npm client (yarn or npm) and run
-`npm install`/`yarn install` before running happo on the commits. If you have
-other dependencies/preprocessing steps that need to happen, you can override
-this with the `INSTALL_CMD` environment variable. E.g.
-
-```bash
-INSTALL_CMD="lerna bootstrap" npm run happo-ci-travis
-```
-
-In this example, the `lerna bootstrap` command will be invoked before running
-`happo run` on each commit, instead of `yarn install`/`npm install`.
+1. Figure out the right baseline report to compare with
+2. Run Happo on the current HEAD commit
+3. Compare the baseline with the new report
+4. If allowed to, post back a status to the commit/PR
 
 By default, all `happo-ci` commands will wait for screenshots to be done before
 finishing. If you have
@@ -98,6 +85,29 @@ branch. If you're using a different default branch, you can set the
   }
 }
 ```
+
+### Sync mode (optional)
+
+By default, `happo-ci` will generate screenshots asynchronously, meaning your CI
+run will finish before screenshots are ready. You can disable this behavior by
+setting a `HAPPO_IS_ASYNC=false` environment variable. If set, Happo will do two
+things differently:
+
+- The CI run will wait for reports to be ready before finishing
+- The baseline report is generated on the fly, by checking out the previous
+  commit on the main branch and running happo once more.
+
+In sync mode, your npm client is automatically detected (yarn or npm), and Happo
+will run `npm install`/`yarn install` before generating screenshots. If you have
+other dependencies/preprocessing steps that need to happen, you can override
+this with the `INSTALL_CMD` environment variable. E.g.
+
+```bash
+INSTALL_CMD="lerna bootstrap" npm run happo-ci-travis
+```
+
+In this example, the `lerna bootstrap` command will be invoked before running
+`happo run` on each commit, instead of `yarn install`/`npm install`.
 
 ### `happo-ci-circleci`
 
@@ -209,9 +219,9 @@ you need to set a few environment variables:
 ## Posting build statuses
 
 Your Happo account can be configured to post build statuses to your PRs/commits.
-Happo currently integrates with [GitHub](https://github.com) and
-[Bitbucket](https://bitbucket.org). See specific instructions for the different
-providers below.
+Happo currently integrates with [GitHub](https://github.com),
+[Bitbucket](https://bitbucket.org), and [Azure DevOps](https://dev.azure.com/).
+See specific instructions for the different providers below.
 
 ### GitHub
 
@@ -301,7 +311,7 @@ automatically post statuses on your PRs/commits.
 
 Here's what it looks like when Happo posts a status on a pull request:
 
-![Happo status posted on a commit on github](/img/happo-status-bitbucket.png)
+![Happo status posted on a bitbucket commit](/img/happo-status-bitbucket.png)
 
 If there is a diff, the status will be set to failure. To manually flip this to
 a success status, just go to the Happo comparison page (linked to from the
@@ -310,6 +320,42 @@ status) and accept the diffs.
 ![Accepting diffs](/img/happo-status-accept.gif)
 
 The status over on bitbucket.org will then change to success (green) for the
+PR/commit. If there are no diffs, the status is automatically set to success.
+
+### Azure
+
+#### Step 1: Generate a Personal Access Token (PAT)
+
+To authorize Happo to post statuses to your PRs/commits, you need to generate an
+[Personal Access Token](https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate).
+
+![Generating an Azure Personal Access Token](/img/happo-azure-pat.gif)
+_Generating a Personal Access Token through the Azure UI_
+
+Set the "Code" scope to `Read` and `Status`. We need the read scope to figure
+out the right baseline reports to use. The status scope is used when posting
+build statuses to PRs.
+
+#### Step 2: Fill in form at Happo.io
+
+Once you have the PAT, you can go to the
+[Azure integration page on happo.io](https://happo.io/azure-integration) and
+fill out the form. Once you're done with that, you're all set to have Happo
+automatically post statuses on your PRs/commits.
+
+#### Happo build statuses
+
+Here's what it looks like when Happo posts a status on a pull request:
+
+![Happo status posted on an azure PR](/img/happo-status-azure.png)
+
+If there is a diff, the status will be set to failure. To manually flip this to
+a success status, just go to the Happo comparison page (linked to from the
+status) and accept the diffs.
+
+![Accepting diffs](/img/happo-status-accept.gif)
+
+The status over on Azure DevOps will then change to success (green) for the
 PR/commit. If there are no diffs, the status is automatically set to success.
 
 ## Email notifications
