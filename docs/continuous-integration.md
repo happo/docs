@@ -30,6 +30,8 @@ Happo provides ready-made scripts that you can run in CI:
 - [`happo-ci-circleci`](#happo-ci-circleci) - for CircleCI environments.
 - [`happo-ci-github-actions`](#happo-ci-github-actions) - used with GitHub
   Actions.
+- [`happo-ci-azure-pipelines`](#happo-ci-azure-pipelines) - used with Azure
+  DevOps Pipelines.
 - [`happo-ci`](#happo-ci) - a generic script designed to work in any CI
   environment. This script is used by all the other CI scripts under the hood.
 
@@ -39,17 +41,6 @@ All these scrips will:
 2. Run Happo on the current HEAD commit
 3. Compare the baseline with the new report
 4. If allowed to, post back a status to the commit/PR
-
-By default, all `happo-ci` commands will wait for screenshots to be done before
-finishing. If you have
-[authorized your Happo account to post statuses back to PRs/commits](#posting-statuses-back-to-prscommits),
-you can set a `HAPPO_IS_ASYNC=true` environment variable to instruct Happo to
-finish the CI task as soon as possible and then instead wait for the status to
-come back via happo.io.
-
-```bash
-HAPPO_IS_ASYNC=true npm run happo-ci-circleci
-```
 
 ### `happo-ci-travis`
 
@@ -85,29 +76,6 @@ branch. If you're using a different default branch, you can set the
   }
 }
 ```
-
-### Sync mode (optional)
-
-By default, `happo-ci` will generate screenshots asynchronously, meaning your CI
-run will finish before screenshots are ready. You can disable this behavior by
-setting a `HAPPO_IS_ASYNC=false` environment variable. If set, Happo will do two
-things differently:
-
-- The CI run will wait for reports to be ready before finishing
-- The baseline report is generated on the fly, by checking out the previous
-  commit on the main branch and running happo once more.
-
-In sync mode, your npm client is automatically detected (yarn or npm), and Happo
-will run `npm install`/`yarn install` before generating screenshots. If you have
-other dependencies/preprocessing steps that need to happen, you can override
-this with the `INSTALL_CMD` environment variable. E.g.
-
-```bash
-INSTALL_CMD="lerna bootstrap" npm run happo-ci-travis
-```
-
-In this example, the `lerna bootstrap` command will be invoked before running
-`happo run` on each commit, instead of `yarn install`/`npm install`.
 
 ### `happo-ci-circleci`
 
@@ -196,6 +164,50 @@ jobs:
 
 Make sure that the workflow is configured to run on pushes to your default
 branch. This will ensure that baselines exist for PR builds to compare against.
+
+### `happo-ci-azure-pipelines`
+
+This script is targeted at
+[Azure Pipelines](https://azure.microsoft.com/en-us/services/devops/pipelines/).
+It can be used with pull requests and regular pushes. Start by adding the
+`happo-ci-azure-pipelines` script to your `package.json` file:
+
+```json
+{
+  "scripts": {
+    "happo-ci-azure-pipelines": "happo-ci-azure-pipelines"
+  }
+}
+```
+
+Then, configure `azure-pipelines.yml` to run the `happo-ci-azure-pipelines`
+script. In the example below the `HAPPO_API_KEY` and `HAPPO_API_SECRET`
+environment variables are populated from two
+[user-defined secret variables](https://docs.microsoft.com/en-us/azure/devops/pipelines/process/variables?view=azure-devops&tabs=yaml%2Cbatch#user-defined-variables).
+
+```yaml
+trigger:
+  - main
+pool:
+  vmImage: ubuntu-latest
+steps:
+  - task: NodeTool@0
+    inputs:
+      versionSpec: '16.x'
+    displayName: 'Install Node.js'
+  - script: |
+      npm ci
+      npm run happo-ci-azure-pipelines
+    displayName: 'Install dependencies and run Happo'
+    env:
+      HAPPO_API_KEY: $(happoApiKey)
+      HAPPO_API_SECRET: $(happoApiSecret)
+```
+
+The trigger is set to run for pushes to the `main` branch. You'll have to
+replace this if you are using a different main branch. To trigger builds for
+pull request, you can use
+[a branch policy for the main branch](https://docs.microsoft.com/en-us/azure/devops/repos/git/branch-policies?view=azure-devops&tabs=browser).
 
 ### `happo-ci`
 
@@ -357,6 +369,29 @@ status) and accept the diffs.
 
 The status over on Azure DevOps will then change to success (green) for the
 PR/commit. If there are no diffs, the status is automatically set to success.
+
+## Sync mode (optional)
+
+By default, `happo-ci` will generate screenshots asynchronously, meaning your CI
+run will finish before screenshots are ready. You can disable this behavior by
+setting a `HAPPO_IS_ASYNC=false` environment variable. If set, Happo will do two
+things differently:
+
+- The CI run will wait for reports to be ready before finishing
+- The baseline report is generated on the fly, by checking out the previous
+  commit on the main branch and running happo once more.
+
+In sync mode, your npm client is automatically detected (yarn or npm), and Happo
+will run `npm install`/`yarn install` before generating screenshots. If you have
+other dependencies/preprocessing steps that need to happen, you can override
+this with the `INSTALL_CMD` environment variable. E.g.
+
+```bash
+INSTALL_CMD="lerna bootstrap" npm run happo-ci-travis
+```
+
+In this example, the `lerna bootstrap` command will be invoked before running
+`happo run` on each commit, instead of `yarn install`/`npm install`.
 
 ## Email notifications
 
