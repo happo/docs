@@ -44,7 +44,7 @@ module.exports = {
     chrome: new RemoteBrowserTarget('chrome', {
       viewport: '800x600',
     }),
-    'internet explorer': new RemoteBrowserTarget('internet explorer', {
+    edge: new RemoteBrowserTarget('edge', {
       viewport: '800x600',
     }),
   },
@@ -52,18 +52,18 @@ module.exports = {
 ```
 
 Viewports can range from `300x300` to `2000x2000` for Chrome and Firefox. Edge,
-Internet Explorer and Safari need to be in the `400x400` to `1200x1200` range.
-The `ios-safari` target runs on iPhone 7 which means the viewport config is
-always `375x667`.
+and Safari need to be in the `400x400` to `1200x1200` range. The `ios-safari`
+target runs on an iPhone with a fixed viewport of `375x667`. The `ipad-safari`
+target is always `1080x810`
 
-This is a list of all supported browsers:
+This is a list of all supported browser targets:
 
 - `firefox`
 - `chrome`
-- `internet explorer` (version 11)
 - `edge`
 - `safari`
 - `ios-safari` (runs on iPhone 7)
+- `ipad-safari` (runs on iPad)
 
 ### Target `freezeAnimations`
 
@@ -73,7 +73,7 @@ freeze things on the last frame, use the `freezeAnimations` option.
 ```js
 module.exports = {
   targets: {
-    ie: new RemoteBrowserTarget('internet explorer', {
+    ie: new RemoteBrowserTarget('edge', {
       viewport: '1024x768',
       freezeAnimations: 'last-frame',
     }),
@@ -90,7 +90,7 @@ option for `RemoteBrowserTarget` can help out:
 ```js
 module.exports = {
   targets: {
-    ie: new RemoteBrowserTarget('internet explorer', {
+    ie: new RemoteBrowserTarget('chrome', {
       viewport: '1024x768',
       chunks: 2,
     }),
@@ -121,21 +121,17 @@ module.exports = {
 
 ### Target `scrollStitch`
 
-This option is available in the `safari` and `internet explorer` targets (it has
-no effect in other targets). By default, these browsers cut off their
-screenshots at window height. If you need to include content "below the fold",
-you can use the `scrollStitch` option. When enabled, the full screenshot will be
-constructed by scrolling the page section by section, then stitching together a
-full screenshot when all sections are available.
+This option is available in the `safari` target (it has no effect in other
+targets). By default, Safari cuts off screenshots at window height. If you need
+to include content "below the fold", you can use the `scrollStitch` option. When
+enabled, the full screenshot will be constructed by scrolling the page section
+by section, then stitching together a full screenshot when all sections are
+available.
 
 ```js
 module.exports = {
   targets: {
     safari: new RemoteBrowserTarget('safari', {
-      viewport: '1024x768',
-      scrollStitch: true,
-    }),
-    ie: new RemoteBrowserTarget('internet explorer', {
       viewport: '1024x768',
       scrollStitch: true,
     }),

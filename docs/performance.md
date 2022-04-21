@@ -21,12 +21,11 @@ tests, avoid testing the same elements multiple times, and keep components
 isolated.
 
 Browsers perform differently. The fastest ones we have are Chrome and Firefox,
-capable of producing more than 10 screenshots per second. Internet Explorer is
-the slowest one, with peak performance of about 2.5 screenshots per second.
-Choose your [targets](configuration.md#targets) wisely as the performance of
-your test suite is mostly going to be decided by your slowest target. The
-(global) average time it takes to produce a screenshot on a Happo worker is 200
-ms.
+capable of producing more than 10 screenshots per second. Other browsers are
+slightly slower and will max out at 5-10 screenshots per second.  Choose your
+[targets](configuration.md#targets) wisely as the performance of your test suite
+is mostly going to be decided by your slowest target. The (global) average time
+it takes to produce a screenshot on a Happo worker is 200 ms.
 
 ## Examples in the wild
 
