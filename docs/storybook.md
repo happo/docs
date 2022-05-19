@@ -342,6 +342,20 @@ BasicModal.parameters = {
 export { BasicModal };
 ```
 
+You can use `async` here as well:
+
+```js
+const BasicModal = () => <ModalExample />;
+BasicModal.parameters = {
+  happo: {
+    beforeScreenshot: async () => {
+      await doSomethingAsync();
+    },
+  },
+};
+export { BasicModal };
+```
+
 ### The `afterScreenshot` hook
 
 Similar to `beforeScreenshot`, this hook can be used to clean up things from the
@@ -360,6 +374,8 @@ Foo.parameters = {
 };
 export { Foo };
 ```
+
+Same as for `beforeScreenshot`, you can use `async` as well.
 
 ## Caveats
 
