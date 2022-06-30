@@ -34,7 +34,27 @@ Import the `happo-cypress` module in your `cypress/support/commands.js` file:
 import 'happo-cypress';
 ```
 
-Then, register the provided `happoTask` in your `cypress/plugins/index.js` file:
+Then, register the provided `happoTask` in your `cypress.config.js` file (or
+`cypress/plugins/index.js` if you are on Cypress v9 or earlier):
+
+<!--DOCUSAURUS_CODE_TABS-->
+<!-- Cypress v10 -->
+
+```js
+const { defineConfig } = require('cypress');
+const happoTask = require('happo-cypress/task');
+
+module.exports = defineConfig({
+  e2e: {
+    setupNodeEvents(on, config) {
+      happoTask.register(on);
+      return config;
+    },
+  },
+});
+```
+
+<!-- Cypress v9 -->
 
 ```js
 // In cypress/plugins/index.js
@@ -44,6 +64,7 @@ module.exports = on => {
   happoTask.register(on);
 };
 ```
+<!--END_DOCUSAURUS_CODE_TABS-->
 
 Add a `.happo.js` file with some minimal/required configuration:
 
