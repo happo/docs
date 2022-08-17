@@ -26,9 +26,10 @@ screenshots.
 
 A key aspect for Happo is the ability to quickly diff two image snapshots purely
 based on the URL to the image. If the URLs aren't equal, we assume the two
-images are different. If you end up using the Happo API directly, you are
-responsible for providing bitmap-unique URLs when you upload reports. If you use
-the Happo client, this is automatically taken care of.
+images are different. If you store your images yourself, you are responsible for
+providing bitmap-unique URLs when you upload reports. If you use the Happo
+client or [the Happo Image API](image-api.md), this is automatically taken care
+of.
 
 ### Bitmap hashing
 

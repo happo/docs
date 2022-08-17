@@ -47,6 +47,9 @@
       "ignoring-diffs": {
         "title": "Ignoring diffs"
       },
+      "image-api": {
+        "title": "Image API"
+      },
       "multi-project": {
         "title": "Multi-project setup"
       },

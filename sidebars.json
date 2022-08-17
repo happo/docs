@@ -23,6 +23,7 @@
       "compare-threshold",
       "multi-project",
       "performance",
+      "image-api",
       "browser-updates",
       "spurious-diffs",
       "ignoring-diffs",
