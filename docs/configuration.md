@@ -168,6 +168,39 @@ module.exports = {
 };
 ```
 
+### Target `applyPseudoClasses`
+
+If set to `true`, this option will allow you to add `data-happo-hover` and
+`data-happo-focus` attributes to your DOM elements and have Happo apply either
+`:hover` or `:focus` styles. Let's say you have this markup:
+
+```
+<button>Hover me</button>
+<style>
+  button:hover {
+    background-color: blue;
+  }
+</style>
+```
+
+If you want the hover style to be applied before taking the screenshot (making
+the button blue), you can change the markup to this:
+
+```
+<button data-happo-hover>Hover me</button>
+<style>
+  button:hover {
+    background-color: blue;
+  }
+</style>
+```
+
+Similar to hover, you can also add focus to elements using `data-happo-focus`:
+
+```
+<input type="text" data-happo-focus>
+```
+
 ## `project`
 
 If you have multiple projects configured for your happo.io account, you can
