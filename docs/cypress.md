@@ -64,6 +64,7 @@ module.exports = on => {
   happoTask.register(on);
 };
 ```
+
 <!--END_DOCUSAURUS_CODE_TABS-->
 
 Add a `.happo.js` file with some minimal/required configuration:
@@ -319,6 +320,7 @@ Happo auto-detects the following CI environments:
 - GitHub Actions
 - Circle CI
 - Travis CI
+- Azure DevOps
 
 If you are using a different CI service, you'll have to set a few environment
 variables before invoking the test suite:
@@ -391,6 +393,7 @@ workflows:
           command-prefix: 'npx happo-e2e -- npx'
 ```
 
+
 ### Travis CI example
 
 This is a simplified example of using Cypress with Happo in Travis CI. For a
@@ -405,6 +408,35 @@ install:
   - npm ci
 script:
   - $(npm bin)/happo-e2e -- $(npm bin)/cypress run
+```
+
+### Azure DevOps
+
+Here's an example of how you can run Cypress with Happo in an Azure DevOps
+environment. This example assumes you have a
+[Pull request trigger](https://docs.microsoft.com/en-us/azure/devops/pipelines/release/triggers?view=azure-devops#pull-request-triggers)
+set up in your repository.
+
+```yaml
+trigger:
+  - master
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+  - task: NodeTool@0
+    inputs:
+      versionSpec: '16.x'
+    displayName: 'Install Node.js'
+  - script: |
+      npm ci
+      npx happo-e2e -- npx cypress run
+    displayName: 'Install and Run Happo'
+    env:
+      HAPPO_API_KEY: $(happoApiKey)
+      HAPPO_API_SECRET: $(happoApiSecret)
+      HAPPO_COMMAND: happo
 ```
 
 ### Parallel builds
