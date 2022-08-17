@@ -44,4 +44,31 @@ Add a `happo` script to your `package.json` file:
 
 ## Running
 
-Invoke `npm run happo run` to execute the `pages` test suite.
+Invoke `npm run happo run` to execute the `pages` test suite. To run in CI,
+follow [the Continuous Integration guide](continuous-integration.md).
+
+## Options
+
+Each item in the `pages` array can the following optional attributes in addition
+to `url` and `title`:
+
+### `waitForContent`
+
+If present, Happo will wait for content to appear on the page before taking the
+screenshot. E.g.
+
+```js
+module.exports = {
+  pages: [
+    {
+      url: 'https://twitter.com/',
+      title: 'Twitter',
+      waitForContent: 'Sign up with phone',
+    },
+  ],
+};
+```
+
+Happo will wait at most 10 seconds for the content to appear before it takes the
+screenshot.
+
