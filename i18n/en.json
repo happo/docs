@@ -79,6 +79,9 @@
       },
       "storybook": {
         "title": "Storybook"
+      },
+      "webhooks": {
+        "title": "Webhooks"
       }
     },
     "links": {
