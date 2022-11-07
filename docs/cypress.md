@@ -482,8 +482,7 @@ workflows:
             'HAPPO_NONCE=${CIRCLE_WORKFLOW_ID} npx happo-e2e -- npx'
           post-steps:
             - run:
-                'HAPPO_NONCE=${CIRCLE_WORKFLOW_ID} node bin/happo-e2e.js
-                finalize'
+                'HAPPO_NONCE=${CIRCLE_WORKFLOW_ID} npx happo-e2e finalize'
 ```
 
 Notice how the same `HAPPO_NONCE` is used in both the Cypress run itself and the
