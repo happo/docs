@@ -8,7 +8,7 @@ fun nor productive. We work hard to keep Happo as fast as we possibly can
 without sacrificing robustness.
 
 Conventional screenshot testing setups are typically slow to run. Happo tries to
-do better by running things in parallell, caching previous runs and optimizing
+do better by running things in parallel, caching previous runs and optimizing
 how screenshot images are stored. The time it takes to run Happo will mostly be
 decided by a few factors:
 

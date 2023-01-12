@@ -10,7 +10,7 @@ There are two reasons we've made Happo strict about differences. The first one
 comes from our experience doing screenshot testing over the last decade — it's
 just inherently hard to know when a subtle diff is okay. The second reason is
 performance. Comparing bitmaps is expensive, so we want to avoid that as much as
-possible. Happo processes hundreds, event thousands of diffs every minute.
+possible. Happo processes hundreds, even thousands of diffs every minute.
 Having to dig into the actual pixels would mean comparisons would run a lot
 slower. So instead we diff based on technique called
 ["bitmap hashing"](native.md#bitmap-hashing). Each screenshot is assigned a hash
