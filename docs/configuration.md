@@ -201,6 +201,37 @@ Similar to hover, you can also add focus to elements using `data-happo-focus`:
 <input type="text" data-happo-focus>
 ```
 
+### Target `prefersReducedMotion`
+
+Set `prefersReducedMotion: true` to make the browser prefer less motion when
+rendering the UI.
+
+```js
+// .happo.js
+module.exports = {
+  targets: {
+    chrome: new RemoteBrowserTarget('chrome', {
+      viewport: '1024x768',
+      prefersReducedMotion: true,
+    }),
+  },
+};
+```
+
+When enabled, media queries that use `prefers-reduced-motion: reduce` will be
+activated.
+
+```css
+@media (prefers-reduced-motion: reduce) {
+  button {
+    animation: none;
+  }
+}
+```
+
+The `prefersReducedMotion` option is available in Chrome, Firefox, Safari and
+Edge.
+
 ## `project`
 
 If you have multiple projects configured for your happo.io account, you can
