@@ -133,6 +133,66 @@ storiesOf('FooComponent', module)
 
 <!--END_DOCUSAURUS_CODE_TABS-->
 
+### Dark mode and themes
+
+If you want to take screenshots in more than one theme, you can make Happo
+automatically render stories in several themes. This is great if you for
+instance want to make sure that your components look right in both dark mode and
+light mode.
+
+Start by adding a `happo.themes` parameter to one or more of your stories:
+
+```js
+const Foo = () => <FooExample />;
+Foo.parameters = {
+  happo: {
+    themes: ['light', 'dark'],
+  },
+};
+export { Foo };
+```
+
+Additionally, you also need to provide Happo with a "theme switcher" function.
+The `happo-plugin-storybook/register` import will export a `setThemeSwitcher`
+function that will allow you to control theme switching. Here's an example that
+makes use of `storybook-dark-mode`:
+
+```js
+// .storybook/preview.js
+import { setThemeSwitcher } from 'happo-plugin-storybook/register';
+import { DARK_MODE_EVENT_NAME } from 'storybook-dark-mode';
+
+setThemeSwitcher((theme, channel) => {
+  return new Promise(resolve => {
+    const isDarkMode = theme === 'dark';
+
+    // Listen for dark mode to change and resolve.
+    channel.once(DARK_MODE_EVENT_NAME, resolve);
+    // Change the theme.
+    channel.emit(DARK_MODE_EVENT_NAME, isDarkMode);
+  });
+});
+```
+
+The `theme` passed to your theme switcher function is the name of the theme that
+Happo wants to switch to. If we use the `Foo` example from above, it will be
+either the string `'light'` or the string `'dark'`.
+
+The `channel` parameter passed to your theme switcher as the second argument is
+[the addons channel](https://storybook.js.org/docs/vue/addons/addons-api#addonsgetchannel).
+You can use this to subscribe to and send events.
+
+If you want to set `happo.themes` globally for all stories, the best way is
+through the `parameters` export in `.storybook/preview.js`:
+
+```js
+// .storybook/preview.js
+
+export const parameters = {
+  happo: { themes: ['light', 'dark'] },
+};
+```
+
 ### Limiting targets
 
 If you want to avoid rendering an example in all targets, you can use a
