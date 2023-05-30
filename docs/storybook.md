@@ -376,6 +376,40 @@ storiesOf('FooComponent', module).add('delayed', () => <FooComponent />, {
 
 <!--END_DOCUSAURUS_CODE_TABS-->
 
+### Overriding the default render timeout
+
+By default, Happo will wait up to 2 seconds for a story to complete. In some
+cases, you might have to increase this timeout to allow certain things to finish
+up properly. An example could be if you have a story with a `play` function
+using `userEvent.type` with a delay.
+
+```js
+import { userEvent } from '@storybook/testing-library';
+
+export const InteractiveStory = {
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.type(canvas.getByRole('textbox'), 'some longer text', { delay: 200 })  ;
+  },
+};
+```
+
+This story would take over 3 seconds to finish. To make happo wait that long,
+you can use `setRenderTimeoutMs` to increase the timeout.
+
+```
+// .storybook/preview.js
+import { setRenderTimeoutMs } from 'happo-plugin-storybook/register';
+
+setRenderTimeoutMs(5000);
+```
+
+Setting a longer timeout won't affect rendering times for fast/regular stories.
+It is only in effect if you use [the `play`
+function](https://storybook.js.org/docs/react/writing-stories/play-function) to
+do interactions, or if you use [`waitFor`](#waiting-for-a-condition-to-be-truthy) or
+[`waitForContent`](#waiting-for-content).
+
 ### The `beforeScreenshot` hook
 
 If you need to interact with the DOM before a screenshot is taken you can use
