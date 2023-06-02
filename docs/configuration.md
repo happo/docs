@@ -232,6 +232,34 @@ activated.
 The `prefersReducedMotion` option is available in Chrome, Firefox, Safari and
 Edge.
 
+### Target `allowPointerEvents`
+
+By default, Happo injects this css to prevent spurious hover effects caused by
+the system mouse pointer:
+
+```css
+* {
+  pointer-events: none !important;
+}
+```
+
+If you rely on mouse interaction in your tests, e.g. when using [Storybook
+interactive stories](storybook.md#overriding-the-default-render-timeout), you
+might have to tell Happo to skip injecting the pointer-event css block. You can
+do that through the `allowPointerEvents` option.
+
+```js
+// .happo.js
+module.exports = {
+  targets: {
+    chrome: new RemoteBrowserTarget('chrome', {
+      viewport: '1024x768',
+      allowPointerEvents: true,
+    }),
+  },
+};
+```
+
 ## `project`
 
 If you have multiple projects configured for your happo.io account, you can
