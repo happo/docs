@@ -112,6 +112,57 @@ fails. The `--allow-failures` flag for the `happo-e2e` command can then be used:
 npx happo-e2e --allow-failures -- npx playwright test
 ```
 
+## Selecting targets
+
+If you want to avoid rendering an example in all browser targets (found in
+`.happo.js`), you can use the `targets` option. The example will then be
+rendered in the specified targets exclusively.
+
+```js
+await happoPlaywright.screenshot(page, heroImage, {
+  component: 'Footer',
+  variant: 'Default',
+  targets: ['chrome-small'],
+});
+```
+
+In this example, the "Footer" snapshot will only be rendered in the target named
+`'chrome-small'` found in `.happo.js`.
+
+### Dynamic targets
+
+If you want to create a snapshot in a target that isn't defined in the
+`.happo.js` config, you can use an object with `name`, `browser` and `viewport`
+properties. Here's an example where a snapshot is taken in a dynamically
+generated target:
+
+```js
+await happoPlaywright.screenshot(page, heroImage, {
+  component: 'Footer',
+  variant: 'Default',
+  targets: [{ name: 'firefox-small', browser: 'firefox', viewport: '400x800' }],
+});
+```
+
+Here, "Footer" will only be rendered in a 400x800px Firefox window.
+
+You can mix and match dynamic targets and target names as well:
+
+```js
+await happoPlaywright.screenshot(page, heroImage, {
+  component: 'Footer',
+  variant: 'Default',
+  targets: [
+    'chrome-small',
+    { name: 'firefox-small', browser: 'firefox', viewport: '400x800' },
+  ],
+});
+```
+
+"Footer" is now rendered in Chrome (target specified in `.happo.js`) and Firefox
+(dynamic target).
+
+
 ## Continuous Integration
 
 If you run the test suite in a CI environment, the `happo-playwright` module
