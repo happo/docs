@@ -24,6 +24,7 @@
       "compare-threshold",
       "multi-project",
       "performance",
+      "user-roles",
       "image-api",
       "browser-updates",
       "spurious-diffs",

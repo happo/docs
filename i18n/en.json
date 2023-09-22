@@ -80,6 +80,9 @@
       "storybook": {
         "title": "Storybook"
       },
+      "user-roles": {
+        "title": "Roles and permissions"
+      },
       "webhooks": {
         "title": "Webhooks"
       }
