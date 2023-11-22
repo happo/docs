@@ -329,18 +329,8 @@ storiesOf('PaymentForm', module).add('default', () => <PaymentForm />, {
 > get to the bottom of the issue.
 
 Happo will make its best to wait for your stories to render, but at times you
-might need a little more control in the form of delays. There are two ways to
-set delays: one global and one per story. Here's an example of setting a global
-delay:
-
-```js
-// .storybook/preview.js
-import { setDefaultDelay } from 'happo-plugin-storybook/register';
-
-setDefaultDelay(100); // in milliseconds
-```
-
-Use the `happo.delay` parameter to set an individual delay for a story:
+might need a little more control in the form of delays. Use the `happo.delay`
+parameter to set an individual delay for a story:
 
 <!--DOCUSAURUS_CODE_TABS-->
 <!-- CSF -->
