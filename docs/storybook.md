@@ -461,6 +461,57 @@ export { Foo };
 
 Same as for `beforeScreenshot`, you can use `async` as well.
 
+### Using `forceHappoScreenshot`
+
+If you are using the
+[play function ](https://storybook.js.org/docs/react/writing-stories/play-function)
+and the [Interactions
+addon](https://storybook.js.org/docs/react/essentials/interactions) you can
+force Happo to take screenshots of different steps along the way. Here's an
+example of a Dropdown story that we open and close in two different steps:
+
+```js
+import { forceHappoScreenshot } from 'happo-plugin-storybook/register';
+
+export const Dropdown = {
+  play: async ({ args, canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step('open', async () => {
+      await userEvent.click(canvas.getByRole('button'));
+      await expect(canvas.getByText('Edit item')).toBeInTheDocument();
+      await forceHappoScreenshot('open');
+    });
+
+    await step('closed', async () => {
+      await userEvent.click(canvas.getByRole('button'));
+      await expect(canvas.getByText('Edit item')).not.toBeInTheDocument();
+      await forceHappoScreenshot('closed');
+    });
+  },
+};
+```
+
+The `forceHappoScreenshot` function takes a string argument which will be used
+to identify the story in the Happo report. In the above example, you will see
+these snapshots:
+
+- Dropdown > Default-open
+- Dropdown > Default-closed
+- Dropdown > Default
+
+Apart from taking all the "forced" screenshot, Happo also takes one screenshot
+of the "finished" state of the play function. This means that you could
+potentially omit the last step in the play execution, since it will be part of
+the Happo report anyway.
+
+Under the hood, `forceHappoScreenshot` throws an error that gets picked up by
+Happo. This means that the play function will be invoked several times,
+restarting execution from the beginning (until Happo finds a step that it hasn't
+seen before). When the `play` function is executed outside of Happo (e.g. when
+you're using the Storybook UI), the `forceHappoScreenshot` call will simply be
+ignored.
+
 ## Caveats
 
 When you're using this plugin, some of the regular Happo commands and
