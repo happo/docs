@@ -246,6 +246,33 @@ HAPPO_DOWNLOAD_ALL=true npx happo-e2e -- npx cypress run
 With this environment variable set, all assets are assumed to be private (i.e.
 not publicly accessible).
 
+### Skipping snapshots
+
+If you run a subset of the tests in your test suite, Happo will show "Deleted
+examples" in the report. To prevent this from happening, you can pass a
+`--skippedExamples` option to the `happo-e2e finalize` call.
+
+The `--skippedExamples` option needs to be an array coded as a JSON string. Each
+item in the array needs a `component`, `variant`, and `target`, all strings.
+Here's an example call:
+
+```sh
+happo-e2e finalize --skippedExamples '[{"component":"Button","variant":"default","target":"chrome-small"}]'
+```
+
+Remember to skip examples in all targets you have defined in .happo.js. If you
+for instance have targets named "chrome-small" & "firefox-large" in .happo.js,
+you should add two items per snapshot you are skipping. E.g.
+
+```sh
+happo-e2e finalize --skippedExamples '[{"component":"Button","variant":"default","target":"chrome-small"}, {"component":"Button","variant":"default","target":"firefox-large"}]'
+```
+
+Finding the skipped snapshots can be a little tricky, but a little bit of code
+introspection could help. Here's an example of a script that can serve as a
+base:
+https://github.com/happo/happo-e2e/issues/21#issuecomment-1825776491
+
 ## Troubleshooting
 
 ### I need support!
