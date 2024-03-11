@@ -68,6 +68,9 @@
       "reviewing-diffs": {
         "title": "Reviewing diffs"
       },
+      "single-sign-on": {
+        "title": "SSO (Single sign-on)"
+      },
       "spurious-diffs": {
         "title": "Spurious diffs"
       },

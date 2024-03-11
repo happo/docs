@@ -25,6 +25,7 @@
       "multi-project",
       "performance",
       "user-roles",
+      "single-sign-on",
       "image-api",
       "browser-updates",
       "spurious-diffs",
