@@ -4,11 +4,11 @@ title: SSO (Single sign-on)
 ---
 
 To simplify access to Happo you can let users sign in to Happo using your own
-Identity Provider (IdP) with SAML. This guide will provide step-by-step
-instructions on how to configure different Identity Providers. If you can't find
-your Identity Provider here and the general instructions aren't specific enough
-to get you through the setup, don't hesitate to reach out to us at
-support@happo.io and we will provide hands-on assistance.
+Identity Provider (IdP) using the SAML protocol. This guide will provide
+step-by-step instructions on how to configure different Identity Providers. If
+you can't find your Identity Provider here and the general instructions aren't
+specific enough to get you through the setup, don't hesitate to reach out to us
+at support@happo.io and we will provide hands-on assistance.
 
 ## General instructions
 
@@ -228,13 +228,13 @@ application type.
 
 #### Enable the SAML2 Web App addon
 
-Under "Addons", enable "SAML2 Web App". Copy the following properties:
+Under "Addons" for the new application you just created, enable "SAML2 Web App".
+Copy the following properties:
 
 - **Issuer** -- We're going to use that on the Happo side as the Issuer ID.
 - **Identity Provider Login URL** -- This is the Entry point we need for Happo.
-
-Also, download the **Identity Provider Certificate** and store that. We're going
-to use that later.
+- Download the **Identity Provider Certificate**. We're going to use that on the
+  Happo side later.
 
 #### Configure the callback URL
 
