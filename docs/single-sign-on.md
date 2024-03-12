@@ -196,20 +196,86 @@ the Happo side.
 On the [Access Control page](https://happo.io/user-access) for your Happo
 account, enter the following properties in the SSO form:
 
-- Domain: Your own domain, e.g. `example.com`. The domain is used to associate
-  an SSO sign-in with a Happo account.
+- **Domain**: Your own domain, e.g. `example.com`. The domain is used to
+  associate an SSO sign-in with a Happo account.
 
-- Issuer ID: Enter `https://happo.io/auth/a/<accountId>/sso/entityID`, where
+- **Issuer ID**: Enter `https://happo.io/auth/a/<accountId>/sso/entityID`, where
   `<accountId>` is your Happo account ID. This URL needs to be the same one you
   configured on the Google side, as the `Entity ID`.
 
-- Entry point: Copy-paste the SSO URL from the SAML metadata on the Google side.
-
-- Logout URL: https://happo.io/ (Google doesn't support SLO, so we just direct
-  people to the start page when they sign out)
-
-- Certificate: Copy-paste the Certificate from the SAML metadata on the Google
+- **Entry point**: Copy-paste the SSO URL from the SAML metadata on the Google
   side.
+
+- **Logout URL**: https://happo.io/ (Google doesn't support SLO, so we just
+  direct people to the start page when they sign out)
+
+- **Certificate**: Copy-paste the Certificate from the SAML metadata on the
+  Google side.
+
+## Auth0 by Okta
+
+Here's a guide on how to use Auth0 as the IdP.
+
+### Setup on the Auth0 side
+
+#### Create Happo application
+
+First, we're going to create an app in Auth0. When you're signed in to your
+Auth0 dashboard, go to "Applications > Applications" and click on "Create
+Application". In the form that opens, enter "Happo" (or something similar) as
+the name of the application and select "Regular Web Application" as the
+application type.
+
+#### Enable the SAML2 Web App addon
+
+Under "Addons", enable "SAML2 Web App". Copy the following properties:
+
+- **Issuer** -- We're going to use that on the Happo side as the Issuer ID.
+- **Identity Provider Login URL** -- This is the Entry point we need for Happo.
+
+Also, download the **Identity Provider Certificate** and store that. We're going
+to use that later.
+
+#### Configure the callback URL
+
+In the SAML2 Web App dialog, switch to the "Settings" tab. Under **Application
+Callback URL**, enter `https://happo.io/auth/a/<accountId>/sso/callback`, where
+`<accountId>` is the ID of your Happo account. To find the account ID, go to
+your Happo dashboard and copy the numeric ID from the location bar URL.
+
+Scroll down and Save/Enable the SAML2 Web App settings.
+
+#### Add Happo as allowed logout URL
+
+In your Auth0 dashboard, go to the general "Settings" page (sometimes called
+"Tenant Settings"). You can click the link in the sidebar menu that says
+"Settings". Go to the "Advanced" tab. Under "Allowed logout URLs" add
+`https://happo.io/`. Save the new settings.
+
+### Setup on the Happo side
+
+On the [Access Control page](https://happo.io/user-access) for your Happo
+account, enter the following properties in the SSO form:
+
+- **Domain**: Your own domain, e.g. `example.com`. The domain is used to
+  associate an SSO sign-in with a Happo account.
+
+- **Issuer ID**: Copy-paste the "Issuer" value that you got from Auth0 in the
+  SAML2 Web App dialog.
+
+- **Entry point**: Copy-paste the "Identity Provider Login URL" from the SAML2
+  Web App dialog on the Auth0 side.
+
+- **Logout URL**: Enter
+  `https://<tenantId>.us.auth0.com/v2/logout?returnTo=https%3A%2F%2Fhappo.io%2F`
+  where `<tenantId>` is the ID of your auth0 account. You can copy the
+  `tenantId` from the Entry point URL. As an example, if the Entry point URL is
+  `https://dev-ggwmzlinwh00kyt8.us.auth0.com/samlp/ISFXPSqXuSXekpqBwXzZdqnmRpmQHvAO`
+  the Logout URL is going to be
+  `https://dev-ggwmzlinwh00kyt8.us.auth0.com/v2/logout?returnTo=https%3A%2F%2Fhappo.io%2F`
+
+- **Certificate**: Copy-paste the Certificate from the file you downloaded from
+  the SAML2 Web App dialog on the Auth0 side.
 
 ## Testing
 
