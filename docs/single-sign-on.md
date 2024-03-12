@@ -252,6 +252,26 @@ In your Auth0 dashboard, go to the general "Settings" page (sometimes called
 "Settings". Go to the "Advanced" tab. Under "Allowed logout URLs" add
 `https://happo.io/`. Save the new settings.
 
+#### Adding Happo specific roles
+
+To add roles that Happo recognize, you can use the Authorization Extension in
+Auth0. From the Auth0 dashboard, click "Authorization" in the sidebar menu. The
+Authorization Extension will load for you. Once loaded, click on "Roles" in the
+sidebar menu, then use the "Create role" button. In the form that opens, enter
+the following values:
+
+- **Application**: Select "Happo", then click "Next"
+- **Name**: Enter `Happo Admin` (make sure capitalization is correct as this
+  value is case-sensitive).
+- **Description**: Type "A Happo Admin can manage the Happo account" or
+  something similar.
+
+Press "Save" to add the new role. Then go ahead and assign this role to the
+right users. When they sign in to Happo, they will have admin abilities.
+
+If your Happo account is set to only allow specific users to review reports, you
+can repeat the above steps for a `Happo Reviewer` role as well.
+
 ### Setup on the Happo side
 
 On the [Access Control page](https://happo.io/user-access) for your Happo
