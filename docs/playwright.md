@@ -213,8 +213,8 @@ is that it's unique to the current CI run.
 
 ### Email notifications
 
-If you set a `HAPPO_NOTIFY` environment variable as part of your Cypress run, an
-email will be sent out when the Happo comparison report is ready.
+If you set a `HAPPO_NOTIFY` environment variable as part of your Playwright run,
+an email will be sent out when the Happo comparison report is ready.
 
 Usage instructions for `HAPPO_NOTIFY` is available in
 [the Continuous Integration docs](continuous-integration.md#email-notifications).
@@ -228,19 +228,19 @@ By default, this server is listening on port 5339. If you need to change that,
 pass a `--port` argument, like so:
 
 ```bash
-npx happo-e2e --port 5432 -- npx cypress run
+npx happo-e2e --port 5432 -- npx playwright test
 ```
 
 ### Download all assets
 
-By default, happo-cypress will download assets found locally and include in an
+By default, happo-e2e will download assets found locally and include in an
 assets package sent to happo.io. Any external URL will be left as-is, which
 means they are expected to be publicly accessible by Happo workers. To include
 external assets in the assets package as well, set a `HAPPO_DOWNLOAD_ALL`
 environment variable.
 
 ```bash
-HAPPO_DOWNLOAD_ALL=true npx happo-e2e -- npx cypress run
+HAPPO_DOWNLOAD_ALL=true npx happo-e2e -- npx playwright test
 ```
 
 With this environment variable set, all assets are assumed to be private (i.e.
@@ -284,7 +284,7 @@ We're here to help — send an email to support@happo.io and we'll assist you.
 The `happo-playwright` module will disable itself if it can't detect any api
 tokens (`apiKey` and `apiSecret` in config). Check to make sure your `.happo.js`
 config is properly set up. There might also be more information in the console
-logs from Cypress. Look for lines starting with `[HAPPO]`.
+logs from Playwright. Look for lines starting with `[HAPPO]`.
 
 ### Where are my screenshots?
 
@@ -307,5 +307,5 @@ happened:
   something like `#start-page .header { color: red }` and screenshoot `.header`,
   the red color will be missing. This is because Happo only sees the `.header`
   element, never the surrounding page.
-- There could be a bug in how `happo-cypress` collects styles and assets. Reach
+- There could be a bug in how `happo-e2e` collects styles and assets. Reach
   out to support@happo.io and we'll triage.

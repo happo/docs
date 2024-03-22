@@ -120,7 +120,7 @@ disabled for the whole test suite.
 ### Usage with `cypress open`
 
 When running Cypress tests locally using the `cypress open` command, Happo is
-disabled by default. The `happo-cypress` wrapper won't work with `cypress open`
+disabled by default. The `happo-e2e` wrapper won't work with `cypress open`
 since it depends on the Cypress command to finish after a test run (which won't
 happen with `cypress open`). To enable Happo in these scenarios, set
 `HAPPO_ENABLED=true` as an environment variable and set the
@@ -305,8 +305,9 @@ cy.happoHideDynamicElements({
 
 ## Continuous Integration
 
-If you run the test suite in a CI environment, the `happo-cypress` module will
-do its best to auto-detect your environment and adapt its behavior accordingly:
+If you run the test suite in a CI environment, the `happo-cypress` and
+`happo-e2e` modules will do their best to auto-detect your environment and adapt
+its behavior accordingly:
 
 - On PR builds, compare the screenshots against the master branch
 - On master builds, simply create the Happo report
@@ -536,7 +537,7 @@ The options passed to `transformDOM` are:
 
 ### Download all assets
 
-By default, happo-cypress will download assets found locally and include in an
+By default, happo-e2e will download assets found locally and include in an
 assets package sent to happo.io. Any external URL will be left as-is, which
 means they are expected to be publicly accessible by Happo workers. To include
 external assets in the assets package as well, set a `HAPPO_DOWNLOAD_ALL`
@@ -614,8 +615,7 @@ happo-e2e finalize --skippedExamples '[{"component":"Button","variant":"default"
 
 Finding the skipped snapshots can be a little tricky, but a little bit of code
 introspection could help. Here's an example of a script that can serve as a
-base:
-https://github.com/happo/happo-e2e/issues/21#issuecomment-1825776491
+base: https://github.com/happo/happo-e2e/issues/21#issuecomment-1825776491
 
 ## Troubleshooting
 
