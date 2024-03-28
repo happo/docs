@@ -228,6 +228,27 @@ you need to set a few environment variables:
 }
 ```
 
+## A note on using `yarn`
+
+If you are invoking any of the happo CI script using `yarn` and you are using
+yarn version 2 or later, there is a chance you'll run into this error:
+
+```
+node_modules/happo.io/bin/happo-ci-github-actions:3
+# Make the whole script fail on errors
+^
+SyntaxError: Invalid or unexpected token
+```
+
+This is because starting with version 2, yarn assumes all scripts to be node
+scripts. All the happo-ci scripts are written in bash which yarn won't notice.
+To work around this, make the following changes:
+- Add `nodeLinker: node-modules` to `.yarnrc.yml`. This will ensure that scripts
+  are available in `node_modules/.bin`.
+- Invoke the happo-ci script using `npx -p happo.io <name_of_script>`. When
+  scripts are in `node_modules/.bin`, `npx` won't download the happo.io library
+  again. `npx` will respect the bash script and execute it properly.
+
 ## Posting build statuses
 
 Your Happo account can be configured to post build statuses to your PRs/commits.
