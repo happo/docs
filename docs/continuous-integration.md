@@ -217,7 +217,7 @@ you need to set a few environment variables:
 - `PREVIOUS_SHA` - the sha of the baseline commit
 - `CURRENT_SHA` - the sha of the current HEAD
 - `CHANGE_URL` - a link back to the change
-  ([further instructions](#setting-the-right---linkchange_url))
+  ([further instructions](#setting-the-right-link))
 
 ```json
 {
@@ -243,6 +243,7 @@ SyntaxError: Invalid or unexpected token
 This is because starting with version 2, yarn assumes all scripts to be node
 scripts. All the happo-ci scripts are written in bash which yarn won't notice.
 To work around this, make the following changes:
+
 - Add `nodeLinker: node-modules` to `.yarnrc.yml`. This will ensure that scripts
   are available in `node_modules/.bin`.
 - Invoke the happo-ci script using `npx -p happo.io <name_of_script>`. When
@@ -453,3 +454,11 @@ several recipients:
 ```bash
 export HAPPO_NOTIFY=user@example.com,service-account@mycompany.com
 ```
+
+## Setting the right link
+
+The `CHANGE_URL` environment variable is be sent to Happo and will be used to
+contextualize the report. Happo will link back to the CHANGE_URL whenever the
+report is shown. Some good examples of links to use:
+- A URL that leads to the pull request/merge request that started the build
+- A link to the commit associated with the build
