@@ -73,8 +73,9 @@ const siteConfig = {
 
   scripts: [
     {
-      src: 'https://hosted.okayanalytics.com/tracker.js?tid=OA-5496GAON',
-      async: true,
+      'data-domain': 'docs.happo.io',
+      src: 'https://plausible.io/js/script.js',
+      defer: true,
     },
   ],
   // For sites with a sizable amount of content, set collapsible to true.
