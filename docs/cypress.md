@@ -507,6 +507,20 @@ pass a `--port` argument, like so:
 npx happo-e2e --port 5432 -- npx cypress run
 ```
 
+### Passing along options
+
+Any options you pass to `happoScreenshot` or `happoHideDynamicElements` that we
+don't recognize we will pass along to the underlying Cypress tasks. This means
+you can for instance suppress logs by using`log: false`:
+
+```js
+cy.get('.header').happoScreenshot({
+  component: 'Header',
+  variant: 'large',
+  log: false,
+});
+```
+
 ### Transforming the DOM
 
 If you need to transform the DOM in some way before a snapshot is taken, you can
