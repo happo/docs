@@ -44,6 +44,9 @@
         "title": "Getting started",
         "sidebar_label": "Getting started"
       },
+      "hiding-content": {
+        "title": "Hiding Content"
+      },
       "ignoring-diffs": {
         "title": "Ignoring diffs"
       },

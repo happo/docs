@@ -37,6 +37,7 @@ dealing with spurious diffs:
   fetching, injecting the data needed to render it.
 - If you have animations controlled from JavaScript, find a way to disable them
   for the Happo test suite.
-- If individual elements are known to cause spuriousness, consider adding the
-  `data-happo-hide` attribute. This will render the element invisible in the
-  screenshot. E.g. `<div data-happo-hide>{Math.random()}</div>`.
+- If individual elements are known to cause spuriousness,
+  [consider adding the `data-happo-hide` attribute](hiding-content.md). This
+  will render the element invisible in the screenshot. E.g.
+  `<div data-happo-hide>{Math.random()}</div>`.

@@ -139,6 +139,24 @@ module.exports = {
 };
 ```
 
+### Target `hideBehavior`
+
+This option controls how Happo handles elements with the `data-happo-hide`
+attribute. The default is to make the elements with this attribute invisible. By
+using the value `ignore`, you can make the content appear in the screenshots but
+not taken into account when comparing.
+
+```js
+module.exports = {
+  targets: {
+    safari: new RemoteBrowserTarget('safari', {
+      viewport: '1024x768',
+      hideBehavior: 'ignore',
+    }),
+  },
+};
+```
+
 ### Target `useFullPageFallbackForTallScreenshots`
 
 This option applies to Chrome and Firefox only.
