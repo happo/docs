@@ -212,9 +212,96 @@ account, enter the following properties in the SSO form:
 - **Certificate**: Copy-paste the Certificate from the SAML metadata on the
   Google side.
 
+
+## Okta
+
+Here's a guide on how to use Okta as the IdP. Please note that these
+instructions are for a regular Okta application. If your using Auth0, please use
+[Auth0 specific instructions](#auth0-by-okta).
+
+### Setup on the Okta side
+
+#### Create Happo application
+
+First, we're going to create a new App Integration in Okta. When you're signed in to your
+Okta dashboard, go to "Applications > Applications" and click on "Create
+App Integration". In the dialog that opens, select "Saml 2.0" as
+the Sign-in method. Click "Next" and enter the following in the form that
+appears:
+
+- **App name**: Happo
+- **App logo**: Download the Happo hippo from
+  [https://happo.io/static/happo-hippo.png](https://happo.io/static/happo-hippo.png)
+  and upload it here.
+
+Click "Next".
+
+#### Configure SAML settings
+
+In the "Configure SAML" tab, enter the following values:
+
+- **Single sign-on URL** -- Enter
+  `https://happo.io/auth/a/<accountId>/sso/callback` here, where `<accoundId>`
+  is the ID of your Happo account. To find the account ID, go to your Happo
+  dashboard and copy the numeric ID from the location bar URL.
+- **Audience URI** -- Enter any URI that will validate the form here, e.g.
+  "http://happo.io". We will come back and change this later.
+- Under **Attribute Statements**, set Name to `emailaddress` and select
+  `user.email` as the Value.
+
+Finish the SAML settings by going through the "Feedback" section and clicking
+"Finish".
+
+#### Transfer issuer URI to Audience URI
+
+In the "Sign On" tab for the Happo application you've just created in Okta,
+click "More details" in the SAML 2.0 box. Copy the value for `Issuer` and go
+back to Configure SAML settings via the "General" tab followed by clicking the
+"Edit" button in the "SAML settings" box. Click "Next" to skip to the "Configure
+SAML" tab.
+
+Paste the `Issuer` value into the `Audience URI` field and save that change.
+
+#### Assign users to Happo application
+
+To allow people to sign in to Happo, you need to assign them to it. In the
+"Assignments" tab of the Happo application in Okta, click the "Assign" button
+and select either specific users to assign the app to or a group assignment.
+
+#### Prepare metadata values
+
+Before continuing to configuring the Happo side of things, expand the SAML 2.0
+metadata by going to the "Sign On" tab for the Happo application in Okta, and
+click "More details" to expand and see all values in the "SAML 2.0" section.
+We're going to use these values next.
+
+### Setup on the Happo side
+
+On the [Access Control page](https://happo.io/user-access) for your Happo
+account, enter the following properties in the SSO form:
+
+- **Domain**: Your own domain, e.g. `example.com`. The domain is used to
+  associate an SSO sign-in with a Happo account.
+
+- **Issuer ID**: Copy-paste the "Issuer" value that you have in the SAML 2.0
+  section on the Okta side.
+
+- **Entry point**: Copy-paste the "Sign on URL" from the SAML 2.0 section on the
+  Okta side.
+
+- **Logout URL**: Copy-paste the "Sign out URL" from the SAML 2.0 section on the
+  Okta side.
+
+- **Certificate**: Download the "Signing certificate" from the SAML 2.0 section
+  on the Okta side. Open the file and copy-paste all text, including the
+  "-----BEGIN CERTIFICATE-----" and "-----END CERTIFICATE-----" parts.
+
+
 ## Auth0 by Okta
 
-Here's a guide on how to use Auth0 as the IdP.
+Here's a guide on how to use Auth0 as the IdP. Please note that these
+instructions do not apply to a regular Okta application. If you're not using
+Auth0, use [the standard Okta instructions](#okta) instead.
 
 ### Setup on the Auth0 side
 
