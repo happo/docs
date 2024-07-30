@@ -216,7 +216,7 @@ account, enter the following properties in the SSO form:
 ## Okta
 
 Here's a guide on how to use Okta as the IdP. Please note that these
-instructions are for a regular Okta application. If your using Auth0, please use
+instructions are for a regular Okta application. If you're using Auth0, please use
 [Auth0 specific instructions](#auth0-by-okta).
 
 ### Setup on the Okta side
