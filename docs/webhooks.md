@@ -15,7 +15,6 @@ account to use this feature.
 <img
   src="/img/webhooks-new.png"
   alt="Adding a new webhook"
-  style="margin-left: 0"
   width="421"
   height="319"
 />
@@ -129,7 +128,6 @@ webhooks. You can also re-deliver an webhook using the admin UI.
 <img
   src="/img/webhooks-recent-deliveries.png"
   alt="Recent deliveries for a webhook"
-  style="margin-left: 0"
   width="664"
   height="283"
 />

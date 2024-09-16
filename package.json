@@ -1,17 +1,27 @@
 {
   "scripts": {
     "examples": "docusaurus-examples",
-    "start": "docusaurus-start",
-    "build": "docusaurus-build",
-    "publish-gh-pages": "docusaurus-publish",
-    "write-translations": "docusaurus-write-translations",
-    "rename-version": "docusaurus-rename-version",
+    "start": "docusaurus start",
+    "build": "docusaurus build",
+    "publish-gh-pages": "docusaurus publish",
+    "write-translations": "docusaurus write-translations",
+    "rename-version": "docusaurus rename-version",
     "prettier-fix": "prettier --write .",
-    "lint": "prettier --check ."
+    "lint": "prettier --check .",
+    "swizzle": "docusaurus swizzle",
+    "deploy": "docusaurus deploy",
+    "docusaurus": "docusaurus"
   },
   "devDependencies": {
-    "docusaurus": "^1.14.4",
     "prettier": "2.5.1"
   },
-  "version": "2.33.0"
+  "version": "2.33.0",
+  "dependencies": {
+    "@docusaurus/core": "2.4.3",
+    "@docusaurus/preset-classic": "2.4.3",
+    "classnames": "^2.5.1",
+    "clsx": "^1.1.1",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
+  }
 }
