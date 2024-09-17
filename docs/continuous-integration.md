@@ -10,8 +10,6 @@ know exactly what has changed in your UI.
 <img
   src="/img/happo-in-ci.png"
   alt="Happo status on a GitHub pull request"
-  width="1290"
-  height="494"
 /> _Example of a Happo status posted to a GitHub pull request._
 
 ## Setup
@@ -460,5 +458,6 @@ export HAPPO_NOTIFY=user@example.com,service-account@mycompany.com
 The `CHANGE_URL` environment variable is be sent to Happo and will be used to
 contextualize the report. Happo will link back to the CHANGE_URL whenever the
 report is shown. Some good examples of links to use:
+
 - A URL that leads to the pull request/merge request that started the build
 - A link to the commit associated with the build
