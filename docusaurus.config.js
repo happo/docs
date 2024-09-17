@@ -25,8 +25,8 @@ module.exports = {
       {
         docs: {
           path: './docs',
-          showLastUpdateAuthor: true,
-          showLastUpdateTime: true,
+          showLastUpdateAuthor: false,
+          showLastUpdateTime: false,
           sidebarPath: require.resolve('./sidebars.json'),
         },
 
