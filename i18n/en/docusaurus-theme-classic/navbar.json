@@ -1,0 +1,10 @@
+{
+  "title": {
+    "message": "Happo docs",
+    "description": "The title in the navbar"
+  },
+  "item.label.To happo.io »": {
+    "message": "To happo.io »",
+    "description": "Navbar item with label To happo.io »"
+  }
+}
