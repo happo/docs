@@ -11,4 +11,4 @@ RUN yarn build
 
 EXPOSE 3344
 
-CMD ["yarn", "start", "--no-watch", "--port", "3344"]
+CMD ["yarn", "serve", "--port", "3344"]
