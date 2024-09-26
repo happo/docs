@@ -162,7 +162,6 @@ await happoPlaywright.screenshot(page, heroImage, {
 "Footer" is now rendered in Chrome (target specified in `.happo.js`) and Firefox
 (dynamic target).
 
-
 ## Continuous Integration
 
 If you run the test suite in a CI environment, the `happo-playwright` module
@@ -186,11 +185,11 @@ If you are using a different CI service, you'll have to set a few environment
 variables before invoking the test suite:
 
 - `HAPPO_PREVIOUS_SHA` the commit sha that the branch/PR is based on (usually a
-  commit on master). Only set this for PR builds.
+  commit on `main`). Only set this for PR builds.
 - `HAPPO_CURRENT_SHA` the sha of the commit currently under test. Always set
   this.
 - `HAPPO_BASE_BRANCH` the default/base branch you use, e.g. `origin/dev`.
-  Defaults to `origin/master`, so you only need to set this if you are using a
+  Defaults to `origin/main`, so you only need to set this if you are using a
   different base branch.
 - `HAPPO_CHANGE_URL` a url to the PR/commit. Optional.
 
@@ -270,8 +269,7 @@ happo-e2e finalize --skippedExamples '[{"component":"Button","variant":"default"
 
 Finding the skipped snapshots can be a little tricky, but a little bit of code
 introspection could help. Here's an example of a script that can serve as a
-base:
-https://github.com/happo/happo-e2e/issues/21#issuecomment-1825776491
+base: https://github.com/happo/happo-e2e/issues/21#issuecomment-1825776491
 
 ## Troubleshooting
 
@@ -307,5 +305,5 @@ happened:
   something like `#start-page .header { color: red }` and screenshoot `.header`,
   the red color will be missing. This is because Happo only sees the `.header`
   element, never the surrounding page.
-- There could be a bug in how `happo-e2e` collects styles and assets. Reach
-  out to support@happo.io and we'll triage.
+- There could be a bug in how `happo-e2e` collects styles and assets. Reach out
+  to support@happo.io and we'll triage.

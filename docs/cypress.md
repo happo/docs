@@ -309,8 +309,8 @@ If you run the test suite in a CI environment, the `happo-cypress` and
 `happo-e2e` modules will do their best to auto-detect your environment and adapt
 its behavior accordingly:
 
-- On PR builds, compare the screenshots against the master branch
-- On master builds, simply create the Happo report
+- On PR builds, compare the screenshots against the `main` branch
+- On `main` branch builds, simply create the Happo report
 
 To get the results of the Happo jobs back to your PRs/commits, you need to
 install and configure the Happo GitHub app. Instructions are available
@@ -327,11 +327,11 @@ If you are using a different CI service, you'll have to set a few environment
 variables before invoking the test suite:
 
 - `HAPPO_PREVIOUS_SHA` the commit sha that the branch/PR is based on (usually a
-  commit on master). Only set this for PR builds.
+  commit on `main`). Only set this for PR builds.
 - `HAPPO_CURRENT_SHA` the sha of the commit currently under test. Always set
   this.
 - `HAPPO_BASE_BRANCH` the default/base branch you use, e.g. `origin/dev`.
-  Defaults to `origin/master`, so you only need to set this if you are using a
+  Defaults to `origin/main`, so you only need to set this if you are using a
   different base branch.
 - `HAPPO_CHANGE_URL` a url to the PR/commit. Optional.
 
@@ -345,13 +345,13 @@ workflow. It makes use of the
 name: Cypress with Happo workflow
 
 on:
-  # Configure this workflow to trigger on pull requests and pushes to master
+  # Configure this workflow to trigger on pull requests and pushes to main
   push:
     branches:
-      - master
+      - main
   pull_request:
     branches:
-      - master
+      - main
 
 jobs:
   cypress:
@@ -419,7 +419,7 @@ set up in your repository.
 
 ```yaml
 trigger:
-  - master
+  - main
 
 pool:
   vmImage: ubuntu-latest
