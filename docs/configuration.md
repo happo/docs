@@ -261,10 +261,10 @@ the system mouse pointer:
 }
 ```
 
-If you rely on mouse interaction in your tests, e.g. when using [Storybook
-interactive stories](storybook.md#overriding-the-default-render-timeout), you
-might have to tell Happo to skip injecting the pointer-event css block. You can
-do that through the `allowPointerEvents` option.
+If you rely on mouse interaction in your tests, e.g. when using
+[Storybook interactive stories](storybook.md#overriding-the-default-render-timeout),
+you might have to tell Happo to skip injecting the pointer-event css block. You
+can do that through the `allowPointerEvents` option.
 
 ```js
 // .happo.js
@@ -531,7 +531,7 @@ module.exports = {
 
 Happo uses jsdom internally. By default, it provides sane defaults to the
 `JSDOM` constructor. See
-[processSnapsInBundle.js](https://github.com/happo/happo.io/blob/master/src/processSnapsInBundle.js).
+[processSnapsInBundle.js](https://github.com/happo/happo.io/blob/main/src/processSnapsInBundle.js).
 You can override any options here but your mileage may vary. See
 https://github.com/jsdom/jsdom#simple-options. Here's an example where the
 document's `referrer` is being set:
