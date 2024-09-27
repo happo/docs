@@ -56,6 +56,15 @@ module.exports = {
       ],
     },
 
+    algolia: {
+      appId: 'W891E7QWKL',
+      apiKey: '6241805057afc76a5ec28a460d924638',
+      indexName: 'happo',
+
+      // https://docusaurus.io/docs/search#contextual-search
+      contextualSearch: true,
+    },
+
     image: 'img/happo-logo.svg',
 
     footer: {
