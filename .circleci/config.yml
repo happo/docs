@@ -3,7 +3,7 @@ version: 2.1
 jobs:
   publish-docker:
     docker:
-      - image: circleci/buildpack-deps:stretch
+      - image: cimg/base:current
     steps:
       - checkout
       - setup_remote_docker
