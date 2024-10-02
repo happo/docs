@@ -379,7 +379,9 @@ import { userEvent } from '@storybook/testing-library';
 export const InteractiveStory = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await userEvent.type(canvas.getByRole('textbox'), 'some longer text', { delay: 200 })  ;
+    await userEvent.type(canvas.getByRole('textbox'), 'some longer text', {
+      delay: 200,
+    });
   },
 };
 ```
@@ -387,7 +389,7 @@ export const InteractiveStory = {
 This story would take over 3 seconds to finish. To make happo wait that long,
 you can use `setRenderTimeoutMs` to increase the timeout.
 
-```
+```js
 // .storybook/preview.js
 import { setRenderTimeoutMs } from 'happo-plugin-storybook/register';
 
@@ -395,9 +397,10 @@ setRenderTimeoutMs(5000);
 ```
 
 Setting a longer timeout won't affect rendering times for fast/regular stories.
-It is only in effect if you use [the `play`
-function](https://storybook.js.org/docs/react/writing-stories/play-function) to
-do interactions, or if you use [`waitFor`](#waiting-for-a-condition-to-be-truthy) or
+It is only in effect if you use
+[the `play` function](https://storybook.js.org/docs/react/writing-stories/play-function)
+to do interactions, or if you use
+[`waitFor`](#waiting-for-a-condition-to-be-truthy) or
 [`waitForContent`](#waiting-for-content).
 
 ### The `beforeScreenshot` hook
@@ -465,10 +468,10 @@ Same as for `beforeScreenshot`, you can use `async` as well.
 
 If you are using the
 [play function ](https://storybook.js.org/docs/react/writing-stories/play-function)
-and the [Interactions
-addon](https://storybook.js.org/docs/react/essentials/interactions) you can
-force Happo to take screenshots of different steps along the way. Here's an
-example of a Dropdown story that we open and close in two different steps:
+and the
+[Interactions addon](https://storybook.js.org/docs/react/essentials/interactions)
+you can force Happo to take screenshots of different steps along the way. Here's
+an example of a Dropdown story that we open and close in two different steps:
 
 ```js
 import { forceHappoScreenshot } from 'happo-plugin-storybook/register';
