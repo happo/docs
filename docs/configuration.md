@@ -188,9 +188,10 @@ module.exports = {
 
 ### Target `applyPseudoClasses`
 
-If set to `true`, this option will allow you to add `data-happo-hover` and
-`data-happo-focus` attributes to your DOM elements and have Happo apply either
-`:hover` or `:focus` styles. Let's say you have this markup:
+If set to `true`, this option will allow you to add `data-happo-hover`,
+`data-happo-focus`, and `data-happo-active` attributes to your DOM elements and
+have Happo apply either `:hover`, `:focus`, or `:active` styles. Let's say you
+have this markup:
 
 ```html
 <button>Hover me</button>
@@ -217,6 +218,18 @@ Similar to hover, you can also add focus to elements using `data-happo-focus`:
 
 ```html
 <input type="text" data-happo-focus />
+```
+
+And finally, you can also add `data-happo-active` to elements that simulate
+`:active` state:
+
+```html
+<button data-happo-active>Click me</button>
+<style>
+  button:active {
+    background-color: red;
+  }
+</style>
 ```
 
 ### Target `prefersReducedMotion`
