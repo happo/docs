@@ -100,7 +100,7 @@ Then, configure `.circleci/config.yml` to run this script. Something like this:
 jobs:
   build:
     docker:
-      - image: circleci/node:8
+      - image: cimg/node:lts
     steps:
       - checkout
       - run:
@@ -140,19 +140,20 @@ Then, configure your workflow file to run this script. Here's an example:
 
 ```yaml
 name: Happo CI
+
 on:
   push:
-    branches: [master]
+    branches: [main]
   pull_request:
-    branches: [master]
+
 jobs:
   happo:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 100
-      - uses: actions/setup-node@v1
+      - uses: actions/setup-node@v4
       - run: npm ci
       - run: npm run happo-ci-github-actions
         env:
@@ -191,7 +192,7 @@ pool:
 steps:
   - task: NodeTool@0
     inputs:
-      versionSpec: '16.x'
+      versionSpec: '20.x'
     displayName: 'Install Node.js'
   - script: |
       npm ci
