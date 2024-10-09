@@ -307,3 +307,11 @@ happened:
   element, never the surrounding page.
 - There could be a bug in how `happo-e2e` collects styles and assets. Reach out
   to support@happo.io and we'll triage.
+
+### I'm migrating from `happo-cypress` and `transformDOM` is not working
+
+The `transformDOM` option is currently not supported in `happo-playwright`.
+
+If you're migrating from `happo-cypress` and are using `transformDOM` to hide
+content, you may be able to achieve similar results using
+[`data-happo-hide`](./hiding-content.md).
