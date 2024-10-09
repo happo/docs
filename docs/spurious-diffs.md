@@ -1,12 +1,12 @@
 ---
 id: spurious-diffs
-title: Spurious diffs
+title: Spurious/flaky diffs
 ---
 
 An important factor when constructing a good screenshot testing setup is to keep
-the number of spurious diffs to a minimum. A spurious diff (or a false positive)
-is when Happo finds a difference that isn't caused by a change in the code.
-These involve (but are not limited to):
+the number of flaky diffs to a minimum. A flaky diff (i.e. spurious diff or
+false positive) is when Happo finds a visual difference that isn't caused by a
+change in the code. These may involve (but are not limited to):
 
 - image loading
 - font loading
@@ -19,7 +19,7 @@ These involve (but are not limited to):
 Happo tries to take care of as many of these as possible, automatically. For
 instance, the following tasks are performed before taking the screenshot:
 
-- wait for images (including background images, srcset)
+- wait for images (including background images and `srcset`)
 - wait for custom fonts
 - wait for asynchronous data fetching (XHR, `window.fetch`)
 - disable CSS animations/transitions
@@ -27,27 +27,33 @@ instance, the following tasks are performed before taking the screenshot:
 
 ## Tips & tricks
 
-In some cases however, Happo can't automatically detect things that cause
-spuriousness. Here are some tips & tricks that you might find useful when
-dealing with spurious diffs.
+In some cases however, Happo can't automatically detect things that cause flaky
+diffs. Here are some tips & tricks that you might find useful when dealing with
+flaky diffs.
 
 ### Dates and timestamps
 
 If you have dates/timestamps, either injecting a fixed
-`new Date('2019-05-23T08:28:02.446Z')` into your component or freezing time via
+`new Date('2024-05-23T08:28:02.446Z')` into your component or freezing time via
 something like [mockdate](https://www.npmjs.com/package/mockdate) or
 [Sinon.js](https://sinonjs.org/) can help.
 
 ### External data
 
-If a component depends on external data (via some API), consider splitting out
-the data-fetching from the component and test the component without data
-fetching, injecting the data needed to render it.
+If a component depends on external data (e.g. via an API), consider splitting
+out the data fetching from the visual component and test the visual component
+without data fetching, injecting the data needed to render it.
 
 ### Animations
 
 If you have animations controlled from JavaScript, find a way to disable them
 for the Happo test suite.
+
+#### `prefers-reduced-motion` media query
+
+One way to avoid flaky diffs caused by animations is to disable animations for
+browsers that signal they prefer reduced motion and
+[configure your Happo targets to use the `prefersReducedMotion` option](./configuration#target-prefersreducedmotion).
 
 ### Stack traces
 
