@@ -30,6 +30,8 @@ module.exports = {
           sidebarPath: require.resolve('./sidebars.json'),
         },
 
+        blog: false, // Disable the blog plugin
+
         theme: {
           customCss: [require.resolve('./src/css/customTheme.css')],
         },
