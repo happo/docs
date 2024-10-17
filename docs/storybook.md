@@ -54,9 +54,9 @@ Add a `happo` script to `package.json`:
 These options are available to the `happoPluginStorybook` function:
 
 - `configDir` specify the name of the Storybook configuration directory. The
-  default is `.storybook`.
+  default is `'.storybook'`.
 - `outputDir` the name of the directory where compiled files are saved. The
-  default is '.out'.
+  default is `'.out'`.
 - `staticDir` directory where to load static files from, comma-separated list.
 - `usePrebuiltPackage` set to `true` to skip building storybook and instead use
   an already built package. It's important that the `outputDir` matches the
