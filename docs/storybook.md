@@ -49,6 +49,17 @@ Add a `happo` script to `package.json`:
 }
 ```
 
+Finally, add this to `.storybook/preview.js`:
+
+```js
+module.exports = {
+  addons: ['happo-plugin-storybook/preset'],
+};
+```
+
+The final step is optional but it will enable a "Happo" addons panel where you
+can inspect Happo parameters and invoke lifecycle functions.
+
 ## Options
 
 These options are available to the `happoPluginStorybook` function:
