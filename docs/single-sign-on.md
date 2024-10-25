@@ -212,22 +212,20 @@ account, enter the following properties in the SSO form:
 - **Certificate**: Copy-paste the Certificate from the SAML metadata on the
   Google side.
 
-
 ## Okta
 
 Here's a guide on how to use Okta as the IdP. Please note that these
-instructions are for a regular Okta application. If you're using Auth0, please use
-[Auth0 specific instructions](#auth0-by-okta).
+instructions are for a regular Okta application. If you're using Auth0, please
+use [Auth0 specific instructions](#auth0-by-okta).
 
 ### Setup on the Okta side
 
 #### Create Happo application
 
-First, we're going to create a new App Integration in Okta. When you're signed in to your
-Okta dashboard, go to "Applications > Applications" and click on "Create
-App Integration". In the dialog that opens, select "Saml 2.0" as
-the Sign-in method. Click "Next" and enter the following in the form that
-appears:
+First, we're going to create a new App Integration in Okta. When you're signed
+in to your Okta dashboard, go to "Applications > Applications" and click on
+"Create App Integration". In the dialog that opens, select "Saml 2.0" as the
+Sign-in method. Click "Next" and enter the following in the form that appears:
 
 - **App name**: Happo
 - **App logo**: Download the Happo hippo from
@@ -295,7 +293,6 @@ account, enter the following properties in the SSO form:
 - **Certificate**: Download the "Signing certificate" from the SAML 2.0 section
   on the Okta side. Open the file and copy-paste all text, including the
   "-----BEGIN CERTIFICATE-----" and "-----END CERTIFICATE-----" parts.
-
 
 ## Auth0 by Okta
 

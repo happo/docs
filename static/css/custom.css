@@ -11,7 +11,10 @@ body,
 button,
 input,
 textarea {
-  font-family: Helvetica Neue, Arial, sans-serif;
+  font-family:
+    Helvetica Neue,
+    Arial,
+    sans-serif;
   color: #4d4d4d;
 }
 
