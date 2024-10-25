@@ -98,7 +98,7 @@ Happo's workers. Save this file as `static/iframe.html` (replace "static" with
 the name of your static folder):
 
 ```html
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />

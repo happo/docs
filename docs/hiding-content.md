@@ -9,10 +9,8 @@ element is hidden:
 
 ```html
 <div>
-    You are visitor number
-    <div data-happo-hide="">
-        1,289
-    </div>
+  You are visitor number
+  <div data-happo-hide="">1,289</div>
 </div>
 ```
 
@@ -22,7 +20,7 @@ CSS:
 
 ```css
 [data-happo-hide] {
-    visibility: hidden;
+  visibility: hidden;
 }
 ```
 

@@ -5,9 +5,9 @@ title: Image API
 
 If you are doing a custom integration where you take your own screenshots, you
 can use the Happo Image API to store them. This API uses the same authentication
-mechanism as the regular API, so make sure to check out the [Authentication
-docs](https://happo.io/docs/api#authentication) first before you start making
-requests.
+mechanism as the regular API, so make sure to check out the
+[Authentication docs](https://happo.io/docs/api#authentication) first before you
+start making requests.
 
 ## Step 1: Generate a hash
 
@@ -25,6 +25,7 @@ screenshot itself.
 ```
 GET /api/images/:hash/upload-url
 ```
+
 There are two possible responses to this request. If no image with the provided
 hash has been saved before, the response will have an `uploadUrl` in its
 response:
@@ -53,8 +54,8 @@ RESPONSE:
 
 If the `uploadUrl` is present in the response, move on to the last step in the
 process. If there is no `uploadUrl` in the response, you can use the `url`
-directly, when you e.g. are creating a report in a [Native app
-integration](native.md).
+directly, when you e.g. are creating a report in a
+[Native app integration](native.md).
 
 ## Step 3: Upload image
 

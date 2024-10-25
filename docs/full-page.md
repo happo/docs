@@ -71,4 +71,3 @@ module.exports = {
 
 Happo will wait at most 10 seconds for the content to appear before it takes the
 screenshot.
-

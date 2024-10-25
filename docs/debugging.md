@@ -18,13 +18,13 @@ You'll land on the Source page. It looks something like this:
 ![The Source page](/img/happo-source-page.png) _The Source page for an "Alert"
 snapshot_
 
-The Source page has some details about what was used to produce the
-screenshot, and there are a few buttons here that can be useful. Depending on
-the type of integration you are using, you'll see one or more of these buttons:
+The Source page has some details about what was used to produce the screenshot,
+and there are a few buttons here that can be useful. Depending on the type of
+integration you are using, you'll see one or more of these buttons:
 
-- A "View recorded HTML" button (for [Happo Examples](examples.md) and [Cypress
-  setups](cypress.md)) that allow you to see the rendered HTML directly in the
-  browser, along with the CSS used.
+- A "View recorded HTML" button (for [Happo Examples](examples.md) and
+  [Cypress setups](cypress.md)) that allow you to see the rendered HTML directly
+  in the browser, along with the CSS used.
 - A "Download assets" button, where you can grab the images, fonts, etc, that
   were used when taking the screenshot.
 - A "Download static package" button that let's you fetch the statically built
@@ -34,18 +34,16 @@ the type of integration you are using, you'll see one or more of these buttons:
 - A "Re-generate snapshot" button, that will let you retry taking the
   screenshot. Continue reading for more on this option!
 
-
 ### Re-generate snapshot
 
 If you are using up-to-date happo libraries
 ([happo.io](https://www.npmjs.com/package/happo.io) v9.1.0 or later,
 [happo-plugin-storybook](https://www.npmjs.com/package/happo-plugin-storybook)
-v4.1.0 or later,
-[happo-static](https://www.npmjs.com/package/happo-static) v1.0.0 or later),
-you can tell Happo to retry taking the screenshot. Once that's done, the
-associated report (or reports in some cases) will be updated to use the new
-screenshot. Please note that updating the reports can take a minute or two to
-fully propagate (because of caching).
+v4.1.0 or later, [happo-static](https://www.npmjs.com/package/happo-static)
+v1.0.0 or later), you can tell Happo to retry taking the screenshot. Once that's
+done, the associated report (or reports in some cases) will be updated to use
+the new screenshot. Please note that updating the reports can take a minute or
+two to fully propagate (because of caching).
 
 ### Static package downloads
 

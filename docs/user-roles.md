@@ -24,9 +24,9 @@ projects, component history, etc.
 ## Admin
 
 An admin can do the following things that a regular user cannot:
+
 - Manage subscriptions and edit billing related information.
 - Manage projects and compare threshold settings.
 - Set up integrations with source control (e.g. GitHub).
 - Add and remove users and configure access control settings.
 - Manage API keys.
-
