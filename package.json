@@ -14,7 +14,7 @@
     "docusaurus": "docusaurus"
   },
   "devDependencies": {
-    "prettier": "2.5.1"
+    "prettier": "3.3.3"
   },
   "version": "3.4.0",
   "dependencies": {
