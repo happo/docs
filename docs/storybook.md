@@ -49,7 +49,7 @@ Add a `happo` script to `package.json`:
 }
 ```
 
-Finally, add this to `.storybook/preview.js`:
+Finally, add this to `.storybook/main.js`:
 
 ```js
 module.exports = {
