@@ -152,6 +152,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          ref: ${{ github.event.pull_request.head.sha || github.ref }}
           fetch-depth: 100
       - uses: actions/setup-node@v4
       - run: npm ci
