@@ -123,7 +123,7 @@ module.exports = {
         },
       ],
 
-      copyright: `Copyright © ${new Date().getFullYear()} Recur AB`,
+      copyright: `Copyright © ${new Date().getFullYear()} Happo LLC`,
     },
   },
 };
