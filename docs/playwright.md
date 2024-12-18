@@ -32,8 +32,8 @@ for initialization and an `afterAll` hook to finish the happo session.
 ```js
 const happoPlaywright = require('happo-playwright');
 
-test.beforeAll(async ({ context }) => {
-  await happoPlaywright.init(context);
+test.beforeAll(async () => {
+  await happoPlaywright.init();
 });
 
 test.afterAll(async () => {
