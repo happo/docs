@@ -276,8 +276,16 @@ the system mouse pointer:
 
 If you rely on mouse interaction in your tests, e.g. when using
 [Storybook interactive stories](storybook.md#overriding-the-default-render-timeout),
-you might have to tell Happo to skip injecting the pointer-event css block. You
-can do that through the `allowPointerEvents` option.
+you might see an error like this in your logs:
+
+> Error: Unable to perform pointer interaction as the element has
+> `pointer-events: none`
+
+In some cases, this error will prevent the variant from being included in the
+report.
+
+To resolve this, tell Happo to skip injecting the `pointer-events: none` CSS
+block. You can do that through the `allowPointerEvents` option.
 
 ```js
 // .happo.js
@@ -290,6 +298,10 @@ module.exports = {
   },
 };
 ```
+
+If you are interested in testing hover, focus, and active states with Happo, you
+may also be interested in the
+[`applyPseudoClasses` option](#target-applypseudoclasses).
 
 ## `project`
 
