@@ -605,6 +605,32 @@ When you use `localSnapshots: true`, we ignore the target configuration in
 `.happo.js`. Instead, a dynamically resolved target is used based on the browser
 and the viewport size used during the test.
 
+### Clip snapshot strategy
+
+By default, Happo uses the hoist snapshot strategy. This works by selecting the
+element for snapshotting and hoisting it out of the document to be sent to the
+workers. This element is then rendered in isolation in your configured browsers
+for screenshots.
+
+For flexible elements, the default hoist snapshot strategy may cause the
+dimensions of the element to be different than it was on the page in the context
+that it was rendered.
+
+If you want your screenshot to be taken of the element as it was rendered in its
+context on the page, and not in isolation, you may use the clip snapshot
+strategy.
+
+To use the clip snapshot strategy, pass `snapshotStrategy: 'clip'` as an option
+to `happoScreenshot`:
+
+```js
+cy.get('.header').happoScreenshot({
+  component: 'Header',
+  variant: 'large',
+  snapshotStrategy: 'clip',
+});
+```
+
 ### Skipping snapshots
 
 If you run a subset of the tests in your test suite, Happo will show "Deleted
