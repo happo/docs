@@ -16,7 +16,7 @@
   "devDependencies": {
     "prettier": "3.4.2"
   },
-  "version": "3.10.0",
+  "version": "3.11.0",
   "dependencies": {
     "@docusaurus/core": "3.7.0",
     "@docusaurus/preset-classic": "3.7.0",
