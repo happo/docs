@@ -112,6 +112,12 @@ fails. The `--allow-failures` flag for the `happo-e2e` command can then be used:
 npx happo-e2e --allow-failures -- npx playwright test
 ```
 
+If you're using `yarn`, you might need to pass the double dashes twice, like so:
+
+```sh
+yarn happo-e2e -- --allow-failures -- yarn playwright test
+```
+
 ## Selecting targets
 
 If you want to avoid rendering an example in all browser targets (found in
