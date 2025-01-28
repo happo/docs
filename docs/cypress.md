@@ -184,6 +184,12 @@ fails. The `--allow-failures` flag for the `happo-e2e` command can then be used:
 npx happo-e2e --allow-failures -- npx cypress run
 ```
 
+If you're using `yarn`, you might need to pass the double dashes twice, like so:
+
+```sh
+yarn happo-e2e -- --allow-failures -- yarn cypress run
+```
+
 ## Selecting targets
 
 If you want to avoid rendering an example in all browser targets (found in
