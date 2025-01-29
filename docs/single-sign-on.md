@@ -381,6 +381,66 @@ account, enter the following properties in the SSO form:
 - **Certificate**: Copy-paste the Certificate from the file you downloaded from
   the SAML2 Web App dialog on the Auth0 side.
 
+## EntraID (Azure AD)
+
+Here's a guide on how to use EntraID as the IdP.
+
+### Setup on the EntraID side
+
+First, we're going to register an Enterprise Application and configure it in
+EntraID.
+
+#### Registering an Enterprise Application
+
+1. Go to the Microsoft Entra Admin Center.
+2. Navigate to **Identity → Applications → Enterprise applications**.
+3. Click **+ New application → Create your own application**.
+4. Name it (e.g., "Happo SAML Login") and select "Integrate any other
+   application you don’t find in the gallery (Non-gallery)".
+5. Click **Create**.
+
+#### Configuring SAML Authentication
+
+1. Inside the newly created application, go to **Single sign-on** → Select
+   **SAML**.
+2. Basic SAML Configuration:
+   - **Identifier (Entity ID)**: Set this to a unique identifier for your
+     service, such as `https://happo.io/saml/metadata`.
+   - **Reply URL (Assertion Consumer Service URL)**: Enter
+     `https://happo.io/auth/a/<accountId>/sso/callback` here, where
+     `<accoundId>` is the ID of your Happo account. To find the account ID, go
+     to your Happo dashboard and copy the numeric ID from the location bar URL.
+   - **Sign on URL**: Set it to `https://happo.io/login`.
+
+#### Assign users to Happo application
+
+To allow people to sign in to Happo, you need to assign them to it. In the
+"Users & Groups" page of the Enterprise Application you created, add the users
+that you want to have access to Happo.
+
+### Setup on the Happo side
+
+On the [Access Control page](https://happo.io/user-access) for your Happo
+account, enter the following properties in the SSO form:
+
+- **Domain**: Your own domain, e.g. `example.com`. The domain is used to
+  associate an SSO sign-in with a Happo account.
+
+- **Issuer ID**: Enter the same value as you did for **Identifier (Entity ID)**
+  over at EntraID (e.g. “https://happo.io/saml/metadata”)
+
+- **Entry point**: Copy-paste the value for **Login URL** that you find in
+  EntraID for the SAML application you created, in section "Set Up SAML Login"
+
+- **Logout URL**: Enter `https://happo.io/` here
+
+- **Certificate**: Download the **Certificate (Base64)** file from EntraID for
+  the SAML application you created and copy-paste its content here. The content
+  should start with "-----BEGIN CERTIFICATE-----" and end with "-----END
+  CERTIFICATE-----".
+
+Save these settings and you should be able to sign in to Happo using EntraID.
+
 ## Testing
 
 Once you have configured both the IdP and Happo, you can test the integration by
