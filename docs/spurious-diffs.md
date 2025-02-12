@@ -90,5 +90,8 @@ export const MiscFailing = () => (
 
 If individual elements are known to cause spuriousness,
 [consider adding the `data-happo-hide` attribute](hiding-content.md). This will
-render the element invisible in the screenshot. E.g.
-`<div data-happo-hide>{Math.random()}</div>`.
+render the element invisible in the screenshot. Example:
+
+```jsx
+<div data-happo-hide>{Math.random()}</div>
+```
