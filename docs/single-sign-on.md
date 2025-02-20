@@ -427,7 +427,7 @@ account, enter the following properties in the SSO form:
   associate an SSO sign-in with a Happo account.
 
 - **Issuer ID**: Enter the same value as you did for **Identifier (Entity ID)**
-  over at EntraID (e.g. “https://happo.io/saml/metadata”)
+  over at EntraID (e.g. `https://happo.io/saml/metadata`)
 
 - **Entry point**: Copy-paste the value for **Login URL** that you find in
   EntraID for the SAML application you created, in section "Set Up SAML Login"
