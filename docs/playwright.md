@@ -25,20 +25,11 @@ npm install --save-dev happo-playwright happo-e2e happo.io
 ## Setup
 
 Below is an example Playwright spec file. It takes a screenshot of a Hero image
-on an imaginary page. To make the whole flow work, it's important that you call
-the `init` and `finish` methods. In this example, we're using a `beforeAll` hook
-for initialization and an `afterAll` hook to finish the happo session.
+on an imaginary page. The `happo-playwright` module will set up the right hooks
+for you under the hood.
 
 ```js
 const happoPlaywright = require('happo-playwright');
-
-test.beforeAll(async () => {
-  await happoPlaywright.init();
-});
-
-test.afterAll(async () => {
-  await happoPlaywright.finish();
-});
 
 test('start page', async ({ page }) => {
   await page.goto('http://localhost:7676');
