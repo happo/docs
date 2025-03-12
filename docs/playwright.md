@@ -25,27 +25,18 @@ npm install --save-dev happo-playwright happo-e2e happo.io
 ## Setup
 
 Below is an example Playwright spec file. It takes a screenshot of a Hero image
-on an imaginary page. To make the whole flow work, it's important that you call
-the `init` and `finish` methods. In this example, we're using a `beforeAll` hook
-for initialization and an `afterAll` hook to finish the happo session.
+on an imaginary page.
 
 ```js
-const happoPlaywright = require('happo-playwright');
+// tests/test.spec.js
+import { test } from 'happo-playwright';
 
-test.beforeAll(async () => {
-  await happoPlaywright.init();
-});
-
-test.afterAll(async () => {
-  await happoPlaywright.finish();
-});
-
-test('start page', async ({ page }) => {
+test('start page', async ({ page, happoScreenshot }) => {
   await page.goto('http://localhost:7676');
 
   const heroImage = page.locator('.hero-image');
 
-  await happoPlaywright.screenshot(page, heroImage, {
+  await happoScreenshot(heroImage, {
     component: 'Hero Image',
     variant: 'default',
   });
@@ -81,6 +72,47 @@ module.exports = {
   apiSecret: process.env.HAPPO_API_SECRET,
   // ... more config
 };
+```
+
+### With Playwright fixtures
+
+If you're using
+[Playwright fixtures](https://playwright.dev/docs/test-fixtures), you can mix
+happo-playwright in with
+[`mergeTests`](https://playwright.dev/docs/test-fixtures#combine-custom-fixtures-from-multiple-modules).
+
+Here's an example of how to do this:
+
+```js
+// tests/test.js
+import { test as happoTest } from 'happo-playwright';
+import { test as base, mergeTests } from '@playwright/test';
+
+const baseTest = base.extend({
+  myFixture: async ({}, use) => {
+    await use('my fixture value');
+  },
+});
+
+export const test = mergeTests(baseTest, happoTest);
+```
+
+Then in your Playwright test file, you can use the `test` function as usual:
+
+```js
+// tests/test.spec.js
+import { test } from './test';
+
+test('start page', async ({ page, happoScreenshot }) => {
+  await page.goto('http://localhost:7676');
+
+  const heroImage = page.locator('.hero-image');
+
+  await happoScreenshot(heroImage, {
+    component: 'Hero Image',
+    variant: 'default',
+  });
+});
 ```
 
 ### Usage
@@ -125,7 +157,7 @@ If you want to avoid rendering an example in all browser targets (found in
 rendered in the specified targets exclusively.
 
 ```js
-await happoPlaywright.screenshot(page, heroImage, {
+await happoScreenshot(heroImage, {
   component: 'Footer',
   variant: 'Default',
   targets: ['chrome-small'],
@@ -143,7 +175,7 @@ properties. Here's an example where a snapshot is taken in a dynamically
 generated target:
 
 ```js
-await happoPlaywright.screenshot(page, heroImage, {
+await happoScreenshot(heroImage, {
   component: 'Footer',
   variant: 'Default',
   targets: [{ name: 'firefox-small', browser: 'firefox', viewport: '400x800' }],
@@ -155,7 +187,7 @@ Here, "Footer" will only be rendered in a 400x800px Firefox window.
 You can mix and match dynamic targets and target names as well:
 
 ```js
-await happoPlaywright.screenshot(page, heroImage, {
+await happoScreenshot(heroImage, {
   component: 'Footer',
   variant: 'Default',
   targets: [
@@ -270,7 +302,7 @@ To use the clip snapshot strategy, pass `snapshotStrategy: 'clip'` as an option
 to `happoScreenshot`:
 
 ```js
-cy.get('.header').happoScreenshot({
+happoScreenshot(page.locator('.header'), {
   component: 'Header',
   variant: 'large',
   snapshotStrategy: 'clip',
