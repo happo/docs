@@ -39,6 +39,9 @@ Storybook < v5):
 // .storybook/preview.js
 
 import 'happo-plugin-storybook/register';
+import happoDecorator from 'happo-plugin-storybook/decorator';
+
+export const decorators = [happoDecorator];
 ```
 
 Add a `happo` script to `package.json`:
@@ -334,6 +337,12 @@ storiesOf('PaymentForm', module).add('default', () => <PaymentForm />, {
 
 <!--END_DOCUSAURUS_CODE_TABS-->
 
+To test this function you can use the Happo panel. There will be an "Invoke"
+button next to the `waitFor` parameter. Click it to run the function. To make
+the "Invoke" button appear, you need to set
+[`core.channelOptions.allowFunction` to `true`](https://storybook.js.org/docs/api/main-config/main-config-core#channeloptionsallowfunction)
+in `.storybook/main.js`.
+
 ### Setting delay for a story
 
 > Use delays only as a last resort. They slow down your test suite and rarely
@@ -454,6 +463,12 @@ BasicModal.parameters = {
 export { BasicModal };
 ```
 
+To test this function you can use the Happo panel. There will be an "Invoke"
+button next to the `beforeScreenshot` parameter. Click it to run the function.
+To make the "Invoke" button appear, you need to set
+[`core.channelOptions.allowFunction` to `true`](https://storybook.js.org/docs/api/main-config/main-config-core#channeloptionsallowfunction)
+in `.storybook/main.js`.
+
 ### The `afterScreenshot` hook
 
 Similar to `beforeScreenshot`, this hook can be used to clean up things from the
@@ -474,6 +489,12 @@ export { Foo };
 ```
 
 Same as for `beforeScreenshot`, you can use `async` as well.
+
+To test this function you can use the Happo panel. There will be an "Invoke"
+button next to the `afterScreenshot` parameter. Click it to run the function. To
+make the "Invoke" button appear, you need to set
+[`core.channelOptions.allowFunction` to `true`](https://storybook.js.org/docs/api/main-config/main-config-core#channeloptionsallowfunction)
+in `.storybook/main.js`.
 
 ### Using `forceHappoScreenshot`
 
