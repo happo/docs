@@ -37,11 +37,7 @@ Storybook < v5):
 
 ```js
 // .storybook/preview.js
-
 import 'happo-plugin-storybook/register';
-import happoDecorator from 'happo-plugin-storybook/decorator';
-
-export const decorators = [happoDecorator];
 ```
 
 Add a `happo` script to `package.json`:
@@ -52,7 +48,13 @@ Add a `happo` script to `package.json`:
 }
 ```
 
-Finally, add this to `.storybook/main.js`:
+### The Happo addons panel
+
+If you're using React, you can add a Happo panel to your Storybook UI. This is
+optional but makes it easier to test hooks and see Happo parameters for your
+stories.
+
+Add this to `.storybook/main.js`:
 
 ```js
 module.exports = {
@@ -60,8 +62,14 @@ module.exports = {
 };
 ```
 
-The final step is optional but it will enable a "Happo" addons panel where you
-can inspect Happo parameters and invoke lifecycle functions.
+Add this to `.storybook/preview.js`:
+
+```js
+// .storybook/preview.js
+import happoDecorator from 'happo-plugin-storybook/decorator';
+
+export const decorators = [happoDecorator];
+```
 
 ## Options
 
