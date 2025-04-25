@@ -24,9 +24,9 @@ is then first applied, and any diffs remaining after that will be deep-compared.
 The behavior of the deep comparison is configured per project. Here's how to
 find the settings:
 
-1. Go to the projects admin page, at https://happo.io/projects
-2. In the overflow menu (three dots next to the project name), select "Configure
-   diff thresholds"
+1. Go to the [projects admin page](https://happo.io/projects)
+2. Click the link in the "Diff threshold" column for the project you want to
+   configure
 3. Choose settings that fit your test suite
 
 If you can't find the settings, it could be that you aren't an administrator of
