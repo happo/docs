@@ -3,9 +3,9 @@ id: continuous-integration
 title: Continuous Integration
 ---
 
-Adding Happo to your Continuous Integration setup is a great way to catch visual
-regressions early. Happo will compare your PRs with the base branch and let you
-know exactly what has changed in your UI.
+Adding Happo to your Continuous Integration setup is the best way to catch
+visual regressions early. Happo will compare your PRs with the base branch and
+let you know exactly what has changed in your UI.
 
 <img
   src="/img/happo-in-ci.png"
@@ -20,125 +20,35 @@ know exactly what has changed in your UI.
 > [the Playwright integration page](playwright.md#continuous-integration) for
 > instructions on how to integrate with CI there.
 
-Since a lot of projects these days follow a pull-request/merge-request model,
-Happo provides ready-made scripts that you can run in CI:
+Since a lot of projects follow a pull-request/merge-request model, Happo
+provides ready-made scripts that you can run in CI:
 
-- [`happo-ci-travis`](#happo-ci-travis) - a script designed to be run in a
-  Travis environment.
-- [`happo-ci-circleci`](#happo-ci-circleci) - for CircleCI environments.
 - [`happo-ci-github-actions`](#happo-ci-github-actions) - used with GitHub
   Actions.
+- [`happo-ci-circleci`](#happo-ci-circleci) - for CircleCI environments.
 - [`happo-ci-azure-pipelines`](#happo-ci-azure-pipelines) - used with Azure
   DevOps Pipelines.
+- [`happo-ci-travis`](#happo-ci-travis) - a script designed to be run in a
+  Travis environment.
 - [`happo-ci`](#happo-ci) - a generic script designed to work in any CI
   environment. This script is used by all the other CI scripts under the hood.
 
-All these scrips will:
+All of these scripts will:
 
 1. Figure out the right baseline report to compare with
 2. Run Happo on the current HEAD commit
 3. Compare the baseline with the new report
 4. If allowed to, post back a status to the commit/PR
 
-### `happo-ci-travis`
-
-This script knows about the Travis build environment, assuming a PR based model.
-To run it, first add this to your `package.json`:
-
-```json
-{
-  "scripts": {
-    "happo": "happo",
-    "happo-ci-travis": "happo-ci-travis"
-  }
-}
-```
-
-Then, configure `.travis.yml` to run this script:
-
-```yaml
-language: node_js
-script:
-  - npm run happo-ci-travis
-```
-
-The `happo-ci-travis` script assumes that your PRs are based off of the master
-branch. If you're using a different default branch, you can set the
-`BASE_BRANCH` environment variable.
-
-```json
-{
-  "scripts": {
-    "happo": "happo",
-    "happo-ci-travis": "BASE_BRANCH=\"dev\" happo-ci-travis"
-  }
-}
-```
-
-### `happo-ci-circleci`
-
-_Before you start using this script, have a look at the
-[Happo CircleCI Orb](https://circleci.com/orbs/registry/orb/happo/happo). It
-simplifies some of the setup required if you use the `happo-ci-circleci`
-script._
-
-This script knows about the CircleCI build environment, assuming a PR based
-model. To run it, first add this to your `package.json`:
-
-```json
-{
-  "scripts": {
-    "happo": "happo",
-    "happo-ci-circleci": "happo-ci-circleci"
-  }
-}
-```
-
-Then, configure `.circleci/config.yml` to run this script. Something like this:
-
-```yaml
-jobs:
-  build:
-    docker:
-      - image: cimg/node:lts
-    steps:
-      - checkout
-      - run:
-          name: happo
-          command: npm run happo-ci-circleci
-```
-
-The `happo-ci-circleci` script assumes your PRs are based off of the master
-branch. If you're using a different default branch, you can set the
-`BASE_BRANCH` environment variable.
-
-```json
-{
-  "scripts": {
-    "happo": "happo",
-    "happo-ci-circleci": "BASE_BRANCH=\"origin/dev\" happo-ci-circleci"
-  }
-}
-```
-
 ### `happo-ci-github-actions`
 
 This script knows about the
 [GitHub Actions](https://github.com/features/actions) build environment,
-assuming a PR based model. To run it, first add this to your `package.json`:
-
-```json
-{
-  "scripts": {
-    "happo": "happo",
-    "happo-ci-github-actions": "happo-ci-github-actions"
-  }
-}
-```
-
-Then, configure your workflow file to run this script. Here's an example:
+assuming a PR based model. To run it, configure your workflow file to run the
+`happo-ci-github-actions` script. Here's an example:
 
 ```yaml
+# .github/workflows/happo.yml
 name: Happo CI
 
 on:
@@ -156,7 +66,7 @@ jobs:
           fetch-depth: 100
       - uses: actions/setup-node@v4
       - run: npm ci
-      - run: npm run happo-ci-github-actions
+      - run: npx --package=happo.io happo-ci-github-actions
         env:
           HAPPO_API_KEY: ${{ secrets.HAPPO_API_KEY }}
           HAPPO_API_SECRET: ${{ secrets.HAPPO_API_SECRET }}
@@ -165,27 +75,64 @@ jobs:
 Make sure that the workflow is configured to run on pushes to your default
 branch. This will ensure that baselines exist for PR builds to compare against.
 
+### `happo-ci-circleci`
+
+_Before you start using this script, have a look at the
+[Happo CircleCI Orb](https://circleci.com/orbs/registry/orb/happo/happo). It
+simplifies some of the setup required if you use the `happo-ci-circleci`
+script._
+
+This script knows about the CircleCI build environment, assuming a PR based
+model. To run it, configure `.circleci/config.yml` to run the
+`happo-ci-circleci` script. Something like this:
+
+```yaml
+# .circleci/config.yml
+jobs:
+  build:
+    docker:
+      - image: cimg/node:lts
+    steps:
+      - checkout
+      - run:
+          name: happo
+          command: npx --package=happo.io happo-ci-circleci
+```
+
+The `happo-ci-circleci` script assumes your PRs are based off of the `main`
+branch. If you're using a different default branch, you can set the
+`BASE_BRANCH` environment variable.
+
+```yaml
+# .circleci/config.yml
+jobs:
+  build:
+    docker:
+      - image: cimg/node:lts
+
+    environment:
+      - BASE_BRANCH: 'origin/main'
+
+    steps:
+      - checkout
+      - run:
+          name: happo
+          command: npx --package=happo.io happo-ci-circleci
+```
+
 ### `happo-ci-azure-pipelines`
 
 This script is targeted at
 [Azure Pipelines](https://azure.microsoft.com/en-us/services/devops/pipelines/).
-It can be used with pull requests and regular pushes. Start by adding the
-`happo-ci-azure-pipelines` script to your `package.json` file:
+It can be used with pull requests and regular pushes. To run it, configure
+`azure-pipelines.yml` to run the `happo-ci-azure-pipelines` script.
 
-```json
-{
-  "scripts": {
-    "happo-ci-azure-pipelines": "happo-ci-azure-pipelines"
-  }
-}
-```
-
-Then, configure `azure-pipelines.yml` to run the `happo-ci-azure-pipelines`
-script. In the example below the `HAPPO_API_KEY` and `HAPPO_API_SECRET`
-environment variables are populated from two
+In the example below the `HAPPO_API_KEY` and `HAPPO_API_SECRET` environment
+variables are populated from two
 [user-defined secret variables](https://docs.microsoft.com/en-us/azure/devops/pipelines/process/variables?view=azure-devops&tabs=yaml%2Cbatch#user-defined-variables).
 
 ```yaml
+# azure-pipelines.yml
 trigger:
   - main
 pool:
@@ -193,11 +140,11 @@ pool:
 steps:
   - task: NodeTool@0
     inputs:
-      versionSpec: '20.x'
+      versionSpec: '22.x'
     displayName: 'Install Node.js'
   - script: |
       npm ci
-      npm run happo-ci-azure-pipelines
+      npx --package=happo.io happo-ci-azure-pipelines
     displayName: 'Install dependencies and run Happo'
     env:
       HAPPO_API_KEY: $(happoApiKey)
@@ -205,50 +152,44 @@ steps:
 ```
 
 The trigger is set to run for pushes to the `main` branch. You'll have to
-replace this if you are using a different main branch. To trigger builds for
-pull request, you can use
+replace this if you are using a different default branch. To trigger builds for
+pull requests, you can use
 [a branch policy for the main branch](https://docs.microsoft.com/en-us/azure/devops/repos/git/branch-policies?view=azure-devops&tabs=browser).
+
+### `happo-ci-travis`
+
+This script knows about the Travis build environment, assuming a PR based model.
+To run it, configure `.travis.yml` to run the `happo-ci-travis` script:
+
+```yaml
+# .travis.yml
+language: node_js
+script:
+  - npx --package=happo.io happo-ci-travis
+```
+
+The `happo-ci-travis` script assumes that your PRs are based off of the `main`
+branch. If you're using a different default branch, you can set the
+`BASE_BRANCH` environment variable.
+
+```yaml
+# .travis.yml
+language: node_js
+env:
+  - BASE_BRANCH: 'origin/master'
+script:
+  - npx --package=happo.io happo-ci-travis
+```
 
 ### `happo-ci`
 
 This is a generic script that can run in most CI environments. Before using it,
 you need to set a few environment variables:
 
-- `PREVIOUS_SHA` - the sha of the baseline commit
-- `CURRENT_SHA` - the sha of the current HEAD
-- `CHANGE_URL` - a link back to the change
+- `PREVIOUS_SHA` - the SHA of the baseline commit
+- `CURRENT_SHA` - the SHA of the current HEAD
+- `CHANGE_URL` - a URL that links back to the change
   ([further instructions](#setting-the-right-link))
-
-```json
-{
-  "scripts": {
-    "happo": "happo",
-    "happo-ci": "happo-ci"
-  }
-}
-```
-
-## A note on using `yarn`
-
-If you are invoking any of the happo CI script using `yarn` and you are using
-yarn version 2 or later, there is a chance you'll run into this error:
-
-```
-node_modules/happo.io/bin/happo-ci-github-actions:3
-# Make the whole script fail on errors
-^
-SyntaxError: Invalid or unexpected token
-```
-
-This is because starting with version 2, yarn assumes all scripts to be node
-scripts. All the happo-ci scripts are written in bash which yarn won't notice.
-To work around this, make the following changes:
-
-- Add `nodeLinker: node-modules` to `.yarnrc.yml`. This will ensure that scripts
-  are available in `node_modules/.bin`.
-- Invoke the happo-ci script using `npx -p happo.io <name_of_script>`. When
-  scripts are in `node_modules/.bin`, `npx` won't download the happo.io library
-  again. `npx` will respect the bash script and execute it properly.
 
 ## Posting build statuses
 
@@ -409,7 +350,7 @@ other dependencies/preprocessing steps that need to happen, you can override
 this with the `INSTALL_CMD` environment variable. E.g.
 
 ```bash
-INSTALL_CMD="lerna bootstrap" npm run happo-ci-travis
+INSTALL_CMD="lerna bootstrap" npx --package=happo.io happo-ci-travis
 ```
 
 In this example, the `lerna bootstrap` command will be invoked before running
