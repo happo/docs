@@ -63,7 +63,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.event.pull_request.head.sha || github.ref }}
-          fetch-depth: 100
+          fetch-depth: 0
       - uses: actions/setup-node@v4
       - run: npm ci
       - run: npx --package=happo.io happo-ci-github-actions
