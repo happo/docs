@@ -64,7 +64,9 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.sha || github.ref }}
           fetch-depth: 100
-      - run: git fetch origin main:main
+      - name: Fetch main branch
+        if: github.ref != 'refs/heads/main'
+        run: git fetch origin main:main
       - uses: actions/setup-node@v4
       - run: npm ci
       - run: npx --package=happo.io happo-ci-github-actions
