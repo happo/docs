@@ -24,7 +24,6 @@ configuration tweak where you add an `accessibility` target to your `.happo.js`
 configuration.
 
 1. Integrate Happo with one of our supported testing frameworks:
-
    - [Storybook Integration](/docs/storybook)
    - [Playwright Integration](/docs/playwright)
    - [Cypress Integration](/docs/cypress)
