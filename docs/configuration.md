@@ -119,6 +119,27 @@ module.exports = {
 };
 ```
 
+Note: The max width defaults to the max height, so if you set `maxHeight`, you
+may also want to set `maxWidth` at the same time.
+
+### Target `maxWidth`
+
+You can also use `maxWidth` to override the default max width used by Happo
+workers (defaults to `maxHeight`, which defaults to 5000 pixels). This is useful
+if you're taking screenshots of wide components/pages in your test suite. An
+example:
+
+```js
+module.exports = {
+  targets: {
+    chrome: new RemoteBrowserTarget('chrome', {
+      viewport: '1024x768',
+      maxWidth: 10000,
+    }),
+  },
+};
+```
+
 ### Target `scrollStitch`
 
 This option is available in the `safari` target (it has no effect in other
