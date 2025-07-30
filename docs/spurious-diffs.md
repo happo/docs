@@ -44,6 +44,33 @@ If a component depends on external data (e.g. via an API), consider splitting
 out the data fetching from the visual component and test the visual component
 without data fetching, injecting the data needed to render it.
 
+### Font loading issues
+
+Font loading can be a common source of flaky diffs, especially when using
+external font CDNs. While Happo automatically waits for custom fonts to load,
+there are several scenarios where font loading can still cause inconsistencies:
+
+#### CDN throttling and rate limiting
+
+External font CDNs may throttle or rate-limit requests coming from the same IP
+or IP range. This is particularly problematic for Happo since it generates
+significant traffic to font URLs during screenshot testing. When throttling
+occurs, fonts may take longer to load or fail to load entirely, causing the
+browser to fall back to system fonts.
+
+**Symptoms may include:**
+
+- Inconsistent font rendering between test runs
+- Fallback fonts being used instead of custom fonts
+
+**Solutions:**
+
+1. **Use locally hosted fonts:** The most stable solution is to host fonts
+   locally within your testing environment. This eliminates external
+   dependencies and ensures consistent font loading
+1. **Disable throttling for font URLs:** Contact your CDN provider to disable
+   rate limiting for font URLs from your Happo testing environment
+
 ### Animations
 
 If you have animations controlled from JavaScript, find a way to disable them
