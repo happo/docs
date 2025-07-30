@@ -290,8 +290,8 @@ storiesOf('PaymentForm', module).add('default', () => <PaymentForm />, {
 ### Waiting for a condition to be truthy
 
 To make Happo wait with the screenshot until a condition has been met, use the
-`waitFor` option. Specify a function that returns true (or anything truthy) when
-the time is right to take the screenshot.
+`waitFor` option. Specify a function that returns `true` (or anything truthy)
+when the time is right to take the screenshot.
 
 Here's an example that waits for a specific element (`.credit-card`) to appear:
 
@@ -345,11 +345,14 @@ storiesOf('PaymentForm', module).add('default', () => <PaymentForm />, {
 
 <!--END_DOCUSAURUS_CODE_TABS-->
 
-To test this function you can use the Happo panel. There will be an "Invoke"
-button next to the `waitFor` parameter. Click it to run the function. To make
-the "Invoke" button appear, you need to set
+To test this function you can use the Happo panel in Storybook v8 and older.
+There will be an "Invoke" button next to the `waitFor` parameter. Click it to
+run the function. To make the "Invoke" button appear, you need to set
 [`core.channelOptions.allowFunction` to `true`](https://storybook.js.org/docs/api/main-config/main-config-core#channeloptionsallowfunction)
-in `.storybook/main.js`.
+in `.storybook/main.js` for Storybook v8.
+
+If you are using Storybook v9 or newer, the function is not available from the
+Happo panel in the Storybook UI, but it will still work during the Happo run.
 
 ### Setting delay for a story
 
@@ -471,11 +474,14 @@ BasicModal.parameters = {
 export { BasicModal };
 ```
 
-To test this function you can use the Happo panel. There will be an "Invoke"
-button next to the `beforeScreenshot` parameter. Click it to run the function.
-To make the "Invoke" button appear, you need to set
+To test this function you can use the Happo panel in Storybook v8 and older.
+There will be an "Invoke" button next to the `beforeScreenshot` parameter. Click
+it to run the function. To make the "Invoke" button appear, you need to set
 [`core.channelOptions.allowFunction` to `true`](https://storybook.js.org/docs/api/main-config/main-config-core#channeloptionsallowfunction)
-in `.storybook/main.js`.
+in `.storybook/main.js` for Storybook v8.
+
+If you are using Storybook v9 or newer, the function is not available from the
+Happo panel in the Storybook UI, but it will still work during the Happo run.
 
 ### The `afterScreenshot` hook
 
@@ -498,11 +504,14 @@ export { Foo };
 
 Same as for `beforeScreenshot`, you can use `async` as well.
 
-To test this function you can use the Happo panel. There will be an "Invoke"
-button next to the `afterScreenshot` parameter. Click it to run the function. To
-make the "Invoke" button appear, you need to set
+To test this function you can use the Happo panel in Storybook v8 and older.
+There will be an "Invoke" button next to the `afterScreenshot` parameter. Click
+it to run the function. To make the "Invoke" button appear, you need to set
 [`core.channelOptions.allowFunction` to `true`](https://storybook.js.org/docs/api/main-config/main-config-core#channeloptionsallowfunction)
-in `.storybook/main.js`.
+in `.storybook/main.js` for Storybook v8.
+
+If you are using Storybook v9 or newer, the function is not available from the
+Happo panel in the Storybook UI, but it will still work during the Happo run.
 
 ### Using `forceHappoScreenshot`
 
