@@ -140,26 +140,6 @@ module.exports = {
 };
 ```
 
-### Target `scrollStitch`
-
-This option is available in the `safari` target (it has no effect in other
-targets). By default, Safari cuts off screenshots at window height. If you need
-to include content "below the fold", you can use the `scrollStitch` option. When
-enabled, the full screenshot will be constructed by scrolling the page section
-by section, then stitching together a full screenshot when all sections are
-available.
-
-```js
-module.exports = {
-  targets: {
-    safari: new RemoteBrowserTarget('safari', {
-      viewport: '1024x768',
-      scrollStitch: true,
-    }),
-  },
-};
-```
-
 ### Target `hideBehavior`
 
 This option controls how Happo handles elements with the `data-happo-hide`
