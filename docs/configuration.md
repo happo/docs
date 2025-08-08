@@ -253,6 +253,36 @@ And finally, you can also add `data-happo-active` to elements that simulate
 </style>
 ```
 
+### Target `prefersColorScheme`
+
+Set `prefersColorScheme: 'dark'` or `prefersColorScheme: 'light'` to set the
+color scheme preference in the browser. Note: This option has no effect in iOS
+Safari.
+
+```js
+// .happo.js
+module.exports = {
+  targets: {
+    chrome: new RemoteBrowserTarget('chrome', {
+      viewport: '1024x768',
+      prefersColorScheme: 'dark',
+    }),
+  },
+};
+```
+
+When enabled, styles that are affected by the color scheme will be activated.
+
+```css
+background: white;
+color: black;
+
+@media (prefers-color-scheme: dark) {
+  background: black;
+  color: white;
+}
+```
+
 ### Target `prefersReducedMotion`
 
 Set `prefersReducedMotion: true` to make the browser prefer less motion when
