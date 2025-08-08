@@ -4,18 +4,17 @@ title: Configuration
 sidebar_label: List of options
 ---
 
-Happo will look for configuration in a `.happo.js` file in the current working
-folder. You can override the path to this file through the `--config` CLI option
-or a `HAPPO_CONFIG_FILE` environment variable. The config file isn't subject to
-babel transpilation, so it's best to stay with good old CommonJS syntax unless
-you're on the very latest Node version. The configuration file can either export
-an object containing the configuration options or an (async) function that
-resolves with the configuration options.
+Happo looks for configuration in a `.happo.js` file in your current working
+directory. You can override this path using the `--config` CLI option or the
+`HAPPO_CONFIG_FILE` environment variable. The config file doesn't undergo babel
+transpilation, so use CommonJS syntax unless you're on the latest Node version.
+The configuration file can export either an object containing configuration
+options or an (async) function that resolves to configuration options.
 
 ## `apiKey` and `apiSecret`
 
-These tokens will authenticate you with happo.io. It is recommended to never
-store these tokens in plain text. Use environment variables instead.
+These tokens authenticate you with happo.io. **Never store these tokens in plain
+text.** Use environment variables instead.
 
 ```js
 module.exports = {
@@ -26,15 +25,14 @@ module.exports = {
 
 ## `targets`
 
-This is where you specify the browsers you want to be part of your happo run.
-E.g.
+Specify the browsers you want to include in your happo run. For example:
 
 ```js
 module.exports = {
   targets: {
-    // The first part ('firefox-desktop' in this case) is just a name we give
-    // the specific browser target. You'll see this name in the reports generated
-    // as part of a happo run.
+    // The first part ('firefox-desktop' in this case) is a name you give
+    // to the specific browser target. You'll see this name in the reports
+    // generated during a happo run.
     'firefox-desktop': new RemoteBrowserTarget('firefox', {
       viewport: '1024x768',
     }),
@@ -51,12 +49,12 @@ module.exports = {
 };
 ```
 
-Viewports can range from `300x300` to `2000x2000` for Chrome and Firefox. Edge,
-and Safari need to be in the `400x400` to `1200x1200` range. The `ios-safari`
+Viewport sizes can range from `300x300` to `2000x2000` for Chrome and Firefox.
+Edge and Safari must be between `400x400` and `1200x1200`. The `ios-safari`
 target runs on an iPhone with a fixed viewport of `375x667`. The `ipad-safari`
-target is always `1080x810`
+target is always `1080x810`.
 
-This is a list of all supported browser targets:
+Supported browser targets:
 
 - `firefox`
 - `chrome`
@@ -67,8 +65,8 @@ This is a list of all supported browser targets:
 
 ### Target `freezeAnimations`
 
-By default, Happo will freeze CSS animations on the first frame. If you want to
-freeze things on the last frame, use the `freezeAnimations` option.
+By default, Happo freezes CSS animations on the first frame. To freeze
+animations on the last frame instead, use the `freezeAnimations` option.
 
 ```js
 module.exports = {
@@ -83,9 +81,9 @@ module.exports = {
 
 ### Target `chunks`
 
-Targets are executed in parallel by default. If you want to split up a specific
-target into multiple chunks (running in parallel), the experimental `chunks`
-option for `RemoteBrowserTarget` can help out:
+Targets run in parallel by default. To split a specific target into multiple
+chunks (running in parallel), use the experimental `chunks` option for
+`RemoteBrowserTarget`:
 
 ```js
 module.exports = {
@@ -98,15 +96,15 @@ module.exports = {
 };
 ```
 
-Happo.io will do its best to run chunks in parallel, but there's no guarantee.
-The `chunks` option also has some overhead. If your test suite isn't large,
-using more than one chunk might actually slow things down.
+Happo.io attempts to run chunks in parallel, but there's no guarantee. The
+`chunks` option adds some overhead, so if your test suite isn't large, using
+more than one chunk might actually slow things down.
 
 ### Target `maxHeight`
 
-You can also use `maxHeight` to override the default max height used by Happo
-workers (5000 pixels). This is useful if you're taking screenshots of long
-components/pages in your test suite. An example:
+Use `maxHeight` to override the default maximum height used by Happo workers
+(5000 pixels). This is useful when taking screenshots of tall components or
+pages. For example:
 
 ```js
 module.exports = {
@@ -119,15 +117,14 @@ module.exports = {
 };
 ```
 
-Note: The max width defaults to the max height, so if you set `maxHeight`, you
-may also want to set `maxWidth` at the same time.
+**Note:** The maximum width defaults to the maximum height, so if you set
+`maxHeight`, you may also want to set `maxWidth` at the same time.
 
 ### Target `maxWidth`
 
-You can also use `maxWidth` to override the default max width used by Happo
-workers (defaults to `maxHeight`, which defaults to 5000 pixels). This is useful
-if you're taking screenshots of wide components/pages in your test suite. An
-example:
+Use `maxWidth` to override the default maximum width used by Happo workers
+(defaults to `maxHeight`, which defaults to 5000 pixels). This is useful when
+taking screenshots of wide components or pages. For example:
 
 ```js
 module.exports = {
@@ -143,9 +140,9 @@ module.exports = {
 ### Target `hideBehavior`
 
 This option controls how Happo handles elements with the `data-happo-hide`
-attribute. The default is to make the elements with this attribute invisible. By
-using the value `ignore`, you can make the content appear in the screenshots but
-not taken into account when comparing.
+attribute. By default, elements with this attribute are made invisible. Use the
+value `ignore` to make the content appear in screenshots but exclude it from
+comparison.
 
 ```js
 module.exports = {
@@ -162,14 +159,13 @@ module.exports = {
 
 This option applies to Chrome and Firefox only.
 
-When Chrome and Firefox workers are to take a screenshot of a page taller than
-4000 pixels, they apply a workaround that involves resizing the viewport briefly
-so that all the content fits inside it. Without this workaround, some of the
-content below the bottom edge of the viewport can disappear (inconsistently). In
-some cases, this workaround can lead to other issues. Especially when you are
-using the `vh` CSS unit. A page with an element of `height: 100vh` will take up
-the entire screenshot when the viewport-altering fallback is in effect. To turn
-off the workaround completely, set
+When Chrome and Firefox workers take screenshots of pages taller than 4000
+pixels, they apply a workaround that briefly resizes the viewport so all content
+fits inside it. Without this workaround, content below the viewport's bottom
+edge can disappear inconsistently. However, this workaround can cause other
+issues, especially when using the `vh` CSS unit. A page with an element of
+`height: 100vh` will take up the entire screenshot when the viewport-altering
+fallback is active. To disable this workaround completely, set
 `useFullPageFallbackForTallScreenshots: false`.
 
 ```js
@@ -189,10 +185,10 @@ module.exports = {
 
 ### Target `applyPseudoClasses`
 
-If set to `true`, this option will allow you to add `data-happo-hover`,
+When set to `true`, this option allows you to add `data-happo-hover`,
 `data-happo-focus`, and `data-happo-active` attributes to your DOM elements and
-have Happo apply either `:hover`, `:focus`, or `:active` styles. Let's say you
-have this markup:
+have Happo apply the corresponding `:hover`, `:focus`, or `:active` styles. For
+example, if you have this markup:
 
 ```html
 <button>Hover me</button>
@@ -203,8 +199,8 @@ have this markup:
 </style>
 ```
 
-If you want the hover style to be applied before taking the screenshot (making
-the button blue), you can change the markup to this:
+To apply the hover style before taking the screenshot (making the button blue),
+change the markup to:
 
 ```html
 <button data-happo-hover>Hover me</button>
@@ -215,14 +211,13 @@ the button blue), you can change the markup to this:
 </style>
 ```
 
-Similar to hover, you can also add focus to elements using `data-happo-focus`:
+Similarly, you can add focus to elements using `data-happo-focus`:
 
 ```html
 <input type="text" data-happo-focus />
 ```
 
-And finally, you can also add `data-happo-active` to elements that simulate
-`:active` state:
+And add `data-happo-active` to elements to simulate the `:active` state:
 
 ```html
 <button data-happo-active>Click me</button>
@@ -236,8 +231,8 @@ And finally, you can also add `data-happo-active` to elements that simulate
 ### Target `prefersColorScheme`
 
 Set `prefersColorScheme: 'dark'` or `prefersColorScheme: 'light'` to set the
-color scheme preference in the browser. Note: This option has no effect in iOS
-Safari.
+color scheme preference in the browser. **Note:** This option has no effect in
+iOS Safari.
 
 ```js
 // .happo.js
@@ -251,7 +246,7 @@ module.exports = {
 };
 ```
 
-When enabled, styles that are affected by the color scheme will be activated.
+When enabled, styles affected by the color scheme will be activated:
 
 ```css
 background: white;
@@ -265,7 +260,7 @@ color: black;
 
 ### Target `prefersReducedMotion`
 
-Set `prefersReducedMotion: true` to make the browser prefer less motion when
+Set `prefersReducedMotion: true` to make the browser prefer reduced motion when
 rendering the UI.
 
 ```js
@@ -281,7 +276,7 @@ module.exports = {
 ```
 
 When enabled, media queries that use `prefers-reduced-motion: reduce` will be
-activated.
+activated:
 
 ```css
 @media (prefers-reduced-motion: reduce) {
@@ -291,12 +286,12 @@ activated.
 }
 ```
 
-The `prefersReducedMotion` option is available in Chrome, Firefox, Safari and
+The `prefersReducedMotion` option is available in Chrome, Firefox, Safari, and
 Edge.
 
 ### Target `allowPointerEvents`
 
-By default, Happo injects this css to prevent spurious hover effects caused by
+By default, Happo injects this CSS to prevent spurious hover effects caused by
 the system mouse pointer:
 
 ```css
@@ -305,18 +300,18 @@ the system mouse pointer:
 }
 ```
 
-If you rely on mouse interaction in your tests, e.g. when using
-[Storybook interactive stories](storybook.md#overriding-the-default-render-timeout),
+If you rely on mouse interaction in your tests (e.g., when using
+[Storybook interactive stories](storybook.md#overriding-the-default-render-timeout)),
 you might see an error like this in your logs:
 
 > Error: Unable to perform pointer interaction as the element has
 > `pointer-events: none`
 
-In some cases, this error will prevent the variant from being included in the
+In some cases, this error prevents the variant from being included in the
 report.
 
 To resolve this, tell Happo to skip injecting the `pointer-events: none` CSS
-block. You can do that through the `allowPointerEvents` option.
+block using the `allowPointerEvents` option:
 
 ```js
 // .happo.js
@@ -330,35 +325,35 @@ module.exports = {
 };
 ```
 
-If you are interested in testing hover, focus, and active states with Happo, you
-may also be interested in the
+If you're interested in testing hover, focus, and active states with Happo, you
+may also want to use the
 [`applyPseudoClasses` option](#target-applypseudoclasses).
 
 ## `project`
 
-If you have multiple projects configured for your happo.io account, you can
-specify the name of the project you want to associate with. If you leave this
-empty, the default project will be used.
+If you have multiple projects configured for your happo.io account, specify the
+name of the project you want to associate with. If left empty, the default
+project will be used.
 
 ## `include`
 
-> This option only applies when you're using
+> This option only applies when using
 > [the Happo Examples integration](examples.md)
 
-Controls what files happo will grab examples from. The default is
+Controls which files Happo will extract examples from. The default is
 `'**/@(*-happo|happo).@(js|jsx)'`. This option is useful if you want to apply a
-different naming scheme, e.g. `**/*-examples.js`.
+different naming scheme, such as `**/*-examples.js`.
 
 ## `stylesheets`
 
-> This option only applies when you're using
+> This option only applies when using
 > [the Happo Examples integration](examples.md)
 
-If you rely on external stylesheets, list their URLs or (absolute) file paths in
-this config option, e.g. `['/path/to/file.css', 'http://cdn/style.css']`. If
+If you rely on external stylesheets, list their URLs or absolute file paths in
+this config option, such as `['/path/to/file.css', 'http://cdn/style.css']`. If
 you're using
-[conditionally applied stylesheets](#conditionally-applied-stylesheets), you
-need to use objects instead of paths:
+[conditionally applied stylesheets](#conditionally-applied-stylesheets), use
+objects instead of paths:
 
 ```js
 module.exports = {
@@ -370,28 +365,28 @@ module.exports = {
 ```
 
 By default, all stylesheets are applied at render time. If you specify
-`conditional: true`, only those examples that conditionally apply the stylesheet
-will get styles applied from that stylesheet.
+`conditional: true`, only examples that conditionally apply the stylesheet will
+receive styles from that stylesheet.
 
 ## `type`
 
-> This option only applies when you're using
+> This option only applies when using
 > [the Happo Examples integration](examples.md)
 
-Either `react` (default) or `plain`. Decides what strategy happo will use when
-rendering examples. When the value is `react`, it is assumed that example
-functions return a React component (e.g. `export default () => <Foo />`). When
-the value is `plain`, it is assumed that example functions write things straight
-to `document`, e.g. `export default () => { document.body.appendChild(foo()) }`.
+Either `react` (default) or `plain`. Determines the strategy Happo will use when
+rendering examples. When set to `react`, example functions are expected to
+return a React component (e.g., `export default () => <Foo />`). When set to
+`plain`, example functions are expected to write directly to `document` (e.g.,
+`export default () => { document.body.appendChild(foo()) }`).
 
 ## `customizeWebpackConfig`
 
-> This option only applies when you're using
+> This option only applies when using
 > [the Happo Examples integration](examples.md)
 
 A function you can use to override or modify the default webpack config used
-internally by happo during a run. Make sure to always return the passed in
-`config`. E.g.
+internally by Happo during a run. **Always return the passed `config`.** For
+example:
 
 ```js
 module.exports = {
@@ -400,15 +395,15 @@ module.exports = {
       test: /\.css$/,
       use: [{ loader: cssLoader }],
     });
-    // it's important that we return the modified config
+    // It's important to return the modified config
     return config;
   },
 };
 ```
 
 In many cases, directly depending on the `modules` object of an existing webpack
-configuration is enough. For instance, this is what you would need to get up and
-running with a project using
+configuration is sufficient. For instance, this is what you need to get started
+with a project using
 [create-react-app](https://github.com/facebook/create-react-app):
 
 ```js
@@ -424,8 +419,8 @@ module.exports = {
 ```
 
 If you need to perform asynchronous actions to generate a webpack configuration,
-you can return a promise that resolves with the config once you are done. Here's
-an example using async/await:
+you can return a promise that resolves with the config. Here's an example using
+async/await:
 
 ```js
 module.exports = {
@@ -451,12 +446,12 @@ module.exports = {
 
 ## `publicFolders`
 
-> This option only applies when you're using
+> This option only applies when using
 > [the Happo Examples integration](examples.md)
 
-An array of (absolute) paths specifying the places where public assets are
-located. Useful if you have examples that depend on publicly available images
-(e.g. `<img src="/foo.png" />`).
+An array of absolute paths specifying where public assets are located. Useful if
+you have examples that depend on publicly available images (e.g.,
+`<img src="/foo.png" />`).
 
 ```js
 const path = require('path');
@@ -468,16 +463,16 @@ module.exports = {
 
 ## `prerender`
 
-> This option only applies when you're using
+> This option only applies when using
 > [the Happo Examples integration](examples.md)
 
-Controls whether or not examples are pre-rendered in a JSDOM environment (or
-Chrome if you are using
+Controls whether examples are pre-rendered in a JSDOM environment (or Chrome if
+you're using
 [happo-plugin-puppeteer](https://github.com/happo/happo-plugin-puppeteer)). The
 default is `true`. Set to `false` to let your examples render remotely on the
 happo.io browser workers instead. This can help resolve certain rendering issues
-(e.g. when using a shadow DOM). The downside of rendering remotely is that
-errors are harder to surface.
+(e.g., when using shadow DOM). The downside of remote rendering is that errors
+are harder to surface.
 
 ```js
 module.exports = {
@@ -487,7 +482,7 @@ module.exports = {
 
 ## `pages`
 
-An array containing pages that you want to screenshot. E.g.
+An array containing pages you want to screenshot. For example:
 
 ```js
 module.exports = {
@@ -498,21 +493,21 @@ module.exports = {
 };
 ```
 
-The `url` of a page needs to be publicly accessible, else the Happo browser
-workers won't be able to find it.
+The `url` of a page must be publicly accessible, otherwise the Happo browser
+workers won't be able to access it.
 
 The `title` of a page is used as the "component" identifier in the happo.io UI,
-so make sure it is unique for each page.
+so ensure it's unique for each page.
 
 ## `setupScript`
 
-> This option only applies when you're using
+> This option only applies when using
 > [the Happo Examples integration](examples.md)
 
 An absolute path to a file that will be executed before rendering your
-components. This is useful if you for instance want to inject global css styling
-(e.g. a css reset), custom fonts, polyfills etc. This script is executed in a
-DOM environment, so it's safe to inject things into the `<head>`.
+components. This is useful if you want to inject global CSS styling (e.g., a CSS
+reset), custom fonts, polyfills, etc. This script is executed in a DOM
+environment, so it's safe to inject things into the `<head>`.
 
 ```js
 const path = require('path');
@@ -524,12 +519,12 @@ module.exports = {
 
 ## `renderWrapperModule`
 
-> This option only applies when you're using
+> This option only applies when using
 > [the Happo Examples integration](examples.md)
 
-An absolute path to a file exporting a function where you can wrap rendering of
-Happo examples. This can be useful if you for instance have a theme provider or
-a store provider.
+An absolute path to a file exporting a function where you can wrap the rendering
+of Happo examples. This is useful if you have a theme provider or store
+provider.
 
 ```js
 // .happo.js
@@ -550,14 +545,14 @@ export default component => <ThemeProvider>{component}</ThemeProvider>;
 
 ## `rootElementSelector`
 
-> This option only applies when you're using
+> This option only applies when using
 > [the Happo Examples integration](examples.md)
 
 A selector used to find a DOM element that Happo will use as the container. In
-most cases, you should leave this empty and let Happo figure out the root
-element itself. But in some cases its useful to override the default behavior
-and provide a different root. An example would be if you have wrapper components
-that you don't want to be part of the screenshot.
+most cases, leave this empty and let Happo determine the root element
+automatically. However, in some cases it's useful to override the default
+behavior and provide a different root. For example, if you have wrapper
+components that you don't want to be part of the screenshot.
 
 ```js
 module.exports = {
@@ -565,14 +560,14 @@ module.exports = {
 };
 ```
 
-(example from
+(Example from
 [mineral-ui](https://github.com/mineral-ui/mineral-ui/blob/e48a47d917477b58e496fe43edbfa4bb6ceb88e9/.happo.js#L35))
 
 ## `tmpdir`
 
 Happo uses webpack internally. By default, bundles are created in the temp
 folder provided by the operating system. You can override where bundles are
-stored with the `tmpdir` configuration option.
+stored using the `tmpdir` configuration option.
 
 ```js
 module.exports = {
@@ -582,13 +577,13 @@ module.exports = {
 
 ## `jsdomOptions`
 
-> This option only applies when you're using
+> This option only applies when using
 > [the Happo Examples integration](examples.md)
 
-Happo uses jsdom internally. By default, it provides sane defaults to the
+Happo uses jsdom internally. By default, it provides sensible defaults to the
 `JSDOM` constructor. See
 [processSnapsInBundle.js](https://github.com/happo/happo.io/blob/main/src/processSnapsInBundle.js).
-You can override any options here but your mileage may vary. See
+You can override any options here, but your mileage may vary. See
 https://github.com/jsdom/jsdom#simple-options. Here's an example where the
 document's `referrer` is being set:
 
@@ -608,20 +603,19 @@ module.exports = {
 > how to set things up.
 
 By default, a shallow comparison is made when `happo compare` is called. If two
-images have one or more different pixels, it will be reported as a diff -- even
+images have one or more different pixels, they will be reported as a diff—even
 if the diff is very small. If you set a `compareThreshold`, a deep comparison
 will be performed instead, where individual pixels are inspected.
 
 A color distance is computed for every diffing pixel. If all diffing pixels have
 a color distance smaller than the `compareThreshold`, the diff is considered
-okay and the two images will be considered visually equal.
+acceptable and the two images will be considered visually equal.
 
 The difference is calculated according to the paper
 ["Measuring perceived color difference using YIQ NTSC transmission color space in mobile applications" by Y. Kotsarenko and F. Ramos](http://www.progmat.uaem.mx:8080/artVol2Num2/Articulo3Vol2Num2.pdf).
 
-A **word of warning** here. If the threshold is too high, you risk hiding diffs
-that you wouldn't want to be hidden. Be careful when you start using this
-option.
+**Warning:** If the threshold is too high, you risk hiding diffs that you
+wouldn't want to be hidden. Be careful when using this option.
 
 ```js
 module.exports = {
@@ -629,14 +623,14 @@ module.exports = {
 };
 ```
 
-To help find the right value to use, you can make dry-run comparisons. Find one
-or a few comparisons (via https://happo.io/dashboard) and run
-`happo compare <sha1> <sha2> --dry-run` on the SHAs and look at what's being
-logged to figure out what threshold value you want to use.
+To help find the right value, you can make dry-run comparisons. Find one or a
+few comparisons (via https://happo.io/dashboard) and run
+`happo compare <sha1> <sha2> --dry-run` on the SHAs and examine the logged
+output to determine what threshold value you want to use.
 
 ## `asyncTimeout`
 
-> This option only applies when you're using
+> This option only applies when using
 > [the Happo Examples integration](examples.md)
 
 If an example renders nothing to the DOM, Happo will wait a short while for
@@ -652,7 +646,7 @@ module.exports = {
 
 Used when you have the CI script configured to
 [post Happo statuses as comments](continuous-integration#posting-statuses-without-installing-the-happo-github-app).
-The default if `https://api.github.com`. If you're using GitHub Enterprise,
-enter the URL to the local GitHub API here, e.g.
+The default is `https://api.github.com`. If you're using GitHub Enterprise,
+enter the URL to your local GitHub API here, such as
 `https://ghe.mycompany.zone/api/v3` (the default for GHE installation is for the
 API to be located at `/api/v3`).
