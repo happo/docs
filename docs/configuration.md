@@ -261,7 +261,7 @@ color: black;
 ### Target `prefersReducedMotion`
 
 Set `prefersReducedMotion: true` to make the browser prefer reduced motion when
-rendering the UI.
+rendering the UI. **Note:** This option has no effect in iOS Safari.
 
 ```js
 // .happo.js
@@ -285,9 +285,6 @@ activated:
   }
 }
 ```
-
-The `prefersReducedMotion` option is available in Chrome, Firefox, Safari, and
-Edge.
 
 ### Target `allowPointerEvents`
 
