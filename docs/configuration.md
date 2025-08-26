@@ -231,8 +231,7 @@ And add `data-happo-active` to elements to simulate the `:active` state:
 ### Target `prefersColorScheme`
 
 Set `prefersColorScheme: 'dark'` or `prefersColorScheme: 'light'` to set the
-color scheme preference in the browser. **Note:** This option has no effect in
-iOS Safari.
+color scheme preference in the browser.
 
 ```js
 // .happo.js
