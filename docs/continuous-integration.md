@@ -282,20 +282,42 @@ you also need to add
 
 ### Bitbucket
 
-#### Step 1: Generate an app password
+To allow Happo to post build statuses to your Bitbucket repo, you need to
+configure Happo with an
+[API token](https://support.atlassian.com/bitbucket-cloud/docs/using-api-tokens/)
+or a
+[Repository access token](https://support.atlassian.com/bitbucket-cloud/docs/repository-access-tokens/).
 
-To authorize Happo to post statuses to your PRs/commits, you need to generate an
-[app password](https://support.atlassian.com/bitbucket-cloud/docs/app-passwords/).
+#### Step 1: Generate a token
 
-![Generating a Bitbucket app password](/img/happo-bitbucket-app-password.gif)
-_Generating an app password through the Bitbucket UI_
+##### Alternative A: API Token
+
+On your
+[API tokens page for your profile](https://id.atlassian.com/manage-profile/security/api-tokens),
+generate
+[a scoped API token](https://support.atlassian.com/bitbucket-cloud/docs/using-api-tokens/)
+with the scope `read:repository:bitbucket`.
+
+![Generating a scoped Bitbucket API token](/img/happo-bitbucket-api-token.gif)
+_Generating a scoped Bitbucket API token through the Bitbucket UI_
+
+##### Alternative B: Repository access token
+
+On your repository settings page, go to `Security > Access tokens`. Generate a
+token with the `Repositories > Read` scope.
+
+![Generating a repository access token](/img/happo-bitbucket-repo-access-token.gif)
+_Generating a repository access token through the Bitbucket UI_
 
 #### Step 2: Fill in form at Happo.io
 
-Once you have the app password, you can go to the
+Once you have the API token, you can go to the
 [Bitbucket integration page on happo.io](https://happo.io/bitbucket-integration)
-and fill out the form. Once you're done with that, you're all set to have Happo
-automatically post statuses on your PRs/commits.
+and fill out the form. If you have an API token, set the email field to your
+bitbucket account email. If you have a repository access token, set the email
+field to `x-token-auth`. When you're done with filling out the form and the
+connection is working, you're all set to have Happo automatically post statuses
+on your PRs/commits.
 
 #### Happo build statuses
 
