@@ -251,8 +251,20 @@ If there are no diffs, the status is automatically set to success.
 If you for some reason can't install the Happo GitHub App (e.g. when using
 GitHub Enterprise) you can still get the Happo status posted to your PR -- as a
 comment on the pull request. To get this working, you have to provide the Happo
-CI script with user credentials containing a username and a personal access
-token, through `HAPPO_GITHUB_USER_CREDENTIALS`. E.g.
+CI script with either a `HAPPO_GITHUB_TOKEN` auth token or
+`HAPPO_GITHUB_USER_CREDENTIALS` containing a username and a personal access
+token.
+
+If you are using GitHub Actions, the easiest thing is to set the
+`HAPPO_GITHUB_TOKEN` based on the automatically provided
+[`secrets.GITHUB_TOKEN` variable](https://docs.github.com/en/actions/concepts/security/github_token).
+
+```yaml
+env: HAPPO_GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
+```
+
+If you are not in a GitHub Actions environment, you can instead use a personal
+access token:
 
 ```bash
 HAPPO_GITHUB_USER_CREDENTIALS="trotzig:21A4XgnSkt7f36ehlK5"
