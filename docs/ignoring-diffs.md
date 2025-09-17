@@ -3,27 +3,34 @@ id: ignoring-diffs
 title: Ignoring diffs
 ---
 
-A powerful feature in the Happo review process is the ability to permanently
-ignore a diff.
+A powerful feature in the Happo review process is the ability to always ignore a
+diff. To use this feature, select "Always ignore this diff" from the dropdown
+next to any diff.
 
-![Permanently ignoring a diff](/img/happo-ignoring-diffs.gif) _Ignoring a diff
-in a Happo report._
+<video
+  src="/video/happo-ignoring-diffs.mp4"
+  autoplay="true"
+  loop
+  muted
+  playsInline
+  width="100%"
+/>
 
 Ignoring a diff will instruct Happo to ignore that specific diff now and in the
-future. It should be used with caution as it might hide issues that should be
-caught.
+future. It should be used with a little bit of caution as it might hide issues
+that should be caught.
 
-Examples of where it _is okay_ to permanently ignore:
+Examples of where it _is okay_ to mark a diff as always ignored:
 
 - ✅ When there's a subtle diff that you can't attribute to the changes made.
-- ✅ When there are flaky rendering-related issues not caused by your code
+- ✅ When there are flaky rendering-related issues not caused by your code.
 
-Examples of where you _should avoid_ using the permanently ignore feature:
+Examples of where you _should avoid_ marking a diff as always ignored:
 
 - ❌ You've made a UI update causing diffs (simply
   [accept the report](reviewing-diffs.md#acceptingrejecting-a-report) instead).
-- ❌ You're having spurious diffs where some images/fonts won't load (reach out
-  to us instead — this might be a bug)
+- ❌ You're having spurious diffs where some images/fonts won't load
+  ([reach out to us](mailto:support@happo.io) instead — this might be a bug).
 
 ## Global effect
 
