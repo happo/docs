@@ -24,6 +24,11 @@ module.exports = {
     },
   },
 
+  future: {
+    v4: true,
+    experimental_faster: true,
+  },
+
   presets: [
     [
       '@docusaurus/preset-classic',
