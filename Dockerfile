@@ -1,5 +1,11 @@
 FROM node:22-slim
 
+ENV PNPM_HOME="/pnpm"
+ENV PATH="${PNPM_HOME}:${PATH}"
+
+RUN npm install -g pnpm@10 \
+    && rm -rf /tmp/node-compile-cache
+
 WORKDIR /app
 
 # Set up a non-root user to run as
@@ -18,13 +24,13 @@ RUN groupadd --gid ${gid} ${group} \
 # Switch to the non-root user
 USER ${user}
 
-COPY --chown=${user}:${group} package.json yarn.lock /app/
-RUN yarn install
+COPY --chown=${user}:${group} package.json pnpm-lock.yaml pnpm-workspace.yaml .pnpmrc /app/
+RUN pnpm install --frozen-lockfile
 
 COPY --chown=${user}:${group} . /app/
 
-RUN yarn build
+RUN pnpm build
 
 EXPOSE 3344
 
-CMD ["yarn", "serve", "--port", "3344"]
+CMD ["pnpm", "serve", "--port", "3344"]
