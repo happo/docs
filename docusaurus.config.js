@@ -17,7 +17,12 @@ module.exports = {
   favicon: 'img/favicon.ico',
   customFields: {},
   onBrokenLinks: 'log',
-  onBrokenMarkdownLinks: 'log',
+
+  markdown: {
+    hooks: {
+      onBrokenMarkdownLinks: 'log',
+    },
+  },
 
   presets: [
     [
