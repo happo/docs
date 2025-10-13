@@ -61,7 +61,7 @@ improvements.
 
 ## Checks
 
-Happo uses [axe-core](https://www.deque.com/axe/) to perform comprehensive
+Happo uses [axe-core®](https://www.deque.com/axe/) to perform comprehensive
 accessibility checks. Some examples of the checks we perform include:
 
 - [Form label associations](https://dequeuniversity.com/rules/axe/4.10/label)
@@ -134,3 +134,7 @@ accessibility testing because:
 - It enables gradual improvements without blocking development
 - It integrates accessibility testing into the existing development workflow
 - It makes accessibility testing a natural part of the development process
+
+---
+
+axe-core® is a trademark of Deque Systems, Inc. in the US and other countries.
