@@ -96,7 +96,9 @@ jobs:
     docker:
       - image: cimg/node:lts
     steps:
-      - checkout
+      - checkout:
+          method: full
+
       - run:
           name: happo
           command: npx --package=happo.io happo-ci-circleci
@@ -117,7 +119,9 @@ jobs:
       - BASE_BRANCH: 'origin/main'
 
     steps:
-      - checkout
+      - checkout:
+          method: full
+
       - run:
           name: happo
           command: npx --package=happo.io happo-ci-circleci
