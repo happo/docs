@@ -28,8 +28,8 @@ importers:
         specifier: 3.6.2
         version: 3.6.2
       release-with-ease:
-        specifier: ^1.0.0
-        version: 1.0.0
+        specifier: ^1.0.1
+        version: 1.0.1
 
 packages:
 
@@ -4536,8 +4536,8 @@ packages:
     resolution: {integrity: sha512-G08Dxvm4iDN3MLM0EsP62EDV9IuhXPR6blNz6Utcp7zyV3tr4HVNINt6MpaRWbxoOHT3Q7YN2P+jaHX8vUbgog==}
     engines: {node: '>= 0.10'}
 
-  release-with-ease@1.0.0:
-    resolution: {integrity: sha512-R3neoOQ5GrnTjvNWbKt1JSqI/anImD88E7Krt8Msb3ofQ6egGBlNpWFi9ariHvR54EebNSVnkU6CBrREZUr4UA==}
+  release-with-ease@1.0.1:
+    resolution: {integrity: sha512-oIufRTmcI4ImxdLH1wShZFd8rEVR/VAQJfm39Uzj3xQFM7ni1LeO1r7SbwIomTU4ieVkx64iuLPoeQLSUv2kig==}
     hasBin: true
 
   remark-directive@3.0.1:
@@ -11076,7 +11076,7 @@ snapshots:
 
   relateurl@0.2.7: {}
 
-  release-with-ease@1.0.0: {}
+  release-with-ease@1.0.1: {}
 
   remark-directive@3.0.1:
     dependencies:
