@@ -32,7 +32,8 @@
       "browser-updates",
       "spurious-diffs",
       "ignoring-diffs",
-      "debugging"
+      "debugging",
+      "migrating-from-legacy-packages"
     ]
   }
 }
