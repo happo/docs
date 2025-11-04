@@ -1,0 +1,43 @@
+{
+  "docs": {
+    "Overview": [
+      "getting-started",
+      "continuous-integration",
+      "api",
+      "webhooks",
+      "cli",
+      "browsers"
+    ],
+    "Configuration": [
+      "configuration",
+      "plugins"
+    ],
+    "Accessibility": [
+      "accessibility"
+    ],
+    "Integrations": [
+      "examples",
+      "static",
+      "storybook",
+      "cypress",
+      "playwright",
+      "stencil",
+      "full-page",
+      "native"
+    ],
+    "Guides": [
+      "reviewing-diffs",
+      "compare-threshold",
+      "multi-project",
+      "performance",
+      "hiding-content",
+      "user-roles",
+      "single-sign-on",
+      "image-api",
+      "browser-updates",
+      "spurious-diffs",
+      "ignoring-diffs",
+      "debugging"
+    ]
+  }
+}
