@@ -3,6 +3,11 @@ id: storybook
 title: Storybook
 ---
 
+```mdx-code-block
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+```
+
 The `happo-plugin-storybook` library is a
 [happo.io](https://github.com/enduire/happo.io) plugin for Storybook. See
 [this blog post](https://medium.com/happo-io/cross-browser-screenshot-testing-with-happo-io-and-storybook-bfb0b848a97a)
@@ -119,8 +124,9 @@ setting a `happo: false` parameter. This can be done in the default export to
 globally disable all stories in the same file, or individually on certain
 stories.
 
-<!--DOCUSAURUS_CODE_TABS-->
-<!-- CSF -->
+````mdx-code-block
+<Tabs>
+  <TabItem value="csf" label="CSF" default>
 
 ```js
 export default {
@@ -139,7 +145,8 @@ WithBorder.parameters = {
 export { WithBorder };
 ```
 
-<!-- storiesOf -->
+  </TabItem>
+  <TabItem value="storiesof" label="storiesOf">
 
 ```js
 storiesOf('FooComponent', module)
@@ -153,7 +160,9 @@ storiesOf('FooComponent', module)
   .add('Dynamic', () => <DynamicFooComponent />);
 ```
 
-<!--END_DOCUSAURUS_CODE_TABS-->
+  </TabItem>
+</Tabs>
+````
 
 ### Dark mode and themes
 
@@ -221,8 +230,9 @@ If you want to avoid rendering an example in all targets, you can use a
 `targets` array defined for an example. The example will then be rendered in the
 specified targets exclusively.
 
-<!--DOCUSAURUS_CODE_TABS-->
-<!-- CSF -->
+````mdx-code-block
+<Tabs>
+  <TabItem value="csf" label="CSF" default>
 
 ```js
 export default {
@@ -235,7 +245,8 @@ export default {
 };
 ```
 
-<!-- storiesOf -->
+  </TabItem>
+  <TabItem value="storiesof" label="storiesOf">
 
 ```js
 storiesOf('FooComponent', module)
@@ -248,7 +259,9 @@ storiesOf('FooComponent', module)
   .add('Default', () => <FooComponent />);
 ```
 
-<!--END_DOCUSAURUS_CODE_TABS-->
+  </TabItem>
+</Tabs>
+````
 
 In the example above, the FooComponent > Default story will only be rendered in
 the target named `chrome-small` (defined in
@@ -264,8 +277,9 @@ iframe that you have no control over, loading a credit card form. In order to
 wait for the iframe to finish, we can add a `waitForContent` parameter with some
 unique string in the iframe.
 
-<!--DOCUSAURUS_CODE_TABS-->
-<!-- CSF -->
+````mdx-code-block
+<Tabs>
+  <TabItem value="csf" label="CSF" default>
 
 ```js
 const Basic = () => <PaymentForm />;
@@ -277,7 +291,8 @@ Basic.parameters = {
 export { Basic };
 ```
 
-<!-- storiesOf -->
+  </TabItem>
+  <TabItem value="storiesof" label="storiesOf">
 
 ```js
 storiesOf('PaymentForm', module).add('default', () => <PaymentForm />, {
@@ -285,7 +300,9 @@ storiesOf('PaymentForm', module).add('default', () => <PaymentForm />, {
 });
 ```
 
-<!--END_DOCUSAURUS_CODE_TABS-->
+  </TabItem>
+</Tabs>
+````
 
 ### Waiting for a condition to be truthy
 
@@ -295,8 +312,9 @@ when the time is right to take the screenshot.
 
 Here's an example that waits for a specific element (`.credit-card`) to appear:
 
-<!--DOCUSAURUS_CODE_TABS-->
-<!-- CSF -->
+````mdx-code-block
+<Tabs>
+  <TabItem value="csf" label="CSF" default>
 
 ```js
 const Basic = () => <PaymentForm />;
@@ -308,7 +326,8 @@ Basic.parameters = {
 export { Basic };
 ```
 
-<!-- storiesOf -->
+  </TabItem>
+  <TabItem value="storiesof" label="storiesOf">
 
 ```js
 storiesOf('PaymentForm', module).add('default', () => <PaymentForm />, {
@@ -316,12 +335,15 @@ storiesOf('PaymentForm', module).add('default', () => <PaymentForm />, {
 });
 ```
 
-<!--END_DOCUSAURUS_CODE_TABS-->
+  </TabItem>
+</Tabs>
+````
 
 Here's another example that waits for a specific number of elements:
 
-<!--DOCUSAURUS_CODE_TABS-->
-<!-- CSF -->
+````mdx-code-block
+<Tabs>
+  <TabItem value="csf" label="CSF" default>
 
 ```js
 const Basic = () => <PaymentForm />;
@@ -333,7 +355,8 @@ Basic.parameters = {
 export { Basic };
 ```
 
-<!-- storiesOf -->
+  </TabItem>
+  <TabItem value="storiesof" label="storiesOf">
 
 ```js
 storiesOf('PaymentForm', module).add('default', () => <PaymentForm />, {
@@ -343,7 +366,9 @@ storiesOf('PaymentForm', module).add('default', () => <PaymentForm />, {
 });
 ```
 
-<!--END_DOCUSAURUS_CODE_TABS-->
+  </TabItem>
+</Tabs>
+````
 
 To test this function you can use the Happo panel. There will be an "Invoke"
 button next to the `waitFor` parameter. Click it to run the function. Check the
@@ -358,8 +383,9 @@ Happo will make its best to wait for your stories to render, but at times you
 might need a little more control in the form of delays. Use the `happo.delay`
 parameter to set an individual delay for a story:
 
-<!--DOCUSAURUS_CODE_TABS-->
-<!-- CSF -->
+````mdx-code-block
+<Tabs>
+  <TabItem value="csf" label="CSF" default>
 
 ```js
 export default {
@@ -382,7 +408,8 @@ WithBorder.parameters = {
 export { WithBorder };
 ```
 
-<!-- storiesOf -->
+  </TabItem>
+  <TabItem value="storiesof" label="storiesOf">
 
 ```js
 storiesOf('FooComponent', module).add('delayed', () => <FooComponent />, {
@@ -390,7 +417,9 @@ storiesOf('FooComponent', module).add('delayed', () => <FooComponent />, {
 });
 ```
 
-<!--END_DOCUSAURUS_CODE_TABS-->
+  </TabItem>
+</Tabs>
+````
 
 ### Overriding the default render timeout
 
