@@ -62,5 +62,5 @@ Use the
 ["Compare reports" API endpoint](https://happo.io/docs/api#Compare%20reports) to
 compare two reports. This is especially useful in CI. This call will trigger a
 Happo status to be posted to your pull request/commit, given that you've enabled
-[the Happo GitHub integration](continuous-integration.md##posting-statuses-back-to-prscommits)
+[the Happo GitHub integration](continuous-integration.md#posting-statuses-back-to-prscommits)
 correctly.

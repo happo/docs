@@ -3,6 +3,11 @@ id: cypress
 title: Cypress
 ---
 
+```mdx-code-block
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+```
+
 The `happo-cypress` module adds [Happo.io](https://happo.io) cross-browser
 screenshots to your [Cypress.io](https://cypress.io) test suite.
 
@@ -37,8 +42,9 @@ import 'happo-cypress';
 Then, register the provided `happoTask` in your `cypress.config.js` file (or
 `cypress/plugins/index.js` if you are on Cypress v9 or earlier):
 
-<!--DOCUSAURUS_CODE_TABS-->
-<!-- Cypress v10 -->
+````mdx-code-block
+<Tabs>
+  <TabItem value="v10" label="Cypress v10" default>
 
 ```js
 const { defineConfig } = require('cypress');
@@ -54,7 +60,8 @@ module.exports = defineConfig({
 });
 ```
 
-<!-- Cypress v9 -->
+  </TabItem>
+  <TabItem value="v9" label="Cypress v9">
 
 ```js
 // In cypress/plugins/index.js
@@ -65,7 +72,9 @@ module.exports = on => {
 };
 ```
 
-<!--END_DOCUSAURUS_CODE_TABS-->
+  </TabItem>
+</Tabs>
+````
 
 Add a `.happo.js` file with some minimal/required configuration:
 
