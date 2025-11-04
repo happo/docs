@@ -38,6 +38,16 @@ module.exports = {
           showLastUpdateAuthor: false,
           showLastUpdateTime: false,
           sidebarPath: require.resolve('./sidebars.json'),
+          lastVersion: 'current',
+          versions: {
+            current: {
+              label: 'happo',
+              badge: false,
+            },
+            'happo.io@13': {
+              label: 'happo.io@13 (legacy)',
+            },
+          },
         },
 
         blog: false, // Disable the blog plugin
@@ -60,6 +70,13 @@ module.exports = {
       },
 
       items: [
+        {
+          type: 'docsVersionDropdown',
+          versions: {
+            current: { label: 'happo' },
+            'happo.io@13': { label: 'happo.io@13 (legacy)' },
+          },
+        },
         {
           href: 'https://happo.io/',
           label: 'To happo.io »',
