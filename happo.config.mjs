@@ -1,13 +1,13 @@
 import { defineConfig } from 'happo';
-import generateHappoPackage from './generateHappoPackage.mjs';
+import buildHappoCustom from './buildHappoCustom.mjs';
 
 export default defineConfig({
   apiKey: process.env.HAPPO_API_KEY,
   apiSecret: process.env.HAPPO_API_SECRET,
 
   integration: {
-    type: 'static',
-    generateStaticPackage: generateHappoPackage,
+    type: 'custom',
+    build: buildHappoCustom,
   },
 
   targets: {

@@ -1,9 +1,8 @@
 import { execSync } from 'child_process';
 import { writeFileSync, readdirSync, statSync, unlinkSync } from 'fs';
 import { join, relative, resolve } from 'path';
-import { fileURLToPath } from 'url';
 
-export default async function generateHappoPackage() {
+export default async function buildHappoCustom() {
   // Build the docs
   console.log('Building docs...');
   execSync('pnpm run build', { stdio: 'inherit' });
@@ -43,13 +42,13 @@ export default async function generateHappoPackage() {
   }
 
   // Generate the entryPoint.js file
-  const entryPointContent = `import happoStatic from 'happo/static';
+  const entryPointContent = `import happoCustom from 'happo/custom';
 
-happoStatic.init();
+happoCustom.init();
 
 ${examples
-  .map((example, index) => {
-    return `happoStatic.registerExample({
+  .map(example => {
+    return `happoCustom.registerExample({
   component: ${JSON.stringify(example.component)},
   variant: 'default',
   render: async () => {
@@ -99,31 +98,19 @@ ${examples
     }
     throw error;
   }
-  // Create iframe.html file
-  const iframeHtml = `<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <script src="/bundle.js"></script>
-  </head>
-  <body></body>
-</html>
-`;
-
-  writeFileSync(join(buildDir, 'iframe.html'), iframeHtml, 'utf-8');
 
   console.log(`Generated bundle.js with ${examples.length} examples`);
-  console.log(`Static package created in: ${buildDir}`);
+  console.log(`Custom package created in: ${buildDir}`);
 
   return { rootDir: buildDir, entryPoint: 'bundle.js' };
 }
+
 // Run the function if this file is executed directly
-if (
-  process.argv[1] &&
-  resolve(fileURLToPath(import.meta.url)) === resolve(process.argv[1])
-) {
-  generateHappoPackage().catch(error => {
-    console.error('Error generating Happo package:', error);
-    process.exit(1);
-  });
+if (import.meta.main) {
+  try {
+    await buildHappoCustom();
+  } catch (error) {
+    process.exitCode = 1;
+    console.error('Error building Happo custom package:', error);
+  }
 }
