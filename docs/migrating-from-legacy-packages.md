@@ -75,12 +75,12 @@ export default defineConfig({
   apiKey: process.env.HAPPO_API_KEY!,
   apiSecret: process.env.HAPPO_API_SECRET!,
 
-	project: 'default',
+  project: 'default',
 
-	integration: {
-		type: 'storybook',
-		configDir: '.storybook',
-	},
+  integration: {
+    type: 'storybook',
+    configDir: '.storybook',
+  },
 
   targets: {
     'chrome-desktop': {
@@ -93,8 +93,8 @@ export default defineConfig({
 
 ### Target Configuration
 
-One of the most significant changes is how targets are defined. The new package
-uses plain objects instead of the `RemoteBrowserTarget` class.
+The new package uses plain objects instead of the `RemoteBrowserTarget` class
+when configuring `targets`.
 
 **Before (legacy):**
 
@@ -155,6 +155,27 @@ export default defineConfig({
   (they use a fixed size)
 - `freezeAnimations` now defaults to `'last-frame'`
 
+### Animations
+
+The previous default for stopping animations was to freeze them on the first
+frame. The new package changes this to stop at the last frame instead. To get
+the old behavior, set `target.freezeAnimations: 'first-frame'`:
+
+```js title=happo.config.ts
+import { defineConfig } from 'happo';
+
+export default defineConfig({
+  // ... rest of config
+  targets: {
+    chrome: {
+      browserType: 'firefox',
+      viewport: '1024x768',
+      freezeAnimations: 'first-frame',
+    },
+  },
+});
+```
+
 ### CLI Commands
 
 The CLI command changes as well:
@@ -178,6 +199,18 @@ npm run happo
 The CLI is now provided by the `happo` package instead of `happo.io` and has a
 simplified API.
 
+#### Removed `happo-ci*` scripts
+
+The following scripts have all been replaced by the main `happo` CLI command:
+
+- `happo-ci`
+- `happo-ci-github-actions`
+- `happo-ci-travis`
+- `happo-ci-circleci`
+- `happo-ci-azure-pipelines`
+
+The main `happo` CLI command now detects these CI environments automatically.
+
 ### Integration Types
 
 The new package uses an `integration` field in the configuration to specify the
@@ -188,10 +221,6 @@ type of integration.
 **Before (legacy):**
 
 ```js title=.happo.js
-const happoStatic = require('happo-static');
-
-// ... static package generation code
-
 module.exports = {
   generateStaticPackage: () => ({ path: './static' }),
 
@@ -217,8 +246,12 @@ export default defineConfig({
 });
 ```
 
-**Note:** Remove any `happo-static` imports from your code. The new package
-handles static bundle integration directly.
+The returned object from `generateStaticPackage` has to include a `rootDir`
+(path to the folder where files have been built, e.g. `/foo/bar/build`) and
+`entryPoint` (local file name of the built javascript bundle, e.g. `bundle.js`)
+
+**Note:** If you're using the `happo-static` library, replace any `happo-static`
+imports with imports for `happo/static`.
 
 #### Storybook Integration
 
@@ -252,9 +285,6 @@ export default defineConfig({
   // ... rest of config
 });
 ```
-
-**Note:** Update any `happo-plugin-storybook` imports from your Storybook
-configuration to instead import from the `happo` package.
 
 ##### Storybook preset
 
@@ -363,6 +393,9 @@ const happoTask = require('happo-cypress/task');
 const happoTask = require('happo/cypress/task');
 ```
 
+The `happo-e2e` wrapper command is replaced by the main `happo` command. Replace
+`npx happo-e2e -- cypress run` with `npx happo -- cypress run`
+
 #### Playwright Integration
 
 The configuration changes for Playwright integration:
@@ -414,6 +447,9 @@ import { test } from 'happo-playwright';
 import { test } from 'happo/playwright';
 ```
 
+The `happo-e2e` wrapper command is replaced by the main `happo` command. Replace
+`npx happo-e2e -- playwright test` with `npx happo -- playwright test`
+
 #### Happo Examples Integration
 
 The Happo examples integration has been removed in favor of the static
@@ -423,8 +459,7 @@ TODO: Provide migration advice for this
 
 ### E2E Command Changes
 
-For Cypress and Playwright integrations, use the new `happo` CLI with the `e2e`
-command:
+For Cypress and Playwright integrations, use the new `happo` CLI command:
 
 **Before (legacy):**
 
@@ -442,7 +477,8 @@ npx happo -- playwright test
 
 ### Configuration Options
 
-These options are removed:
+These options, that were only used by the Happo Examples integration, are
+removed:
 
 - `stylesheets` - removed
 - `publicFolders` - removed
@@ -460,8 +496,12 @@ Some target options changed:
 The following environment variables have been removed and are no longer
 necessary:
 
-- `HAPPO_IS_ASYNC`
-- `HAPPO_SIGNED_URL`
+- `HAPPO_IS_ASYNC` -- async mode is now the only mode
+- `HAPPO_SIGNED_URL` -- we use signed upload URLs by default now
+- `CURRENT_SHA` -- use `HAPPO_CURRENT_SHA` instead
+- `PREVIOUS_SHA` -- use `HAPPO_PREVIOUS_SHA` instead
+- `CHANGE_URL` -- use `HAPPO_CHANGE_URL` instead
+- `BASE_BRANCH` -- use `HAPPO_BASE_BRANCH` instead
 
 ## Migration Steps
 
@@ -482,82 +522,6 @@ necessary:
    Cypress/Playwright integrations
 1. **Update environment variables**: Remove unused env vars
 1. **Test your setup**: Run your Happo tests to ensure everything works
-
-## Example: Complete Migration
-
-Here's a complete example of migrating a Storybook setup:
-
-**Before (legacy):**
-
-```js title=.happo.js
-const path = require('path');
-const { RemoteBrowserTarget } = require('happo.io');
-const happoPluginStorybook = require('happo-plugin-storybook');
-
-module.exports = {
-  apiKey: process.env.HAPPO_API_KEY,
-  apiSecret: process.env.HAPPO_API_SECRET,
-
-  project: 'default',
-
-  targets: {
-    'chrome-desktop': new RemoteBrowserTarget('chrome', {
-      viewport: '1280x720',
-      chunks: 2,
-    }),
-    'firefox-desktop': new RemoteBrowserTarget('firefox', {
-      viewport: '1280x720',
-    }),
-    'ios-safari': new RemoteBrowserTarget('ios-safari', {
-      viewport: '375x667',
-    }),
-  },
-
-  plugins: [
-    happoPluginStorybook({
-      configDir: '.storybook',
-    }),
-  ],
-
-  stylesheets: [path.resolve(__dirname, 'styles/global.css')],
-};
-```
-
-**After (new):**
-
-```ts title=happo.config.ts
-import path from 'path';
-import { defineConfig } from 'happo';
-
-export default defineConfig({
-  apiKey: process.env.HAPPO_API_KEY!,
-  apiSecret: process.env.HAPPO_API_SECRET!,
-
-  project: 'default',
-
-  integration: {
-    type: 'storybook',
-    configDir: '.storybook',
-  },
-
-  targets: {
-    'chrome-desktop': {
-      browserType: 'chrome',
-      viewport: '1280x720',
-      chunks: 2,
-    },
-
-    'firefox-desktop': {
-      browserType: 'firefox',
-      viewport: '1280x720',
-    },
-
-    'ios-safari': {
-      browserType: 'ios-safari',
-    },
-  },
-});
-```
 
 ## Troubleshooting
 
