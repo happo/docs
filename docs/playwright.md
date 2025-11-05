@@ -269,11 +269,11 @@ Usage instructions for `HAPPO_NOTIFY` is available in
 
 ### Download all assets
 
-By default, happo will download assets found locally and include in an assets
-package sent to happo.io. Any external URL will be left as-is, which means they
-are expected to be publicly accessible by Happo workers. To include external
-assets in the assets package as well, set a `HAPPO_DOWNLOAD_ALL` environment
-variable.
+By default, happo will download assets found locally and include them in an
+assets package sent to happo.io. Any external URL will be left as-is, which
+means they are expected to be publicly accessible by Happo workers. To include
+external assets in the assets package as well, set a `HAPPO_DOWNLOAD_ALL`
+environment variable.
 
 ```bash
 HAPPO_DOWNLOAD_ALL=true npx happo -- playwright test
