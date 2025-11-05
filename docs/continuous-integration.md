@@ -21,31 +21,28 @@ let you know exactly what has changed in your UI.
 > instructions on how to integrate with CI there.
 
 Since a lot of projects follow a pull-request/merge-request model, Happo
-provides ready-made scripts that you can run in CI:
+provides a unified CLI command that automatically detects CI environments:
 
-- [`happo-ci-github-actions`](#happo-ci-github-actions) - used with GitHub
-  Actions.
-- [`happo-ci-circleci`](#happo-ci-circleci) - for CircleCI environments.
-- [`happo-ci-azure-pipelines`](#happo-ci-azure-pipelines) - used with Azure
-  DevOps Pipelines.
-- [`happo-ci-travis`](#happo-ci-travis) - a script designed to be run in a
-  Travis environment.
-- [`happo-ci`](#happo-ci) - a generic script designed to work in any CI
-  environment. This script is used by all the other CI scripts under the hood.
-
-All of these scripts will:
+The main `happo` CLI command automatically detects CI environments and will:
 
 1. Figure out the right baseline report to compare with
 2. Run Happo on the current HEAD commit
 3. Compare the baseline with the new report
 4. If allowed to, post back a status to the commit/PR
 
-### `happo-ci-github-actions`
+The CLI auto-detects the following CI environments:
+
+- GitHub Actions
+- Circle CI
+- Travis CI
+- Azure DevOps
+
+### GitHub Actions
 
 This script knows about the
 [GitHub Actions](https://github.com/features/actions) build environment,
 assuming a PR based model. To run it, configure your workflow file to run the
-`happo-ci-github-actions` script. Here's an example:
+`happo` command. Here's an example:
 
 ```yaml
 # .github/workflows/happo.yml
@@ -69,7 +66,7 @@ jobs:
         run: git fetch origin main:main
       - uses: actions/setup-node@v4
       - run: npm ci
-      - run: npx --package=happo.io happo-ci-github-actions
+      - run: npx happo
         env:
           HAPPO_API_KEY: ${{ secrets.HAPPO_API_KEY }}
           HAPPO_API_SECRET: ${{ secrets.HAPPO_API_SECRET }}
@@ -78,16 +75,11 @@ jobs:
 Make sure that the workflow is configured to run on pushes to your default
 branch. This will ensure that baselines exist for PR builds to compare against.
 
-### `happo-ci-circleci`
+### Circle CI
 
-_Before you start using this script, have a look at the
-[Happo CircleCI Orb](https://circleci.com/orbs/registry/orb/happo/happo). It
-simplifies some of the setup required if you use the `happo-ci-circleci`
-script._
-
-This script knows about the CircleCI build environment, assuming a PR based
-model. To run it, configure `.circleci/config.yml` to run the
-`happo-ci-circleci` script. Something like this:
+The `happo` script knows about the CircleCI build environment, assuming a PR
+based model. To run it, configure `.circleci/config.yml` to run the `happo`
+command. Something like this:
 
 ```yaml
 # .circleci/config.yml
@@ -101,12 +93,12 @@ jobs:
 
       - run:
           name: happo
-          command: npx --package=happo.io happo-ci-circleci
+          command: npx happo
 ```
 
-The `happo-ci-circleci` script assumes your PRs are based off of the `main`
-branch. If you're using a different default branch, you can set the
-`BASE_BRANCH` environment variable.
+The `happo` command assumes your PRs are based off of the `main` branch. If
+you're using a different default branch, you can set the `HAPPO_BASE_BRANCH`
+environment variable.
 
 ```yaml
 # .circleci/config.yml
@@ -116,7 +108,7 @@ jobs:
       - image: cimg/node:lts
 
     environment:
-      - BASE_BRANCH: 'origin/main'
+      - HAPPO_BASE_BRANCH: 'origin/main'
 
     steps:
       - checkout:
@@ -124,15 +116,15 @@ jobs:
 
       - run:
           name: happo
-          command: npx --package=happo.io happo-ci-circleci
+          command: npx happo
 ```
 
-### `happo-ci-azure-pipelines`
+### Azure DevOps
 
-This script is targeted at
+The `happo` script knows how to resolve variables from
 [Azure Pipelines](https://azure.microsoft.com/en-us/services/devops/pipelines/).
 It can be used with pull requests and regular pushes. To run it, configure
-`azure-pipelines.yml` to run the `happo-ci-azure-pipelines` script.
+`azure-pipelines.yml` to run the `happo` command.
 
 In the example below the `HAPPO_API_KEY` and `HAPPO_API_SECRET` environment
 variables are populated from two
@@ -151,7 +143,7 @@ steps:
     displayName: 'Install Node.js'
   - script: |
       npm ci
-      npx --package=happo.io happo-ci-azure-pipelines
+      npx happo
     displayName: 'Install dependencies and run Happo'
     env:
       HAPPO_API_KEY: $(happoApiKey)
@@ -163,39 +155,39 @@ replace this if you are using a different default branch. To trigger builds for
 pull requests, you can use
 [a branch policy for the main branch](https://docs.microsoft.com/en-us/azure/devops/repos/git/branch-policies?view=azure-devops&tabs=browser).
 
-### `happo-ci-travis`
+### Travis CI
 
 This script knows about the Travis build environment, assuming a PR based model.
-To run it, configure `.travis.yml` to run the `happo-ci-travis` script:
+To run it, configure `.travis.yml` to run the `happo` command:
 
 ```yaml
 # .travis.yml
 language: node_js
 script:
-  - npx --package=happo.io happo-ci-travis
+  - npx happo
 ```
 
-The `happo-ci-travis` script assumes that your PRs are based off of the `main`
-branch. If you're using a different default branch, you can set the
-`BASE_BRANCH` environment variable.
+The `happo` command assumes that your PRs are based off of the `main` branch. If
+you're using a different default branch, you can set the `HAPPO_BASE_BRANCH`
+environment variable.
 
 ```yaml
 # .travis.yml
 language: node_js
 env:
-  - BASE_BRANCH: 'origin/master'
+  - HAPPO_BASE_BRANCH: 'origin/master'
 script:
-  - npx --package=happo.io happo-ci-travis
+  - npx happo
 ```
 
-### `happo-ci`
+### Generic CI
 
-This is a generic script that can run in most CI environments. Before using it,
-you need to set a few environment variables:
+If you are using a different CI service, you'll have to set a few environment
+variables before invoking the `happo` command:
 
-- `PREVIOUS_SHA` - the SHA of the baseline commit
-- `CURRENT_SHA` - the SHA of the current HEAD
-- `CHANGE_URL` - a URL that links back to the change
+- `HAPPO_PREVIOUS_SHA` - the SHA of the baseline commit
+- `HAPPO_CURRENT_SHA` - the SHA of the current HEAD
+- `HAPPO_CHANGE_URL` - a URL that links back to the change
   ([further instructions](#setting-the-right-link))
 
 ## Posting build statuses
@@ -376,7 +368,7 @@ PR/commit. If there are no diffs, the status is automatically set to success.
 
 ## Sync mode (optional)
 
-By default, `happo-ci` will generate screenshots asynchronously, meaning your CI
+By default, `happo` will generate screenshots asynchronously, meaning your CI
 run will finish before screenshots are ready. You can disable this behavior by
 setting a `HAPPO_IS_ASYNC=false` environment variable. If set, Happo will do two
 things differently:
@@ -391,11 +383,11 @@ other dependencies/preprocessing steps that need to happen, you can override
 this with the `INSTALL_CMD` environment variable. E.g.
 
 ```bash
-INSTALL_CMD="lerna bootstrap" npx --package=happo.io happo-ci-travis
+INSTALL_CMD="lerna bootstrap" npx happo
 ```
 
 In this example, the `lerna bootstrap` command will be invoked before running
-`happo run` on each commit, instead of `yarn install`/`npm install`.
+`happo` on each commit, instead of `yarn install`/`npm install`.
 
 ## Email notifications
 

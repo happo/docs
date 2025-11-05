@@ -3,8 +3,8 @@ id: playwright
 title: Playwright
 ---
 
-The [`happo-playwright`](https://github.com/happo/happo-playwright) module makes
-it easy to integrate a [Playwright](https://playwright.dev/) test suite with
+The [`happo/playwright`](https://github.com/happo/happo) module makes it easy to
+integrate a [Playwright](https://playwright.dev/) test suite with
 [Happo.io](https://happo.io).
 
 ## Pre-requisites
@@ -15,11 +15,10 @@ Before you start following the instructions here, you'll need
 
 ## Installation
 
-In your project, install the `happo-playwright`, `happo-e2e`, and the `happo.io`
-npm modules.
+In your project, install the `happo` npm module.
 
 ```sh
-npm install --save-dev happo-playwright happo-e2e happo.io
+npm install --save-dev happo
 ```
 
 ## Setup
@@ -29,7 +28,7 @@ on an imaginary page.
 
 ```js
 // tests/test.spec.js
-import { test } from 'happo-playwright';
+import { test } from 'happo/playwright';
 
 test('start page', async ({ page, happoScreenshot }) => {
   await page.goto('http://localhost:7676');
@@ -43,24 +42,30 @@ test('start page', async ({ page, happoScreenshot }) => {
 });
 ```
 
-You will also need a `.happo.js` file with some minimal/required configuration:
+You will also need a `happo.config.ts` file with some minimal/required
+configuration:
 
 ```js
-// .happo.js
-const { RemoteBrowserTarget } = require('happo.io');
+// happo.config.ts
+import { defineConfig } from 'happo';
 
-module.exports = {
-  apiKey: <your api key>,
-  apiSecret: <your api secret>,
-  targets: {
-    chrome: new RemoteBrowserTarget('chrome', {
-      viewport: '1024x768',
-    }),
+export default defineConfig({
+  integration: {
+    type: 'playwright',
   },
-};
+
+  apiKey: process.env.HAPPO_API_KEY,
+  apiSecret: process.env.HAPPO_API_SECRET,
+  targets: {
+    chrome: {
+      browserType: 'chrome',
+      viewport: '1024x768',
+    },
+  },
+});
 ```
 
-See https://github.com/happo/happo.io#targets for more configuration options.
+See [Configuration](configuration.md#targets) for more configuration options.
 
 NOTE: For security reasons, you'll most likely want to pass in `apiKey` and
 `apiSecret` via environment variables:
@@ -85,7 +90,7 @@ Here's an example of how to do this:
 
 ```js
 // tests/test.js
-import { test as happoTest } from 'happo-playwright';
+import { test as happoTest } from 'happo/playwright';
 import { test as base, mergeTests } from '@playwright/test';
 
 const baseTest = base.extend({
@@ -117,43 +122,49 @@ test('start page', async ({ page, happoScreenshot }) => {
 
 ### Usage
 
-To enable Happo in your test suite, wrap your test command with the `happo-e2e`
+To enable Happo in your test suite, wrap your test command with the `happo`
 script. Here's an example:
 
 ```sh
-npx happo-e2e -- npx playwright test
+npx happo -- playwright test
 ```
 
 If you're using [`yarn`](https://yarnpkg.com/), you might have to specify the
 double dashes twice (the first one is consumed by `yarn` itself):
 
 ```sh
-yarn happo-e2e -- -- yarn playwright test
+yarn happo -- -- yarn playwright test
 ```
 
-If you're not using the `happo-e2e` wrapper, Happo will be disabled for the
-whole test suite.
+If you're not using the `happo` wrapper, Happo will be disabled for the whole
+test suite.
 
 ## Allowing failures
 
 By default, no Happo reports are produced when the Playwright run fails. In some
 cases, you might want to allow Happo to succeed even if the overall test run
-fails. The `--allow-failures` flag for the `happo-e2e` command can then be used:
+fails. The `allowFailures` configuration option can then be used:
 
-```sh
-npx happo-e2e --allow-failures -- npx playwright test
+```js title=happo.config.ts
+export default defineConfig({
+  integration: {
+    type: 'playwright',
+    allowFailures: true,
+  },
+  // ... rest of the config
+});
 ```
 
 If you're using `yarn`, you might need to pass the double dashes twice, like so:
 
 ```sh
-yarn happo-e2e -- --allow-failures -- yarn playwright test
+yarn happo -- --allow-failures -- yarn playwright test
 ```
 
 ## Selecting targets
 
 If you want to avoid rendering an example in all browser targets (found in
-`.happo.js`), you can use the `targets` option. The example will then be
+`happo.config.ts`), you can use the `targets` option. The example will then be
 rendered in the specified targets exclusively.
 
 ```js
@@ -165,14 +176,14 @@ await happoScreenshot(heroImage, {
 ```
 
 In this example, the "Footer" snapshot will only be rendered in the target named
-`'chrome-small'` found in `.happo.js`.
+`'chrome-small'` found in `happo.config.ts`.
 
 ### Dynamic targets
 
 If you want to create a snapshot in a target that isn't defined in the
-`.happo.js` config, you can use an object with `name`, `browser` and `viewport`
-properties. Here's an example where a snapshot is taken in a dynamically
-generated target:
+`happo.config.ts` config, you can use an object with `name`, `browser` and
+`viewport` properties. Here's an example where a snapshot is taken in a
+dynamically generated target:
 
 ```js
 await happoScreenshot(heroImage, {
@@ -197,14 +208,13 @@ await happoScreenshot(heroImage, {
 });
 ```
 
-"Footer" is now rendered in Chrome (target specified in `.happo.js`) and Firefox
-(dynamic target).
+"Footer" is now rendered in Chrome (target specified in `happo.config.ts`) and
+Firefox (dynamic target).
 
 ## Continuous Integration
 
-If you run the test suite in a CI environment, the `happo-playwright` module
-will do its best to auto-detect your environment and adapt its behavior
-accordingly:
+If you run the test suite in a CI environment, the `happo` module will do its
+best to auto-detect your environment and adapt its behavior accordingly:
 
 - On PR builds, compare the screenshots against the main branch
 - On main branch builds, simply create the Happo report
@@ -238,8 +248,8 @@ get a combined Happo report for all the test runs, you can do the following:
 
 - Set a `HAPPO_NONCE` environment variable, to tie individual runs together. Any
   string unique to the build will do.
-- After the whole test suite is done, call `npx happo-e2e finalize`. Make sure
-  that the same `HAPPO_NONCE` environment variable is set as for the individual
+- After the whole test suite is done, call `npx happo finalize`. Make sure that
+  the same `HAPPO_NONCE` environment variable is set as for the individual
   builds.
 
 In some CI tools, you can use a built-in environment variable as `HAPPO_NONCE`.
@@ -258,26 +268,16 @@ Usage instructions for `HAPPO_NOTIFY` is available in
 
 ## Advanced usage
 
-### Setting a port for `happo-e2e`
-
-When you're running the `happo-e2e --` wrapper, a web server is used internally.
-By default, this server is listening on port 5339. If you need to change that,
-pass a `--port` argument, like so:
-
-```bash
-npx happo-e2e --port 5432 -- npx playwright test
-```
-
 ### Download all assets
 
-By default, happo-e2e will download assets found locally and include in an
-assets package sent to happo.io. Any external URL will be left as-is, which
-means they are expected to be publicly accessible by Happo workers. To include
-external assets in the assets package as well, set a `HAPPO_DOWNLOAD_ALL`
-environment variable.
+By default, happo will download assets found locally and include in an assets
+package sent to happo.io. Any external URL will be left as-is, which means they
+are expected to be publicly accessible by Happo workers. To include external
+assets in the assets package as well, set a `HAPPO_DOWNLOAD_ALL` environment
+variable.
 
 ```bash
-HAPPO_DOWNLOAD_ALL=true npx happo-e2e -- npx playwright test
+HAPPO_DOWNLOAD_ALL=true npx happo -- playwright test
 ```
 
 With this environment variable set, all assets are assumed to be private (i.e.
@@ -309,32 +309,6 @@ happoScreenshot(page.locator('.header'), {
 });
 ```
 
-### Skipping snapshots
-
-If you run a subset of the tests in your test suite, Happo will show "Deleted
-examples" in the report. To prevent this from happening, you can pass a
-`--skippedExamples` option to the `happo-e2e finalize` call.
-
-The `--skippedExamples` option needs to be an array coded as a JSON string. Each
-item in the array needs a `component`, `variant`, and `target`, all strings.
-Here's an example call:
-
-```sh
-happo-e2e finalize --skippedExamples '[{"component":"Button","variant":"default","target":"chrome-small"}]'
-```
-
-Remember to skip examples in all targets you have defined in .happo.js. If you
-for instance have targets named "chrome-small" & "firefox-large" in .happo.js,
-you should add two items per snapshot you are skipping. E.g.
-
-```sh
-happo-e2e finalize --skippedExamples '[{"component":"Button","variant":"default","target":"chrome-small"}, {"component":"Button","variant":"default","target":"firefox-large"}]'
-```
-
-Finding the skipped snapshots can be a little tricky, but a little bit of code
-introspection could help. Here's an example of a script that can serve as a
-base: https://github.com/happo/happo-e2e/issues/21#issuecomment-1825776491
-
 ## Troubleshooting
 
 ### I need support!
@@ -343,10 +317,11 @@ We're here to help — send an email to support@happo.io and we'll assist you.
 
 ### Happo isn't producing any screenshots
 
-The `happo-playwright` module will disable itself if it can't detect any api
-tokens (`apiKey` and `apiSecret` in config). Check to make sure your `.happo.js`
-config is properly set up. There might also be more information in the console
-logs from Playwright. Look for lines starting with `[HAPPO]`.
+The `happo/playwright` module will disable itself if it can't detect any api
+tokens (`apiKey` and `apiSecret` in config). Check to make sure your
+`happo.config.ts` config is properly set up. There might also be more
+information in the console logs from Playwright. Look for lines starting with
+`[HAPPO]`.
 
 ### Where are my screenshots?
 
@@ -369,13 +344,5 @@ happened:
   something like `#start-page .header { color: red }` and screenshoot `.header`,
   the red color will be missing. This is because Happo only sees the `.header`
   element, never the surrounding page.
-- There could be a bug in how `happo-e2e` collects styles and assets. Reach out
-  to support@happo.io and we'll triage.
-
-### I'm migrating from `happo-cypress` and `transformDOM` is not working
-
-The `transformDOM` option is currently not supported in `happo-playwright`.
-
-If you're migrating from `happo-cypress` and are using `transformDOM` to hide
-content, you may be able to achieve similar results using
-[`data-happo-hide`](./hiding-content.md).
+- There could be a bug in how `happo/playwright` collects styles and assets.
+  Reach out to support@happo.io and we'll triage.

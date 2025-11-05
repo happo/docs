@@ -8,33 +8,30 @@ import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 ```
 
-The `happo-plugin-storybook` library is a
-[happo.io](https://github.com/enduire/happo.io) plugin for Storybook. See
-[this blog post](https://medium.com/happo-io/cross-browser-screenshot-testing-with-happo-io-and-storybook-bfb0b848a97a)
-for a lengthier introduction to this plugin.
+The `happo/storybook` module makes it easy to integrate your Storybook app with
+Happo.
 
 ## Installation
 
 ```sh
-npm install --save-dev happo.io happo-plugin-storybook
+npm install --save-dev happo
 ```
 
 ## Configuration
 
-Add the following to your `.happo.js` configuration file:
+Add the following to your `happo.config.ts` configuration file:
 
 ```js
-// .happo.js
-const happoPluginStorybook = require('happo-plugin-storybook');
+// happo.config.ts
+import { defineConfig } from 'happo';
 
-module.exports = {
-  // ...
-  plugins: [
-    happoPluginStorybook({
-      // options go here
-    }),
-  ],
-};
+export default defineConfig({
+  integration: {
+    type: 'storybook',
+    configDir: '.storybook',
+  },
+  // ... rest of config
+});
 ```
 
 Add this to `.storybook/preview.js` (or `.storybook/config.js` if you're using
@@ -42,7 +39,7 @@ Storybook < v5):
 
 ```js
 // .storybook/preview.js
-import 'happo-plugin-storybook/register';
+import 'happo/storybook/register';
 ```
 
 Add a `happo` script to `package.json`:
@@ -63,7 +60,7 @@ Add this to `.storybook/main.js`:
 
 ```js
 module.exports = {
-  addons: ['happo-plugin-storybook/preset'],
+  addons: ['happo/storybook/preset'],
 };
 ```
 
@@ -71,14 +68,14 @@ Add this to `.storybook/preview.js`:
 
 ```js
 // .storybook/preview.js
-import happoDecorator from 'happo-plugin-storybook/decorator';
+import happoDecorator from 'happo/storybook/decorator';
 
 export const decorators = [happoDecorator];
 ```
 
 ## Options
 
-These options are available to the `happoPluginStorybook` function:
+These options are available to the `integration` field in `happo.config.ts`:
 
 - `configDir` specify the name of the Storybook configuration directory. The
   default is `'.storybook'`.
@@ -98,17 +95,17 @@ https://storybook.js.org/configurations/cli-options/#for-build-storybook
 To execute the test suite, run
 
 ```sh
-npm run happo run
+npm run happo
 ```
 
 ## Tips and Tricks
 
 If you want to have better control over what addons and/or decorators get loaded
 you can make use of the `isHappoRun` function exported by
-`happo-plugin-storybook/register`:
+`happo/storybook/register`:
 
 ```js
-import { isHappoRun } from 'happo-plugin-storybook/register';
+import { isHappoRun } from 'happo/storybook/register';
 
 if (!isHappoRun()) {
   // load some addons/decorators that happo won't use
@@ -184,13 +181,13 @@ export { Foo };
 ```
 
 Additionally, you also need to provide Happo with a "theme switcher" function.
-The `happo-plugin-storybook/register` import will export a `setThemeSwitcher`
-function that will allow you to control theme switching. Here's an example that
-makes use of `storybook-dark-mode`:
+The `happo/storybook/register` import will export a `setThemeSwitcher` function
+that will allow you to control theme switching. Here's an example that makes use
+of `storybook-dark-mode`:
 
 ```js
 // .storybook/preview.js
-import { setThemeSwitcher } from 'happo-plugin-storybook/register';
+import { setThemeSwitcher } from 'happo/storybook/register';
 import { DARK_MODE_EVENT_NAME } from 'storybook-dark-mode';
 
 setThemeSwitcher((theme, channel) => {
@@ -265,7 +262,7 @@ storiesOf('FooComponent', module)
 
 In the example above, the FooComponent > Default story will only be rendered in
 the target named `chrome-small` (defined in
-[`.happo.js`](configuration.md#targets)).
+[`happo.config.ts`](configuration.md#targets)).
 
 ### Waiting for content
 
@@ -446,7 +443,7 @@ you can use `setRenderTimeoutMs` to increase the timeout.
 
 ```js
 // .storybook/preview.js
-import { setRenderTimeoutMs } from 'happo-plugin-storybook/register';
+import { setRenderTimeoutMs } from 'happo/storybook/register';
 
 setRenderTimeoutMs(5000);
 ```
@@ -537,7 +534,7 @@ you can force Happo to take screenshots of different steps along the way. Here's
 an example of a Dropdown story that we open and close in two different steps:
 
 ```js
-import { forceHappoScreenshot } from 'happo-plugin-storybook/register';
+import { forceHappoScreenshot } from 'happo/storybook/register';
 
 export const Dropdown = {
   play: async ({ args, canvasElement, step }) => {
@@ -578,20 +575,6 @@ seen before). When the `play` function is executed outside of Happo (e.g. when
 you're using the Storybook UI), the `forceHappoScreenshot` call will simply be
 ignored.
 
-## Caveats
-
-When you're using this plugin, some of the regular Happo commands and
-configuration options aren't available. These include:
-
-- [`include`](configuration.md#include)
-- [`type`](configuration.md#type)
-- [`customizeWebpackConfig`](configuration.md#customizewebpackconfig)
-- [`publicFolders`](configuration.md#publicfolders)
-- [`setupScript`](configuration.md#setupscript)
-- [`renderWrapperModule`](configuration.md#renderwrappermodule)
-- [`rootElementSelector`](configuration.md#rootelementselector)
-- [`jsdomOptions`](configuration.md#jsdomoptions)
-
 ## Debugging
 
 If you want to debug your test suite similar to how Happo workers process jobs,
@@ -627,8 +610,7 @@ renderIter();
 ## Troubleshooting
 
 - Getting a `Failed on worker` error? Make sure you are making a call to
-  `import 'happo-plugin-storybook/register'` in your `.storybook/preview.js`
-  file.
+  `import 'happo/storybook/register'` in your `.storybook/preview.js` file.
 - Getting spurious diffs from fonts not loading? Happo workers will wait for
   fonts to load before taking the screenshot, but it assumes that fonts it has
   already seen are already available. Make sure the `@font-face` declaration is

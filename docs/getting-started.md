@@ -26,7 +26,7 @@ application, experience with other test frameworks, and more.
 - If you want to test an existing (public) website, you can use
   [the `pages` option](full-page.md).
 - If you want to create a custom test suite for React or other js framework
-  apps, you can use [Happo Examples](examples.md).
+  apps, you can use [the Static bundle integration](static.md).
 - For native apps and others not running in a browser, use [the API](native.md)
   directly.
 
@@ -34,29 +34,31 @@ application, experience with other test frameworks, and more.
 
 Independently of how you end up integrating Happo in your project, there are
 some steps you always need to take care of. The first thing is to install the
-`happo.io` npm module:
+`happo` npm module:
 
 ```sh
-npm install --save-dev happo.io
+npm install --save-dev happo
 ```
 
-You also need a [configuration](configuration.md) file. Save `.happo.js` in the
-root directory of your project (right next to where the `package.json` file is
-located). This example is showing the minimum required configuration:
+You also need a [configuration](configuration.md) file. Save `happo.config.ts`
+(or `.js`) in the root directory of your project (right next to where the
+`package.json` file is located). This example is showing the minimum required
+configuration:
 
 ```js
-const { RemoteBrowserTarget } = require('happo.io');
+import { defineConfig } from 'happo';
 
-module.exports = {
+export default defineConfig({
   apiKey: process.env.HAPPO_API_KEY,
   apiSecret: process.env.HAPPO_API_SECRET,
 
   targets: {
-    'chrome-desktop': new RemoteBrowserTarget('chrome', {
+    'chrome-desktop': {
+      browserType: 'chrome',
       viewport: '1024x768',
-    }),
+    },
   },
-};
+});
 ```
 
 > While you can specify `apiKey` and `apiSecret` directly as strings, this isn't
@@ -66,6 +68,10 @@ module.exports = {
 The API tokens (`apiKey`, `apiSecret`) come from your account at
 [happo.io](https://happo.io/account). If you don't have an account already, you
 can sign up for a free trial at [happo.io/signup](https://happo.io/signup)
+
+> **Note:** If you're migrating from legacy Happo packages, see the
+> [migration guide](migrating-from-legacy-packages.md) for detailed
+> instructions.
 
 You can add more than one `target` if you want to run tests across multiple
 browsers and/or screen sizes. See [Supported browsers](browsers.md) for a full
