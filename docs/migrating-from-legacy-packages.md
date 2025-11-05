@@ -211,6 +211,25 @@ The following scripts have all been replaced by the main `happo` CLI command:
 
 The main `happo` CLI command now detects these CI environments automatically.
 
+#### Removed `--allow-failures` flag
+
+The `--allow-failures` flag from the `happo-e2e` command was removed. To allow
+failures, set `integration.allowFailures: true` in your configuration file
+instead.
+
+```js title=happo.config.ts
+import { defineConfig } from 'happo';
+
+export default defineConfig({
+  integration: {
+    type: 'cypress',
+    allowFailures: true,
+  },
+
+  // ... rest of config
+});
+```
+
 ### Integration Types
 
 The new package uses an `integration` field in the configuration to specify the

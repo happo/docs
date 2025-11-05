@@ -8,46 +8,61 @@ integration that you have full control over.
 
 ## Installation
 
-First, install the `happo-static` and `happo.io` npm libraries.
+First, install the `happo` npm library.
 
 ```sh
-npm install --save-dev happo-static happo.io
+npm install --save-dev happo
 ```
 
 ## Configuration
 
-Then, create or modify `.happo.js` and add a `generateStaticPackage` property.
-Point it to the root of a static folder. In our example, we're using `./static`.
+Then, create or modify `happo.config.ts` and add an `integration` field. Point
+it to the root of a static folder. In our example, we're using `./static`.
 
 ```js
-// .happo.js
-module.exports = {
+// happo.config.ts
+import { defineConfig } from 'happo';
+
+export default defineConfig({
   apiKey: process.env.HAPPO_API_KEY,
   apiSecret: process.env.HAPPO_API_SECRET,
-  generateStaticPackage: () => ({ path: './static' }),
-};
+  integration: {
+    type: 'static',
+    generateStaticPackage: async () => ({
+      rootDir: './static',
+      entryPoint: 'bundle.js',
+    }),
+  },
+});
 ```
 
 The configuration above assumes a pre-built static folder. You can also generate
 the package on the fly here, something like
 
 ```js
-// .happo.js
-const makeStaticPackage = require('./makeStaticPackage');
+// happo.config.ts
+import { defineConfig } from 'happo';
+import makeStaticPackage from './makeStaticPackage';
 
-module.exports = {
+export default defineConfig({
   apiKey: process.env.HAPPO_API_KEY,
   apiSecret: process.env.HAPPO_API_SECRET,
-  generateStaticPackage: async () => {
-    const pathToStaticFolder = await makeStaticPackage();
-    return { path: pathToStaticFolder };
+  integration: {
+    type: 'static',
+    generateStaticPackage: async () => {
+      await makeStaticPackage();
+      return {
+        rootDir: './build',
+        entryPoint: 'bundle.js',
+      };
+    },
   },
-};
+});
 ```
 
 ## Prepare javascript bundle
 
-The `happo-static` library has two methods you should use when creating your
+The `happo/static` library has two methods you should use when creating your
 javascript bundle:
 
 ### `happoStatic.init()`
@@ -70,7 +85,7 @@ Here's a full example:
 ```js
 // main.js
 
-const happoStatic = require('happo-static');
+import happoStatic from 'happo/static';
 
 happoStatic.init();
 
@@ -114,11 +129,11 @@ static folder is the root, so in our case, `/bundle.js` would refer to
 
 ## Running happo
 
-Once you have everything set up, you can invoke the `happo run` command via the
+Once you have everything set up, you can invoke the `happo` command via the
 command line.
 
 ```sh
-npx happo run
+npx happo
 ```
 
 ## Testing locally

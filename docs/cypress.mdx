@@ -8,7 +8,7 @@ import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 ```
 
-The `happo-cypress` module adds [Happo.io](https://happo.io) cross-browser
+The `happo/cypress` module adds [Happo.io](https://happo.io) cross-browser
 screenshots to your [Cypress.io](https://cypress.io) test suite.
 
 Check out the
@@ -23,20 +23,19 @@ and a [Happo account](https://happo.io/signup).
 
 ## Installation
 
-In your project, install the `happo-cypress`, `happo-e2e`, and the `happo.io`
-npm modules.
+In your project, install the `happo` npm module.
 
 ```sh
-npm install --save-dev happo-cypress happo-e2e happo.io
+npm install --save-dev happo
 ```
 
 ## Setup
 
-Import the `happo-cypress` module in your `cypress/support/commands.js` file:
+Import `happo/cypress` in your `cypress/support/commands.js` file:
 
 ```js
 // At the top of cypress/support/commands.js
-import 'happo-cypress';
+import 'happo/cypress';
 ```
 
 Then, register the provided `happoTask` in your `cypress.config.js` file (or
@@ -48,9 +47,9 @@ Then, register the provided `happoTask` in your `cypress.config.js` file (or
 
 ```js
 const { defineConfig } = require('cypress');
-const happoTask = require('happo-cypress/task');
+import happoTask from 'happo/cypress/task';
 
-module.exports = defineConfig({
+export default defineConfig({
   e2e: {
     setupNodeEvents(on, config) {
       happoTask.register(on);
@@ -65,9 +64,9 @@ module.exports = defineConfig({
 
 ```js
 // In cypress/plugins/index.js
-const happoTask = require('happo-cypress/task');
+import happoTask from 'happo/cypress/task';
 
-module.exports = on => {
+export default (on) => {
   happoTask.register(on);
 };
 ```
@@ -76,24 +75,29 @@ module.exports = on => {
 </Tabs>
 ````
 
-Add a `.happo.js` file with some minimal/required configuration:
+Add a `happo.config.ts` file with some minimal/required configuration:
 
 ```js
-// .happo.js
-const { RemoteBrowserTarget } = require('happo.io');
+// happo.config.ts
+import { defineConfig } from 'happo';
 
-module.exports = {
-  apiKey: <your api key>,
-  apiSecret: <your api secret>,
-  targets: {
-    chrome: new RemoteBrowserTarget('chrome', {
-      viewport: '1024x768',
-    }),
+export default defineConfig({
+  integration: {
+    type: 'cypress',
   },
-};
+
+  apiKey: process.env.HAPPO_API_KEY,
+  apiSecret: process.env.HAPPO_API_SECRET,
+  targets: {
+    chrome: {
+      browserType: 'chrome',
+      viewport: '1024x768',
+    },
+  },
+});
 ```
 
-See https://github.com/happo/happo.io#targets for more configuration options.
+See [Configuration](configuration.md#targets) for more configuration options.
 
 NOTE: For security reasons, you'll most likely want to pass in `apiKey` and
 `apiSecret` via environment variables:
@@ -110,28 +114,28 @@ module.exports = {
 ### Usage with `cypress run`
 
 To enable Happo in your test suites triggered via `cypress run`, you'll need to
-use the `happo-e2e` wrapper. Here's an example:
+use the `happo` wrapper. Here's an example:
 
 ```sh
-npx happo-e2e -- npx cypress run
+npx happo -- cypress run
 ```
 
 If you're using [`yarn`](https://yarnpkg.com/), you might have to specify the
 double dashes twice (the first one is consumed by `yarn` itself):
 
 ```sh
-yarn happo-e2e -- -- yarn cypress run
+yarn happo -- -- yarn cypress run
 ```
 
-If you're not using the `happo-e2e` wrapper with `cypress run`, Happo will be
+If you're not using the `happo` wrapper with `cypress run`, Happo will be
 disabled for the whole test suite.
 
 ### Usage with `cypress open`
 
 When running Cypress tests locally using the `cypress open` command, Happo is
-disabled by default. The `happo-e2e` wrapper won't work with `cypress open`
-since it depends on the Cypress command to finish after a test run (which won't
-happen with `cypress open`). To enable Happo in these scenarios, set
+disabled by default. The `happo` wrapper won't work with `cypress open` since it
+depends on the Cypress command to finish after a test run (which won't happen
+with `cypress open`). To enable Happo in these scenarios, set
 `HAPPO_ENABLED=true` as an environment variable and set the
 `experimentalInteractiveRunEvents` config flag. Here's an example with the
 environment variable inlined with the command:
@@ -187,23 +191,29 @@ cy.get('.footer').happoScreenshot();
 
 By default, no Happo reports are produced when the Cypress run fails. In some
 cases, you might want to allow Happo to succeed even if the overall test run
-fails. The `--allow-failures` flag for the `happo-e2e` command can then be used:
+fails. The `allowFailures` configuration option can then be used:
 
-```sh
-npx happo-e2e --allow-failures -- npx cypress run
+```js
+export default defineConfig({
+  integration: {
+    type: 'cypress',
+    allowFailures: true,
+  },
+  // ... resto fo config
+});
 ```
 
 If you're using `yarn`, you might need to pass the double dashes twice, like so:
 
 ```sh
-yarn happo-e2e -- --allow-failures -- yarn cypress run
+yarn happo -- --allow-failures -- yarn cypress run
 ```
 
 ## Selecting targets
 
 If you want to avoid rendering an example in all browser targets (found in
-.happo.js), you can use the `targets` option. The example will then be rendered
-in the specified targets exclusively.
+`happo.config.ts`), you can use the `targets` option. The example will then be
+rendered in the specified targets exclusively.
 
 ```js
 cy.get('.footer').happoScreenshot({
@@ -213,14 +223,14 @@ cy.get('.footer').happoScreenshot({
 ```
 
 In this example, the "Footer" snapshot will only be rendered in the target named
-`'chrome-small'` found in `.happo.js`.
+`'chrome-small'` found in `happo.config.ts`.
 
 ### Dynamic targets
 
 If you want to create a snapshot in a target that isn't defined in the
-`.happo.js` config, you can use an object with `name`, `browser` and `viewport`
-properties. Here's an example where a snapshot is taken in a dynamically
-generated target:
+`happo.config.ts` config, you can use an object with `name`, `browser` and
+`viewport` properties. Here's an example where a snapshot is taken in a
+dynamically generated target:
 
 ```js
 cy.get('.footer').happoScreenshot({
@@ -243,8 +253,8 @@ cy.get('.footer').happoScreenshot({
 });
 ```
 
-"Footer" is now rendered in Chrome (target specified in `.happo.js`) and Firefox
-(dynamic target).
+"Footer" is now rendered in Chrome (target specified in `happo.config.ts`) and
+Firefox (dynamic target).
 
 ## Hiding dynamic content
 
@@ -320,9 +330,8 @@ cy.happoHideDynamicElements({
 
 ## Continuous Integration
 
-If you run the test suite in a CI environment, the `happo-cypress` and
-`happo-e2e` modules will do their best to auto-detect your environment and adapt
-its behavior accordingly:
+If you run the test suite in a CI environment, the `happo` module will do its
+best to auto-detect your environment and adapt its behavior accordingly:
 
 - On PR builds, compare the screenshots against the `main` branch
 - On `main` branch builds, simply create the Happo report
@@ -380,7 +389,7 @@ jobs:
       - name: Run cypress
         uses: cypress-io/github-action@v2
         with:
-          command-prefix: npx happo-e2e -- npx
+          command-prefix: npx happo -- npx
         env:
           # Inject secrets to the build
           HAPPO_API_KEY: ${{ secrets.HAPPO_API_KEY }}
@@ -406,7 +415,7 @@ workflows:
     jobs:
       - cypress/run:
           name: Run Cypress with Happo
-          command-prefix: 'npx happo-e2e -- npx'
+          command-prefix: 'npx happo -- npx'
 ```
 
 ### Travis CI example
@@ -422,7 +431,7 @@ node_js:
 install:
   - npm ci
 script:
-  - $(npm bin)/happo-e2e -- $(npm bin)/cypress run
+  - npx happo -- cypress run
 ```
 
 ### Azure DevOps
@@ -462,8 +471,8 @@ you'll need to do two things:
 
 - Set a `HAPPO_NONCE` environment variable, to tie individual runs together. Any
   string unique to the build will do.
-- After the whole test suite is done, call `npx happo-e2e finalize`. Make sure
-  that the same `HAPPO_NONCE` environment variable is set as for the individual
+- After the whole test suite is done, call `npx happo finalize`. Make sure that
+  the same `HAPPO_NONCE` environment variable is set as for the individual
   builds.
 
 In some CI tools, you can use a built-in environment variable as `HAPPO_NONCE`.
@@ -493,10 +502,9 @@ workflows:
           start: npm run start-dev-server
           parallel: true
           parallelism: 4
-          command-prefix:
-            'HAPPO_NONCE=${CIRCLE_WORKFLOW_ID} npx happo-e2e -- npx'
+          command-prefix: 'HAPPO_NONCE=${CIRCLE_WORKFLOW_ID} npx happo -- npx'
           post-steps:
-            - run: 'HAPPO_NONCE=${CIRCLE_WORKFLOW_ID} npx happo-e2e finalize'
+            - run: 'HAPPO_NONCE=${CIRCLE_WORKFLOW_ID} npx happo finalize'
 ```
 
 Notice how the same `HAPPO_NONCE` is used in both the Cypress run itself and the
@@ -511,16 +519,6 @@ Usage instructions for `HAPPO_NOTIFY` is available in
 [the Continuous Integration docs](continuous-integration.md#email-notifications).
 
 ## Advanced usage
-
-### Setting a port for `happo-e2e`
-
-When you're running the `happo-e2e --` wrapper, a web server is used internally.
-By default, this server is listening on port 5339. If you need to change that,
-pass a `--port` argument, like so:
-
-```bash
-npx happo-e2e --port 5432 -- npx cypress run
-```
 
 ### Passing along options
 
@@ -566,59 +564,18 @@ The options passed to `transformDOM` are:
 
 ### Download all assets
 
-By default, happo-e2e will download assets found locally and include in an
-assets package sent to happo.io. Any external URL will be left as-is, which
-means they are expected to be publicly accessible by Happo workers. To include
-external assets in the assets package as well, set a `HAPPO_DOWNLOAD_ALL`
-environment variable.
+By default, happo will download assets found locally and include in an assets
+package sent to happo.io. Any external URL will be left as-is, which means they
+are expected to be publicly accessible by Happo workers. To include external
+assets in the assets package as well, set a `HAPPO_DOWNLOAD_ALL` environment
+variable.
 
 ```bash
-HAPPO_DOWNLOAD_ALL=true npx happo-e2e -- npx cypress run
+HAPPO_DOWNLOAD_ALL=true npx happo -- cypress run
 ```
 
 With this environment variable set, all assets are assumed to be private (i.e.
 not publicly accessible).
-
-### Locally produced images
-
-The way happo-cypress takes screenshots is to take a DOM snapshot of the current
-page/element and send that snapshot to Happo's workers for screenshots (in
-different browsers). In some cases, DOM snapshotting doesn't always work. One
-such case is if you are using web components/custom elements. The snapshots will
-then not contain all the state needed to "reproduce" the elements on Happo's
-workers. In this situation, and similar ones, you can use
-`localSnapshots: true`. When this option is enabled, screenshots are produced
-directly on the machine running the Cypress test run.
-
-Here's how to enable local snapshots:
-
-In `cypress/support/commands.js`, enable the `localSnapshots` option:
-
-```js
-import { configure } from 'happo-cypress';
-
-configure({
-  localSnapshots: true,
-});
-```
-
-With this configuration, the `happoScreenshot()` method will take a local
-screenshot (using `cy.screenshot()`) and upload images to Happo. The rest of the
-flow is the same as a normal happo-cypress run, meaning you get a link to a
-report to review, etc.
-
-The downside of this approach is that you can only get screenshots in the
-browser that Cypress currently runs. If you want cross-browser, you'll have to
-make sure to run Cypress in the browsers you are interested in.
-
-There might also be consistency issues with the screenshots. Happo's browser
-workers do a lot of work to ensure that screenshots are consistently produced,
-and leaving that work over to Cypress could potentially lead to more spurious
-diffs.
-
-When you use `localSnapshots: true`, we ignore the target configuration in
-`.happo.js`. Instead, a dynamically resolved target is used based on the browser
-and the viewport size used during the test.
 
 ### Clip snapshot strategy
 
@@ -646,32 +603,6 @@ cy.get('.header').happoScreenshot({
 });
 ```
 
-### Skipping snapshots
-
-If you run a subset of the tests in your test suite, Happo will show "Deleted
-examples" in the report. To prevent this from happening, you can pass a
-`--skippedExamples` option to the `happo-e2e finalize` call.
-
-The `--skippedExamples` option needs to be an array coded as a JSON string. Each
-item in the array needs a `component`, `variant`, and `target`, all strings.
-Here's an example call:
-
-```sh
-happo-e2e finalize --skippedExamples '[{"component":"Button","variant":"default","target":"chrome-small"}]'
-```
-
-Remember to skip examples in all targets you have defined in .happo.js. If you
-for instance have targets named "chrome-small" & "firefox-large" in .happo.js,
-you should add two items per snapshot you are skipping. E.g.
-
-```sh
-happo-e2e finalize --skippedExamples '[{"component":"Button","variant":"default","target":"chrome-small"}, {"component":"Button","variant":"default","target":"firefox-large"}]'
-```
-
-Finding the skipped snapshots can be a little tricky, but a little bit of code
-introspection could help. Here's an example of a script that can serve as a
-base: https://github.com/happo/happo-e2e/issues/21#issuecomment-1825776491
-
 ## Troubleshooting
 
 ### I need support!
@@ -680,10 +611,10 @@ We're here to help — send an email to support@happo.io and we'll assist you.
 
 ### Happo isn't producing any screenshots
 
-The `happo-cypress` module will disable itself if it can't detect any api tokens
-(`apiKey` and `apiSecret` in config). Check to make sure your `.happo.js` config
-is properly set up. There might also be more information in the console logs
-from Cypress. Look for lines starting with `[HAPPO]`.
+The `happo/cypress` module will disable itself if it can't detect any api tokens
+(`apiKey` and `apiSecret` in config). Check to make sure your `happo.config.ts`
+config is properly set up. There might also be more information in the console
+logs from Cypress. Look for lines starting with `[HAPPO]`.
 
 ### Where are my screenshots?
 
@@ -706,5 +637,5 @@ happened:
   something like `#start-page .header { color: red }` and screenshoot `.header`,
   the red color will be missing. This is because Happo only sees the `.header`
   element, never the surrounding page.
-- There could be a bug in how `happo-cypress` collects styles and assets. Reach
+- There could be a bug in how `happo/cypress` collects styles and assets. Reach
   out to support@happo.io and we'll triage.
