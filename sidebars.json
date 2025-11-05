@@ -11,12 +11,11 @@
     "Configuration": ["configuration", "plugins"],
     "Accessibility": ["accessibility"],
     "Integrations": [
-      "static",
       "storybook",
-      "cypress",
       "playwright",
-      "stencil",
+      "cypress",
       "full-page",
+      "custom",
       "native"
     ],
     "Guides": [

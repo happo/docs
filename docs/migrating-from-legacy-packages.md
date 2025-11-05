@@ -235,7 +235,7 @@ export default defineConfig({
 The new package uses an `integration` field in the configuration to specify the
 type of integration.
 
-#### Static Bundle Integration
+#### Custom Bundle Integration
 
 **Before (legacy):**
 
@@ -254,9 +254,9 @@ import { defineConfig } from 'happo';
 
 export default defineConfig({
   integration: {
-    type: 'static',
-    generateStaticPackage: async () => ({
-      rootDir: './static',
+    type: 'custom',
+    build: async () => ({
+      rootDir: './tmp/happo-custom',
       entryPoint: 'bundle.js',
     }),
   },
@@ -265,12 +265,12 @@ export default defineConfig({
 });
 ```
 
-The returned object from `generateStaticPackage` has to include a `rootDir`
-(path to the folder where files have been built, e.g. `/foo/bar/build`) and
-`entryPoint` (local file name of the built javascript bundle, e.g. `bundle.js`)
+The returned object from `build` has to include a `rootDir` (path to the folder
+where files have been built, e.g. `/foo/bar/build`) and `entryPoint` (local file
+name of the built JavaScript bundle, e.g. `bundle.js`)
 
 **Note:** If you're using the `happo-static` library, replace any `happo-static`
-imports with imports for `happo/static`.
+imports with imports for `happo/custom`.
 
 #### Storybook Integration
 
@@ -471,10 +471,13 @@ The `happo-e2e` wrapper command is replaced by the main `happo` command. Replace
 
 #### Happo Examples Integration
 
-The Happo examples integration has been removed in favor of the static
-integration (originally in the `happo-static` package).
+The Happo examples integration has been removed in favor of the custom
+integration type (originally in the `happo-static` package).
 
-TODO: Provide migration advice for this
+This puts the bundling and rendering of the examples to the DOM completely in
+your control. If you are using the legacy Happo examples integration, you will
+need to convert these to a Happo custom type. Follow the
+[Happo Custom integration documentation](custom.md).
 
 ### E2E Command Changes
 
