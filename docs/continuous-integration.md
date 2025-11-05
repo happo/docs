@@ -48,8 +48,7 @@ This script knows about the
 assuming a PR based model. To run it, configure your workflow file to run the
 `happo` command. Here's an example:
 
-```yaml
-# .github/workflows/happo.yml
+```yaml title=".github/workflows/happo.yml"
 name: Happo CI
 
 on:
@@ -85,8 +84,7 @@ The `happo` script knows about the CircleCI build environment, assuming a PR
 based model. To run it, configure `.circleci/config.yml` to run the `happo`
 command. Something like this:
 
-```yaml
-# .circleci/config.yml
+```yaml title=".circleci/config.yml"
 jobs:
   build:
     docker:
@@ -104,8 +102,7 @@ The `happo` command assumes your PRs are based off of the `main` branch. If
 you're using a different default branch, you can set the `HAPPO_BASE_BRANCH`
 environment variable.
 
-```yaml
-# .circleci/config.yml
+```yaml title=".circleci/config.yml"
 jobs:
   build:
     docker:
@@ -134,8 +131,7 @@ In the example below the `HAPPO_API_KEY` and `HAPPO_API_SECRET` environment
 variables are populated from two
 [user-defined secret variables](https://docs.microsoft.com/en-us/azure/devops/pipelines/process/variables?view=azure-devops&tabs=yaml%2Cbatch#user-defined-variables).
 
-```yaml
-# azure-pipelines.yml
+```yaml title="azure-pipelines.yml"
 trigger:
   - main
 pool:
@@ -164,8 +160,7 @@ pull requests, you can use
 This script knows about the Travis build environment, assuming a PR based model.
 To run it, configure `.travis.yml` to run the `happo` command:
 
-```yaml
-# .travis.yml
+```yaml title=".travis.yml"
 language: node_js
 script:
   - npx happo
@@ -175,8 +170,7 @@ The `happo` command assumes that your PRs are based off of the `main` branch. If
 you're using a different default branch, you can set the `HAPPO_BASE_BRANCH`
 environment variable.
 
-```yaml
-# .travis.yml
+```yaml title=".travis.yml"
 language: node_js
 env:
   - HAPPO_BASE_BRANCH: 'origin/master'
@@ -408,7 +402,7 @@ In many cases, you want to send the email to the person responsible for the
 change/PR that triggered the Happo tests. You can do that via a `git show`
 one-liner. This example is for Circle CI:
 
-```yaml
+```yaml title=".circleci/config.yaml"
 steps:
   - checkout
   - run: npm ci
@@ -419,7 +413,7 @@ steps:
 
 Here's an example for GitHub Actions:
 
-```yaml
+```yaml title=".github/workflows/happo.yaml"
 - name: Set Happo notification email address
   run: echo "HAPPO_NOTIFY=$(git show -s --format=%ae HEAD)" >> $GITHUB_ENV
 ```
