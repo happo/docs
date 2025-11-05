@@ -41,17 +41,25 @@ export default defineConfig({
       browserType: 'firefox',
       viewport: '1024x768',
     },
+
     'firefox-mobile': {
       browserType: 'firefox',
       viewport: '320x640',
     },
+
     chrome: {
       browserType: 'chrome',
       viewport: '800x600',
     },
+
     edge: {
       browserType: 'edge',
       viewport: '800x600',
+    },
+
+    accessibility: {
+      browserType: 'accessibility',
+      viewport: '1024x768',
     },
   },
 });
@@ -62,7 +70,7 @@ Edge and Safari must be between `400x400` and `1200x1200`. The `ios-safari`
 target runs on an iPhone with a fixed viewport of `375x667`. The `ipad-safari`
 target is always `1080x810`.
 
-Supported browser targets:
+Supported types:
 
 - `firefox`
 - `chrome`
@@ -70,6 +78,7 @@ Supported browser targets:
 - `safari`
 - `ios-safari` (runs on iPhone 7)
 - `ipad-safari` (runs on iPad)
+- `accessibility`
 
 ### Target `freezeAnimations`
 
