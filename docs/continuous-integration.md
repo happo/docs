@@ -215,7 +215,7 @@ Happo app at https://github.com/apps/happo_
 #### Step 2: Connect with repository
 
 Once you have the Happo GitHub app installed, you need to connect/activate the
-right repository with your Happo.io account on the
+right repository with your Happo account on the
 [GitHub integration page on happo.io](https://happo.io/github-integration). Once
 you're done with that, you're all set to have Happo automatically post statuses
 on your PRs/commits.
@@ -305,7 +305,7 @@ token with the `Repositories > Read` scope.
 ![Generating a repository access token](/img/happo-bitbucket-repo-access-token.gif)
 _Generating a repository access token through the Bitbucket UI_
 
-#### Step 2: Fill in form at Happo.io
+#### Step 2: Fill in form at Happo
 
 Once you have the API token, you can go to the
 [Bitbucket integration page on happo.io](https://happo.io/bitbucket-integration)
@@ -344,7 +344,7 @@ Set the "Code" scope to `Read` and `Status`. We need the read scope to figure
 out the right baseline reports to use. The status scope is used when posting
 build statuses to PRs.
 
-#### Step 2: Fill in form at Happo.io
+#### Step 2: Fill in form at Happo
 
 Once you have the PAT, you can go to the
 [Azure integration page on happo.io](https://happo.io/azure-integration) and

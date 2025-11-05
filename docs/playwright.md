@@ -5,7 +5,7 @@ title: Playwright
 
 The [`happo/playwright`](https://github.com/happo/happo) module makes it easy to
 integrate a [Playwright](https://playwright.dev/) test suite with
-[Happo.io](https://happo.io).
+[Happo](https://happo.io).
 
 ## Pre-requisites
 
