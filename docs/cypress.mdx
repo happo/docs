@@ -33,8 +33,7 @@ npm install --save-dev happo
 
 Import `happo/cypress` in your `cypress/support/commands.js` file:
 
-```js
-// At the top of cypress/support/commands.js
+```js title="cypress/support/commands.js"
 import 'happo/cypress';
 ```
 
@@ -45,7 +44,7 @@ Then, register the provided `happoTask` in your `cypress.config.js` file (or
 <Tabs>
   <TabItem value="v10" label="Cypress v10" default>
 
-```js
+```js title="cypress.config.js"
 const { defineConfig } = require('cypress');
 import happoTask from 'happo/cypress/task';
 
@@ -62,8 +61,7 @@ export default defineConfig({
   </TabItem>
   <TabItem value="v9" label="Cypress v9">
 
-```js
-// In cypress/plugins/index.js
+```js title="cypress.plugins/index.js"
 import happoTask from 'happo/cypress/task';
 
 export default (on) => {
@@ -77,8 +75,7 @@ export default (on) => {
 
 Add a `happo.config.ts` file with some minimal/required configuration:
 
-```js
-// happo.config.ts
+```js title="happo.config.ts"
 import { defineConfig } from 'happo';
 
 export default defineConfig({
@@ -102,13 +99,15 @@ See [Configuration](configuration.md#targets) for more configuration options.
 NOTE: For security reasons, you'll most likely want to pass in `apiKey` and
 `apiSecret` via environment variables:
 
-```js
-// .happo.js
-module.exports = {
+```js title="happo.config.ts"
+import { defineConfig } from 'happo';
+
+export default defineConfig({
   apiKey: process.env.HAPPO_API_KEY,
   apiSecret: process.env.HAPPO_API_SECRET,
+
   // ... more config
-};
+});
 ```
 
 ### Usage with `cypress run`
@@ -151,7 +150,7 @@ you trigger a test run. Check your console logs for a link to the reports.
 
 To record Happo screenshots in your test suite, use `happoScreenshot`:
 
-```js
+```js title="cypress/e2e/spec.cy.js"
 describe('Home page', function () {
   it('loads properly', function () {
     cy.visit('/');
@@ -193,13 +192,14 @@ By default, no Happo reports are produced when the Cypress run fails. In some
 cases, you might want to allow Happo to succeed even if the overall test run
 fails. The `allowFailures` configuration option can then be used:
 
-```js
+```js title="happo.config.ts"
 export default defineConfig({
   integration: {
     type: 'cypress',
     allowFailures: true,
   },
-  // ... resto fo config
+
+  // ... rest of the config
 });
 ```
 
@@ -365,7 +365,7 @@ Here's an example of how you can use Happo with Cypress in a GitHub Actions
 workflow. It makes use of the
 [Cypress GitHub action](https://github.com/cypress-io/github-action).
 
-```yaml
+```yaml title=".github/workflows/cypress.yml"
 name: Cypress with Happo workflow
 
 on:
@@ -404,7 +404,7 @@ uses the
 Separately, you'll need to configure the Circle CI project to inject the Happo
 API key and secret through environment variables.
 
-```yaml
+```yaml title=".circleci/config.yml"
 version: 2.1
 orbs:
   node: circleci/node@4.1.0
@@ -424,7 +424,7 @@ This is a simplified example of using Cypress with Happo in Travis CI. For a
 more in-depth explanation of how to set up Cypress with Travis, see
 https://docs.cypress.io/guides/guides/continuous-integration.html#Travis
 
-```yaml
+```yaml title=".travis.yml"
 language: node_js
 node_js:
   - 12
@@ -441,7 +441,7 @@ environment. This example assumes you have a
 [Pull request trigger](https://docs.microsoft.com/en-us/azure/devops/pipelines/release/triggers?view=azure-devops#pull-request-triggers)
 set up in your repository.
 
-```yaml
+```yaml title="azure-pipelines.yml"
 trigger:
   - main
 
@@ -485,7 +485,7 @@ Here's an example configuration for a parallel build running in Circle CI
 (adapted from the config used for the
 [happo-cypress test suite](https://github.com/happo/happo-cypress/blob/8bed49c6a3768ca56d4cd8720c3948ae2cc59c9f/.circleci/config.yml)):
 
-```yaml
+```yaml title=".circleci/config.yml"
 version: 2.1
 orbs:
   node: circleci/node@4.1.0

@@ -52,7 +52,7 @@ TypeScript/ES modules:
 
 **Before (legacy):**
 
-```js title=.happo.js
+```js title=".happo.js"
 const { RemoteBrowserTarget } = require('happo.io');
 
 module.exports = {
@@ -68,7 +68,7 @@ module.exports = {
 
 **After (new):**
 
-```js title=happo.config.ts
+```js title="happo.config.ts"
 import { defineConfig } from 'happo';
 
 export default defineConfig({
@@ -98,7 +98,7 @@ when configuring `targets`.
 
 **Before (legacy):**
 
-```js title=.happo.js
+```js title=".happo.js"
 const { RemoteBrowserTarget } = require('happo.io');
 
 module.exports = {
@@ -122,7 +122,7 @@ module.exports = {
 
 **After (new):**
 
-```js title=happo.config.ts
+```js title="happo.config.ts"
 import { defineConfig } from 'happo';
 
 export default defineConfig({
@@ -161,7 +161,7 @@ The previous default for stopping animations was to freeze them on the first
 frame. The new package changes this to stop at the last frame instead. To get
 the old behavior, set `target.freezeAnimations: 'first-frame'`:
 
-```js title=happo.config.ts
+```js title="happo.config.ts"
 import { defineConfig } from 'happo';
 
 export default defineConfig({
@@ -217,7 +217,7 @@ The `--allow-failures` flag from the `happo-e2e` command was removed. To allow
 failures, set `integration.allowFailures: true` in your configuration file
 instead.
 
-```js title=happo.config.ts
+```js title="happo.config.ts"
 import { defineConfig } from 'happo';
 
 export default defineConfig({
@@ -239,7 +239,7 @@ type of integration.
 
 **Before (legacy):**
 
-```js title=.happo.js
+```js title=".happo.js"
 module.exports = {
   generateStaticPackage: () => ({ path: './static' }),
 
@@ -249,7 +249,7 @@ module.exports = {
 
 **After (new):**
 
-```js title=happo.config.ts
+```js title="happo.config.ts"
 import { defineConfig } from 'happo';
 
 export default defineConfig({
@@ -276,7 +276,7 @@ imports with imports for `happo/static`.
 
 **Before (legacy):**
 
-```js title=.happo.js
+```js title=".happo.js"
 const happoPluginStorybook = require('happo-plugin-storybook');
 
 module.exports = {
@@ -292,7 +292,7 @@ module.exports = {
 
 **After (new):**
 
-```js title=happo.config.ts
+```js title="happo.config.ts"
 import { defineConfig } from 'happo';
 
 export default defineConfig({
@@ -309,7 +309,7 @@ export default defineConfig({
 
 **Before (legacy):**
 
-```js title=.storybook/main.js
+```js title=".storybook/main.js"
 export default {
   addons: ['happo-plugin-storybook/preset'],
 
@@ -319,7 +319,7 @@ export default {
 
 **After (new):**
 
-```js title=.storybook/main.js
+```js title=".storybook/main.js"
 export default {
   addons: ['happo/storybook/preset'],
 
@@ -331,14 +331,14 @@ export default {
 
 **Before (legacy):**
 
-```js title=.storybook/preview.js
+```js title=".storybook/preview.js"
 import 'happo-plugin-storybook/register';
 import happoDecorator from 'happo-plugin-storybook/decorator';
 ```
 
 **After (new):**
 
-```js title=.storybook/preview.js
+```js title=".storybook/preview.js"
 import 'happo/storybook/register';
 import happoDecorator from 'happo/storybook/decorator';
 ```
@@ -349,7 +349,7 @@ The configuration changes for Cypress integration:
 
 **Before (legacy):**
 
-```js title=.happo.js
+```js title=".happo.js"
 const { RemoteBrowserTarget } = require('happo.io');
 
 module.exports = {
@@ -365,7 +365,7 @@ module.exports = {
 
 **After (new):**
 
-```js title=happo.config.ts
+```js title="happo.config.ts"
 import { defineConfig } from 'happo';
 
 export default defineConfig({
@@ -388,13 +388,13 @@ In your Cypress test files, update your imports to use the new package:
 
 **Before (legacy):**
 
-```js title=cypress/support/commands.js
+```js title="cypress/support/commands.js"
 import 'happo-cypress';
 ```
 
 **After (new):**
 
-```js title=cypress/support/commands.js
+```js title="cypress/support/commands.js"
 import 'happo/cypress';
 ```
 
@@ -402,13 +402,13 @@ And in your `cypress.config.js`, update the task import:
 
 **Before (legacy):**
 
-```js title=cypress.config.js
+```js title="cypress.config.js"
 const happoTask = require('happo-cypress/task');
 ```
 
 **After (new):**
 
-```js title=cypress.config.js
+```js title="cypress.config.js"
 const happoTask = require('happo/cypress/task');
 ```
 
@@ -421,7 +421,7 @@ The configuration changes for Playwright integration:
 
 **Before (legacy):**
 
-```js title=.happo.js
+```js title=".happo.js"
 const { RemoteBrowserTarget } = require('happo.io');
 
 module.exports = {
@@ -435,7 +435,7 @@ module.exports = {
 
 **After (new):**
 
-```js title=happo.config.ts
+```js title="happo.config.ts"
 import { defineConfig } from 'happo';
 
 export default defineConfig({
@@ -456,13 +456,13 @@ In your Playwright test files, update your imports to use the new package:
 
 **Before (legacy):**
 
-```js title=tests/test.spec.js
+```js title="tests/test.spec.js"
 import { test } from 'happo-playwright';
 ```
 
 **After (new):**
 
-```js title=tests/test.spec.js
+```js title="tests/test.spec.js"
 import { test } from 'happo/playwright';
 ```
 

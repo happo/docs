@@ -19,8 +19,7 @@ npm install --save-dev happo
 Then, create or modify `happo.config.ts` and add an `integration` field. Point
 it to the root of a static folder. In our example, we're using `./static`.
 
-```js
-// happo.config.ts
+```js title="happo.config.ts"
 import { defineConfig } from 'happo';
 
 export default defineConfig({
@@ -39,8 +38,7 @@ export default defineConfig({
 The configuration above assumes a pre-built static folder. You can also generate
 the package on the fly here, something like
 
-```js
-// happo.config.ts
+```js title="happo.config.ts"
 import { defineConfig } from 'happo';
 import makeStaticPackage from './makeStaticPackage';
 
@@ -82,9 +80,7 @@ following structure:
 
 Here's a full example:
 
-```js
-// main.js
-
+```js title="main.js"
 import happoStatic from 'happo/static';
 
 happoStatic.init();
