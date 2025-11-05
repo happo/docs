@@ -21,14 +21,14 @@ let you know exactly what has changed in your UI.
 > instructions on how to integrate with CI there.
 
 Since a lot of projects follow a pull-request/merge-request model, Happo
-provides a unified CLI command that automatically detects CI environments:
+provides a unified CLI command that automatically detects CI environments. The
+main `happo` CLI command will:
 
-The main `happo` CLI command automatically detects CI environments and will:
-
-1. Figure out the right baseline report to compare with
-2. Run Happo on the current HEAD commit
-3. Compare the baseline with the new report
-4. If allowed to, post back a status to the commit/PR
+1. Figure out the right baseline report to compare with, starting at the merge
+   base for the pull request branch
+1. Create a Happo report for the current HEAD commit
+1. Compare the baseline report with the new report
+1. If allowed to, post back a status to the commit/PR
 
 The CLI auto-detects the following CI environments:
 
@@ -36,6 +36,10 @@ The CLI auto-detects the following CI environments:
 - Circle CI
 - Travis CI
 - Azure DevOps
+
+If your CI environment is not listed here or if you run into any issues, please
+reach out to [support@happo.io](mailto:support@happo.io) and we will help you
+get things set up.
 
 ### GitHub Actions
 
