@@ -18,15 +18,13 @@ application, experience with other test frameworks, and more.
 
 - A [Storybook](storybook.md) application can serve as the test suite driver for
   Happo.
-- By using the [Static bundle integration](static.md), you can bring your own
-  javascript bundle and have full control over the build phase and execution.
 - By integrating Happo with [Cypress](cypress.md) or
   [Playwright](playwright.md), you can turn your end-to-end tests into a Happo
   test suite.
 - If you want to test an existing (public) website, you can use
   [the `pages` option](full-page.md).
-- If you want to create a custom test suite for React or other js framework
-  apps, you can use [the Static bundle integration](static.md).
+- If you want to create a custom test suite for React or another JS framework,
+  you can use the [Custom bundle integration](custom.md).
 - For native apps and others not running in a browser, use [the API](native.md)
   directly.
 

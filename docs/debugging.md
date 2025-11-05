@@ -36,14 +36,12 @@ integration you are using, you'll see one or more of these buttons:
 
 ### Re-generate snapshot
 
-If you are using up-to-date happo libraries
-([happo.io](https://www.npmjs.com/package/happo.io) v9.1.0 or later,
-[happo-plugin-storybook](https://www.npmjs.com/package/happo-plugin-storybook)
-v4.1.0 or later, [happo-static](https://www.npmjs.com/package/happo-static)
-v1.0.0 or later), you can tell Happo to retry taking the screenshot. Once that's
-done, the associated report (or reports in some cases) will be updated to use
-the new screenshot. Please note that updating the reports can take a minute or
-two to fully propagate (because of caching).
+If you are using an up-to-date
+[`happo` package](https://www.npmjs.com/package/happo) v6.0.0 or later, you can
+tell Happo to retry taking the screenshot. Once that's done, the associated
+report (or reports in some cases) will be updated to use the new screenshot.
+Please note that updating the reports can take a minute or two to fully
+propagate (because of caching).
 
 ### Static package downloads
 
