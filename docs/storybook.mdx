@@ -21,8 +21,7 @@ npm install --save-dev happo
 
 Add the following to your `happo.config.ts` configuration file:
 
-```js
-// happo.config.ts
+```js title="happo.config.ts"
 import { defineConfig } from 'happo';
 
 export default defineConfig({
@@ -37,14 +36,13 @@ export default defineConfig({
 Add this to `.storybook/preview.js` (or `.storybook/config.js` if you're using
 Storybook < v5):
 
-```js
-// .storybook/preview.js
+```js title=".storybook/preview.js"
 import 'happo/storybook/register';
 ```
 
 Add a `happo` script to `package.json`:
 
-```json
+```json title="package.json"
 {
   "scripts": { "happo": "happo" }
 }
@@ -58,7 +56,7 @@ stories.
 
 Add this to `.storybook/main.js`:
 
-```js
+```js title=".storybook/main.js"
 module.exports = {
   addons: ['happo/storybook/preset'],
 };
@@ -66,8 +64,7 @@ module.exports = {
 
 Add this to `.storybook/preview.js`:
 
-```js
-// .storybook/preview.js
+```js title=".storybook/preview.js"
 import happoDecorator from 'happo/storybook/decorator';
 
 export const decorators = [happoDecorator];
@@ -104,7 +101,7 @@ If you want to have better control over what addons and/or decorators get loaded
 you can make use of the `isHappoRun` function exported by
 `happo/storybook/register`:
 
-```js
+```js title=".storybook/preview.js"
 import { isHappoRun } from 'happo/storybook/register';
 
 if (!isHappoRun()) {
@@ -125,7 +122,7 @@ stories.
 <Tabs>
   <TabItem value="csf" label="CSF" default>
 
-```js
+```js title="components/FooComponent.stories.js"
 export default {
   title: 'FooComponent',
   parameters: {
@@ -145,7 +142,7 @@ export { WithBorder };
   </TabItem>
   <TabItem value="storiesof" label="storiesOf">
 
-```js
+```js title="components/FooComponent.stories.js"
 storiesOf('FooComponent', module)
   .add('Default', () => <FooComponent />);
   .add('Dynamic', () => <DynamicFooComponent />, { happo: false });
@@ -170,7 +167,7 @@ light mode.
 
 Start by adding a `happo.themes` parameter to one or more of your stories:
 
-```js
+```js title="components/Foo.stories.js"
 const Foo = () => <FooExample />;
 Foo.parameters = {
   happo: {
@@ -185,8 +182,7 @@ The `happo/storybook/register` import will export a `setThemeSwitcher` function
 that will allow you to control theme switching. Here's an example that makes use
 of `storybook-dark-mode`:
 
-```js
-// .storybook/preview.js
+```js title=".storybook/preview.js"
 import { setThemeSwitcher } from 'happo/storybook/register';
 import { DARK_MODE_EVENT_NAME } from 'storybook-dark-mode';
 
@@ -213,9 +209,7 @@ You can use this to subscribe to and send events.
 If you want to set `happo.themes` globally for all stories, the best way is
 through the `parameters` export in `.storybook/preview.js`:
 
-```js
-// .storybook/preview.js
-
+```js title=".storybook/preview.js"
 export const parameters = {
   happo: { themes: ['light', 'dark'] },
 };
@@ -231,7 +225,7 @@ specified targets exclusively.
 <Tabs>
   <TabItem value="csf" label="CSF" default>
 
-```js
+```js title="components/FooComponent.stories.js"
 export default {
   title: 'FooComponent',
   parameters: {
@@ -245,7 +239,7 @@ export default {
   </TabItem>
   <TabItem value="storiesof" label="storiesOf">
 
-```js
+```js title="components/FooComponent.stories.js"
 storiesOf('FooComponent', module)
   .add('Default', () => <FooComponent />, { happo: { targets: ['chrome-small'] });
 
@@ -278,7 +272,7 @@ unique string in the iframe.
 <Tabs>
   <TabItem value="csf" label="CSF" default>
 
-```js
+```js title="components/PaymentForm.stories.js"
 const Basic = () => <PaymentForm />;
 Basic.parameters = {
   happo: {
@@ -291,7 +285,7 @@ export { Basic };
   </TabItem>
   <TabItem value="storiesof" label="storiesOf">
 
-```js
+```js title="components/PaymentForm.stories.js"
 storiesOf('PaymentForm', module).add('default', () => <PaymentForm />, {
   happo: { waitForContent: 'Credit card' },
 });
@@ -313,7 +307,7 @@ Here's an example that waits for a specific element (`.credit-card`) to appear:
 <Tabs>
   <TabItem value="csf" label="CSF" default>
 
-```js
+```js title="components/PaymentForm.stories.js"
 const Basic = () => <PaymentForm />;
 Basic.parameters = {
   happo: {
@@ -326,7 +320,7 @@ export { Basic };
   </TabItem>
   <TabItem value="storiesof" label="storiesOf">
 
-```js
+```js title="components/PaymentForm.stories.js"
 storiesOf('PaymentForm', module).add('default', () => <PaymentForm />, {
   happo: { waitFor: () => document.querySelector('.credit-card') },
 });
@@ -342,7 +336,7 @@ Here's another example that waits for a specific number of elements:
 <Tabs>
   <TabItem value="csf" label="CSF" default>
 
-```js
+```js title="components/PaymentForm.stories.js"
 const Basic = () => <PaymentForm />;
 Basic.parameters = {
   happo: {
@@ -355,7 +349,7 @@ export { Basic };
   </TabItem>
   <TabItem value="storiesof" label="storiesOf">
 
-```js
+```js title="components/PaymentForm.stories.js"
 storiesOf('PaymentForm', module).add('default', () => <PaymentForm />, {
   happo: {
     waitFor: () => document.querySelectorAll('.validation-output').length === 5,
@@ -384,7 +378,7 @@ parameter to set an individual delay for a story:
 <Tabs>
   <TabItem value="csf" label="CSF" default>
 
-```js
+```js title="components/FooComponent.stories.js"
 export default {
   title: 'FooComponent',
   parameters: {
@@ -408,7 +402,7 @@ export { WithBorder };
   </TabItem>
   <TabItem value="storiesof" label="storiesOf">
 
-```js
+```js title="components/FooComponent.stories.js"
 storiesOf('FooComponent', module).add('delayed', () => <FooComponent />, {
   happo: { delay: 200 },
 });
@@ -425,7 +419,7 @@ cases, you might have to increase this timeout to allow certain things to finish
 up properly. An example could be if you have a story with a `play` function
 using `userEvent.type` with a delay.
 
-```js
+```js title="components/Interactive.stories.js"
 import { userEvent } from '@storybook/testing-library';
 
 export const InteractiveStory = {
@@ -441,8 +435,7 @@ export const InteractiveStory = {
 This story would take over 3 seconds to finish. To make happo wait that long,
 you can use `setRenderTimeoutMs` to increase the timeout.
 
-```js
-// .storybook/preview.js
+```js title=".storybook/preview.js"
 import { setRenderTimeoutMs } from 'happo/storybook/register';
 
 setRenderTimeoutMs(5000);
@@ -464,7 +457,7 @@ button, enter text in an input field, remove certain elements, etc.
 
 Here's an example where a button is clicked to open a modal:
 
-```js
+```js title="components/ModalExample.stories.js"
 const BasicModal = () => <ModalExample />;
 BasicModal.parameters = {
   happo: {
@@ -483,7 +476,7 @@ export { BasicModal };
 
 You can use `async` here as well:
 
-```js
+```js title="components/ModalExample.stories.js"
 const BasicModal = () => <ModalExample />;
 BasicModal.parameters = {
   happo: {
@@ -506,7 +499,7 @@ DOM after a story has been fully processed.
 
 Here's an example where a lingering DOM element is removed.
 
-```js
+```js title="components/Foo.stories.js"
 const Foo = () => <FooExample />;
 Foo.parameters = {
   happo: {
@@ -533,7 +526,7 @@ and the
 you can force Happo to take screenshots of different steps along the way. Here's
 an example of a Dropdown story that we open and close in two different steps:
 
-```js
+```js title="components/Dropdown.stories.js"
 import { forceHappoScreenshot } from 'happo/storybook/register';
 
 export const Dropdown = {

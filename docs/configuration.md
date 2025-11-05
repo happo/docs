@@ -16,7 +16,7 @@ that resolves to configuration options.
 These tokens authenticate you with happo.io. **Never store these tokens in plain
 text.** Use environment variables instead.
 
-```js
+```js title="happo.config.ts"
 import { defineConfig } from 'happo';
 
 export default defineConfig({
@@ -29,7 +29,7 @@ export default defineConfig({
 
 Specify the browsers you want to include in your happo run. For example:
 
-```js
+```js title="happo.config.ts"
 import { defineConfig } from 'happo';
 
 export default defineConfig({
@@ -76,7 +76,7 @@ Supported browser targets:
 By default, Happo freezes CSS animations on the last frame. To freeze animations
 on the first frame instead (legacy behavior), use the `freezeAnimations` option:
 
-```js
+```js title="happo.config.ts"
 import { defineConfig } from 'happo';
 
 export default defineConfig({
@@ -95,7 +95,7 @@ export default defineConfig({
 Targets run in parallel by default. To split a specific target into multiple
 chunks (running in parallel), use the `chunks` option:
 
-```js
+```js title="happo.config.ts"
 import { defineConfig } from 'happo';
 
 export default defineConfig({
@@ -119,7 +119,7 @@ Use `maxHeight` to override the default maximum height used by Happo workers
 (5000 pixels). This is useful when taking screenshots of tall components or
 pages. For example:
 
-```js
+```js title="happo.config.ts"
 import { defineConfig } from 'happo';
 
 export default defineConfig({
@@ -142,7 +142,7 @@ Use `maxWidth` to override the default maximum width used by Happo workers
 (defaults to `maxHeight`, which defaults to 5000 pixels). This is useful when
 taking screenshots of wide components or pages. For example:
 
-```js
+```js title="happo.config.ts"
 import { defineConfig } from 'happo';
 
 export default defineConfig({
@@ -163,7 +163,7 @@ attribute. By default, elements with this attribute are made invisible. Use the
 value `ignore` to make the content appear in screenshots but exclude it from
 comparison.
 
-```js
+```js title="happo.config.ts"
 import { defineConfig } from 'happo';
 
 export default defineConfig({
@@ -190,7 +190,7 @@ issues, especially when using the `vh` CSS unit. A page with an element of
 fallback is active. To disable this workaround completely, set
 `useFullPageFallbackForTallScreenshots: false`.
 
-```js
+```js title="happo.config.ts"
 import { defineConfig } from 'happo';
 
 export default defineConfig({
@@ -259,8 +259,7 @@ And add `data-happo-active` to elements to simulate the `:active` state:
 Set `prefersColorScheme: 'dark'` or `prefersColorScheme: 'light'` to set the
 color scheme preference in the browser.
 
-```js
-// happo.config.ts
+```js title="happo.config.ts"
 import { defineConfig } from 'happo';
 
 export default defineConfig({
@@ -291,8 +290,7 @@ color: black;
 Set `prefersReducedMotion: true` to make the browser prefer reduced motion when
 rendering the UI. **Note:** This option has no effect in iOS Safari.
 
-```js
-// happo.config.ts
+```js title="happo.config.ts"
 import { defineConfig } from 'happo';
 
 export default defineConfig({
@@ -341,8 +339,7 @@ report.
 To resolve this, tell Happo to skip injecting the `pointer-events: none` CSS
 block using the `allowPointerEvents` option:
 
-```js
-// happo.config.ts
+```js title="happo.config.ts"
 import { defineConfig } from 'happo';
 
 export default defineConfig({

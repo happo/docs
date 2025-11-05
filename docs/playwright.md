@@ -26,8 +26,7 @@ npm install --save-dev happo
 Below is an example Playwright spec file. It takes a screenshot of a Hero image
 on an imaginary page.
 
-```js
-// tests/test.spec.js
+```js title="tests/test.spec.js"
 import { test } from 'happo/playwright';
 
 test('start page', async ({ page, happoScreenshot }) => {
@@ -45,17 +44,17 @@ test('start page', async ({ page, happoScreenshot }) => {
 You will also need a `happo.config.ts` file with some minimal/required
 configuration:
 
-```js
-// happo.config.ts
+```js title="happo.config.ts"
 import { defineConfig } from 'happo';
 
 export default defineConfig({
+  apiKey: process.env.HAPPO_API_KEY,
+  apiSecret: process.env.HAPPO_API_SECRET,
+
   integration: {
     type: 'playwright',
   },
 
-  apiKey: process.env.HAPPO_API_KEY,
-  apiSecret: process.env.HAPPO_API_SECRET,
   targets: {
     chrome: {
       browserType: 'chrome',
@@ -70,13 +69,15 @@ See [Configuration](configuration.md#targets) for more configuration options.
 NOTE: For security reasons, you'll most likely want to pass in `apiKey` and
 `apiSecret` via environment variables:
 
-```js
-// .happo.js
-module.exports = {
+```js title="happo.config.ts"
+import { defineConfig } from 'happo';
+
+export default defineConfig({
   apiKey: process.env.HAPPO_API_KEY,
   apiSecret: process.env.HAPPO_API_SECRET,
+
   // ... more config
-};
+});
 ```
 
 ### With Playwright fixtures
@@ -88,8 +89,7 @@ happo-playwright in with
 
 Here's an example of how to do this:
 
-```js
-// tests/test.js
+```js title="tests/test.js"
 import { test as happoTest } from 'happo/playwright';
 import { test as base, mergeTests } from '@playwright/test';
 
@@ -104,8 +104,7 @@ export const test = mergeTests(baseTest, happoTest);
 
 Then in your Playwright test file, you can use the `test` function as usual:
 
-```js
-// tests/test.spec.js
+```js title="tests/test.spec.js"
 import { test } from './test';
 
 test('start page', async ({ page, happoScreenshot }) => {
@@ -145,7 +144,7 @@ By default, no Happo reports are produced when the Playwright run fails. In some
 cases, you might want to allow Happo to succeed even if the overall test run
 fails. The `allowFailures` configuration option can then be used:
 
-```js title=happo.config.ts
+```js title="happo.config.ts"
 export default defineConfig({
   integration: {
     type: 'playwright',
