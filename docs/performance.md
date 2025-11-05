@@ -107,9 +107,9 @@ between 2 and 20 seconds network time/time in queue
 = total happo time
 ```
 
-The 200 milliseconds per screenshot is a global average for all Happo.io
-projects. For smaller components, this number is a lot smaller, so don't worry
-if your test suite consists of a lot of examples.
+The 200 milliseconds per screenshot is a global average for all Happo projects.
+For smaller components, this number is a lot smaller, so don't worry if your
+test suite consists of a lot of examples.
 
 ## Examples in the wild
 
