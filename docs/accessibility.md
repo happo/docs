@@ -1,12 +1,5 @@
 # Accessibility Testing
 
-:::info Early access feature
-
-Accessibility testing is currently available as an early access feature. To
-request access, please reach out to support@happo.io.
-
-:::
-
 ## Introduction
 
 Happo provides powerful accessibility testing capabilities that work similarly
