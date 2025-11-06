@@ -99,8 +99,8 @@ jobs:
 ```
 
 The `happo` command assumes your PRs are based off of the `main` branch. If
-you're using a different default branch, you can set the `HAPPO_BASE_BRANCH`
-environment variable.
+you're using a different default branch, you can set the `--baseBranch`
+argument.
 
 ```yaml title=".circleci/config.yml"
 jobs:
@@ -108,16 +108,13 @@ jobs:
     docker:
       - image: cimg/node:lts
 
-    environment:
-      - HAPPO_BASE_BRANCH: 'origin/main'
-
     steps:
       - checkout:
           method: full
 
       - run:
           name: happo
-          command: npx happo
+          command: npx happo --baseBranch origin/main
 ```
 
 ### Azure DevOps
@@ -167,25 +164,23 @@ script:
 ```
 
 The `happo` command assumes that your PRs are based off of the `main` branch. If
-you're using a different default branch, you can set the `HAPPO_BASE_BRANCH`
-environment variable.
+you're using a different default branch, you can set the `--baseBranch`
+argument.
 
 ```yaml title=".travis.yml"
 language: node_js
-env:
-  - HAPPO_BASE_BRANCH: 'origin/master'
 script:
-  - npx happo
+  - npx happo --baseBranch origin/master
 ```
 
 ### Generic CI
 
-If you are using a different CI service, you'll have to set a few environment
-variables before invoking the `happo` command:
+If you are using a different CI service, you'll have to set a few different CLI
+arguments when invoking the `happo` command:
 
-- `HAPPO_PREVIOUS_SHA` - the SHA of the baseline commit
-- `HAPPO_CURRENT_SHA` - the SHA of the current HEAD
-- `HAPPO_CHANGE_URL` - a URL that links back to the change
+- `--beforeSha` - the SHA of the baseline commit
+- `--afterSha` - the SHA of the current HEAD
+- `--link` - a URL that links back to the change
   ([further instructions](#setting-the-right-link))
 
 ## Posting build statuses
@@ -364,58 +359,23 @@ status) and accept the diffs.
 The status over on Azure DevOps will then change to success (green) for the
 PR/commit. If there are no diffs, the status is automatically set to success.
 
-## Sync mode (optional)
-
-By default, `happo` will generate screenshots asynchronously, meaning your CI
-run will finish before screenshots are ready. You can disable this behavior by
-setting a `HAPPO_IS_ASYNC=false` environment variable. If set, Happo will do two
-things differently:
-
-- The CI run will wait for reports to be ready before finishing
-- The baseline report is generated on the fly, by checking out the previous
-  commit on the main branch and running happo once more.
-
-In sync mode, your npm client is automatically detected (yarn or npm), and Happo
-will run `npm install`/`yarn install` before generating screenshots. If you have
-other dependencies/preprocessing steps that need to happen, you can override
-this with the `INSTALL_CMD` environment variable. E.g.
-
-```bash
-INSTALL_CMD="lerna bootstrap" npx happo
-```
-
-In this example, the `lerna bootstrap` command will be invoked before running
-`happo` on each commit, instead of `yarn install`/`npm install`.
-
 ## Email notifications
 
 You can set up the CI integration to send email notifications when comparison
-reports are ready. Set a`HAPPO_NOTIFY` environment variable to one or more
+reports are ready. Set the `--notify` CLI argument to one or more
 (comma-separated) email addresses and emails will be sent from Happo when
 results are available.
 
 ```bash
-export HAPPO_NOTIFY=user@example.com
+npx happo --notify user@example.com
 ```
 
-In many cases, you want to send the email to the person responsible for the
-change/PR that triggered the Happo tests. You can do that via a `git show`
-one-liner. This example is for Circle CI:
-
-```yaml title=".circleci/config.yaml"
-steps:
-  - checkout
-  - run: npm ci
-  - run:
-      echo 'export HAPPO_NOTIFY=$(git show -s --format=%ae HEAD)' >> $BASH_ENV
-  - happo/run_happo
-```
-
-Here's an example for GitHub Actions:
+If you want to send the email to the person responsible for the change/PR that
+triggered the Happo tests, you can do that via a `git show` one-liner. Here's an
+example for GitHub Actions:
 
 ```yaml title=".github/workflows/happo.yaml"
-- name: Set Happo notification email address
-  run: echo "HAPPO_NOTIFY=$(git show -s --format=%ae HEAD)" >> $GITHUB_ENV
+- run: npx happo --notify $(git show -s --format=%ae HEAD)
 ```
 
 ### Multiple recipients
@@ -424,14 +384,14 @@ Use a comma-separated list of email addresses to send the notification to
 several recipients:
 
 ```bash
-export HAPPO_NOTIFY=user@example.com,service-account@mycompany.com
+npx happo --notify user@example.com,service-account@mycompany.com
 ```
 
 ## Setting the right link
 
-The `CHANGE_URL` environment variable is be sent to Happo and will be used to
-contextualize the report. Happo will link back to the CHANGE_URL whenever the
-report is shown. Some good examples of links to use:
+The `--link` argument is used to contextualize the report. Happo will link back
+to the `--link` URL whenever the report is shown. Some good examples of links to
+use:
 
 - A URL that leads to the pull request/merge request that started the build
 - A link to the commit associated with the build

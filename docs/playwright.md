@@ -228,41 +228,40 @@ Happo auto-detects the following CI environments:
 - Circle CI
 - Travis CI
 
-If you are using a different CI service, you'll have to set a few environment
-variables before invoking the test suite:
+If you are using a different CI service, you'll have to set a few CLI args when
+invoking the `happo` command:
 
-- `HAPPO_PREVIOUS_SHA` the commit sha that the branch/PR is based on (usually a
-  commit on `main`). Only set this for PR builds.
-- `HAPPO_CURRENT_SHA` the sha of the commit currently under test. Always set
-  this.
-- `HAPPO_BASE_BRANCH` the default/base branch you use, e.g. `origin/dev`.
-  Defaults to `origin/main`, so you only need to set this if you are using a
-  different base branch.
-- `HAPPO_CHANGE_URL` a url to the PR/commit. Optional.
+- `--beforeSha` the commit SHA that the branch/PR is based on (usually a commit
+  on `main`). Only set this for PR builds.
+- `--afterSha` the SHA of the commit currently under test (typically the SHA at
+  `HEAD`). Always set this.
+- `--baseBranch` the default/base branch you use, e.g. `origin/dev`. Defaults to
+  `origin/main`, so you only need to set this if you are using a different base
+  branch.
+- `--link` a URL to the PR/commit to help contextualize the report. Optional.
 
 ### Parallel builds
 
 If your Playwright test suite is spread across multiple machines and you want to
 get a combined Happo report for all the test runs, you can do the following:
 
-- Set a `HAPPO_NONCE` environment variable, to tie individual runs together. Any
-  string unique to the build will do.
+- Use the `--nonce` CLI argument to tie individual runs together. Any string
+  unique to the build will do.
 - After the whole test suite is done, call `npx happo finalize`. Make sure that
-  the same `HAPPO_NONCE` environment variable is set as for the individual
-  builds.
+  the same `--nonce` is set as for the individual builds.
 
-In some CI tools, you can use a built-in environment variable as `HAPPO_NONCE`.
-In CircleCI for instance, you can use
-[ `HAPPO_NONCE=${CIRCLE_WORKFLOW_ID}`](https://circleci.com/docs/2.0/env-vars/#built-in-environment-variables).
+In some CI tools, you can use a built-in environment variable as `--nonce`. In
+CircleCI for instance, you can use
+[ `--nonce ${CIRCLE_WORKFLOW_ID}`](https://circleci.com/docs/2.0/env-vars/#built-in-environment-variables).
 You can also use a timestamp or a randomly generated string. The important thing
 is that it's unique to the current CI run.
 
 ### Email notifications
 
-If you set a `HAPPO_NOTIFY` environment variable as part of your Playwright run,
-an email will be sent out when the Happo comparison report is ready.
+If you set the `--notify` CLI argument as part of your Playwright run, an email
+will be sent out when the Happo comparison report is ready.
 
-Usage instructions for `HAPPO_NOTIFY` is available in
+Usage instructions for `--notify` are available in
 [the Continuous Integration docs](continuous-integration.md#email-notifications).
 
 ## Advanced usage

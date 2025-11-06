@@ -47,15 +47,25 @@ Happo to coordinate test execution and collect results from parallel test runs.
 npm run happo -- playwright test
 ```
 
+Use the same `--nonce` when using with the `finalize` command:
+
+```sh
+npm run happo --nonce [NONCE] -- playwright test
+```
+
 ### Finalize command
 
 Finalize a Happo report for Cypress or Playwright tests running in parallel.
 This command is used after parallel test execution completes to aggregate
-results and finalize the report. It's used in combination with the `HAPPO_NONCE`
-environment variable.
+results and finalize the report. It's used in combination with the `--nonce`
+argument.
 
 ```sh
 npm run happo finalize
+```
+
+```sh
+npm run happo finalize --nonce [NONCE]
 ```
 
 ## Options

@@ -518,12 +518,20 @@ Some target options changed:
 The following environment variables have been removed and are no longer
 necessary:
 
+- `BASE_BRANCH` -- use `--baseBranch` instead
+- `CHANGE_URL` and `HAPPO_CHANGE_URL` -- use `--link` instead
+- `CURRENT_SHA` -- use `--afterSha` instead
+- `HAPPO_BEFORE_SHA_TAG_MATCHER` -- use `--beforeShaTagMatcher` instead
+- `HAPPO_BUILD_STORYBOOK_COMMAND` -- this is no longer used
+- `HAPPO_FALLBACK_SHAS_COUNT` -- use `--fallbackShasCount` instead
+- `HAPPO_FALLBACK_SHAS` -- use `--fallbackShas` instead
+- `HAPPO_GITHUB_BASE` and `GITHUB_BASE` -- use `--githubBase` instead
 - `HAPPO_IS_ASYNC` -- async mode is now the only mode
+- `HAPPO_MESSAGE` -- use `--message` instead
+- `HAPPO_NONCE` -- use `--nonce` instead
+- `HAPPO_NOTIFY` -- use `--notify` instead
 - `HAPPO_SIGNED_URL` -- we use signed upload URLs by default now
-- `CURRENT_SHA` -- use `HAPPO_CURRENT_SHA` instead
-- `PREVIOUS_SHA` -- use `HAPPO_PREVIOUS_SHA` instead
-- `CHANGE_URL` -- use `HAPPO_CHANGE_URL` instead
-- `BASE_BRANCH` -- use `HAPPO_BASE_BRANCH` instead
+- `PREVIOUS_SHA` -- use `--beforeSha` instead
 
 ## Migration Steps
 
