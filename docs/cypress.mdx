@@ -134,17 +134,7 @@ disabled for the whole test suite.
 When running Cypress tests locally using the `cypress open` command, Happo is
 disabled by default. The `happo` wrapper won't work with `cypress open` since it
 depends on the Cypress command to finish after a test run (which won't happen
-with `cypress open`). To enable Happo in these scenarios, set
-`HAPPO_ENABLED=true` as an environment variable and set the
-`experimentalInteractiveRunEvents` config flag. Here's an example with the
-environment variable inlined with the command:
-
-```sh
-HAPPO_ENABLED=true npx cypress open --config experimentalInteractiveRunEvents=true
-```
-
-When Happo is enabled with `cypress open`, Happo reports are created every time
-you trigger a test run. Check your console logs for a link to the reports.
+with `cypress open`).
 
 ## Usage
 
@@ -347,17 +337,17 @@ Happo auto-detects the following CI environments:
 - Travis CI
 - Azure DevOps
 
-If you are using a different CI service, you'll have to set a few environment
-variables before invoking the test suite:
+If you are using a different CI service, you'll have to set a few CLI args when
+invoking the `happo` command:
 
-- `HAPPO_PREVIOUS_SHA` the commit sha that the branch/PR is based on (usually a
-  commit on `main`). Only set this for PR builds.
-- `HAPPO_CURRENT_SHA` the sha of the commit currently under test. Always set
-  this.
-- `HAPPO_BASE_BRANCH` the default/base branch you use, e.g. `origin/dev`.
-  Defaults to `origin/main`, so you only need to set this if you are using a
-  different base branch.
-- `HAPPO_CHANGE_URL` a url to the PR/commit. Optional.
+- `--beforeSha` the commit SHA that the branch/PR is based on (usually a commit
+  on `main`). Only set this for PR builds.
+- `--afterSha` the SHA of the commit currently under test (typically the SHA at
+  `HEAD`). Always set this.
+- `--baseBranch` the default/base branch you use, e.g. `origin/dev`. Defaults to
+  `origin/main`, so you only need to set this if you are using a different base
+  branch.
+- `--link` a URL to the PR/commit to help contextualize the report. Optional.
 
 ### GitHub Actions example
 
@@ -427,7 +417,7 @@ https://docs.cypress.io/guides/guides/continuous-integration.html#Travis
 ```yaml title=".travis.yml"
 language: node_js
 node_js:
-  - 12
+  - 24
 install:
   - npm ci
 script:
@@ -451,16 +441,15 @@ pool:
 steps:
   - task: NodeTool@0
     inputs:
-      versionSpec: '16.x'
+      versionSpec: '24.x'
     displayName: 'Install Node.js'
   - script: |
       npm ci
-      npx happo-e2e -- npx cypress run
+      npx happo -- npx cypress run
     displayName: 'Install and Run Happo'
     env:
       HAPPO_API_KEY: $(happoApiKey)
       HAPPO_API_SECRET: $(happoApiSecret)
-      HAPPO_COMMAND: happo
 ```
 
 ### Parallel builds
@@ -469,15 +458,14 @@ If you're running your
 [Cypress test suite across multiple machines](https://docs.cypress.io/guides/guides/parallelization.html),
 you'll need to do two things:
 
-- Set a `HAPPO_NONCE` environment variable, to tie individual runs together. Any
-  string unique to the build will do.
+- Use the `--nonce` CLI argument to tie individual runs together. Any string
+  unique to the build will do.
 - After the whole test suite is done, call `npx happo finalize`. Make sure that
-  the same `HAPPO_NONCE` environment variable is set as for the individual
-  builds.
+  the same `--nonce` is set as for the individual builds.
 
-In some CI tools, you can use a built-in environment variable as `HAPPO_NONCE`.
-In CircleCI for instance, you can use
-[ `HAPPO_NONCE=${CIRCLE_WORKFLOW_ID}`](https://circleci.com/docs/2.0/env-vars/#built-in-environment-variables).
+In some CI tools, you can use a built-in environment variable as `--nonce`. In
+CircleCI for instance, you can use
+[ `--nonce ${CIRCLE_WORKFLOW_ID}`](https://circleci.com/docs/2.0/env-vars/#built-in-environment-variables).
 You can also use a timestamp or a randomly generated string. The important thing
 is that it's unique to the current CI run.
 
@@ -502,20 +490,20 @@ workflows:
           start: npm run start-dev-server
           parallel: true
           parallelism: 4
-          command-prefix: 'HAPPO_NONCE=${CIRCLE_WORKFLOW_ID} npx happo -- npx'
+          command-prefix: 'npx happo --nonce ${CIRCLE_WORKFLOW_ID} -- npx'
           post-steps:
-            - run: 'HAPPO_NONCE=${CIRCLE_WORKFLOW_ID} npx happo finalize'
+            - run: 'npx happo --nonce ${CIRCLE_WORKFLOW_ID} finalize'
 ```
 
-Notice how the same `HAPPO_NONCE` is used in both the Cypress run itself and the
+Notice how the same `--nonce` is used in both the Cypress run itself and the
 finalize call.
 
 ### Email notifications
 
-If you set a `HAPPO_NOTIFY` environment variable as part of your Cypress run, an
-email will be sent out when the Happo comparison report is ready.
+If you set the `--notify` CLI argument as part of your Cypress run, an email
+will be sent out when the Happo comparison report is ready.
 
-Usage instructions for `HAPPO_NOTIFY` is available in
+Usage instructions for `--notify` are available in
 [the Continuous Integration docs](continuous-integration.md#email-notifications).
 
 ## Advanced usage
@@ -524,7 +512,7 @@ Usage instructions for `HAPPO_NOTIFY` is available in
 
 Any options you pass to `happoScreenshot` or `happoHideDynamicElements` that we
 don't recognize we will pass along to the underlying Cypress tasks. This means
-you can for instance suppress logs by using`log: false`:
+you can for instance suppress logs by using `log: false`:
 
 ```js
 cy.get('.header').happoScreenshot({
