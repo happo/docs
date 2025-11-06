@@ -54,7 +54,7 @@ export default defineConfig({
 
   targets: {
     'chrome-desktop': {
-      browserType: 'chrome',
+      type: 'chrome',
       viewport: '1024x768',
     },
   },
