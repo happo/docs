@@ -25,20 +25,6 @@ export default defineConfig({
 });
 ```
 
-## `endpoint`
-
-The endpoint to use for the Happo run. Defaults to `https://happo.io`. This is
-used for on-premise Happo.
-
-```js title="happo.config.ts"
-import { defineConfig } from 'happo';
-
-export default defineConfig({
-  endpoint: 'https://happo.my-company.com',
-  // ... rest of config
-});
-```
-
 ## `targets`
 
 Specify the browsers you want to include in your happo run. For example:
@@ -52,27 +38,27 @@ export default defineConfig({
     // to the specific browser target. You'll see this name in the reports
     // generated during a happo run.
     'firefox-desktop': {
-      browserType: 'firefox',
+      type: 'firefox',
       viewport: '1024x768',
     },
 
     'firefox-mobile': {
-      browserType: 'firefox',
+      type: 'firefox',
       viewport: '320x640',
     },
 
     chrome: {
-      browserType: 'chrome',
+      type: 'chrome',
       viewport: '800x600',
     },
 
     edge: {
-      browserType: 'edge',
+      type: 'edge',
       viewport: '800x600',
     },
 
     accessibility: {
-      browserType: 'accessibility',
+      type: 'accessibility',
       viewport: '1024x768',
     },
   },
@@ -80,8 +66,8 @@ export default defineConfig({
 ```
 
 Viewport sizes can range from `300x300` to `2000x2000`. The `ios-safari` target
-runs on an iPhone with a fixed viewport of `375x667`. The `ipad-safari` target
-is always `1080x810`.
+type runs on an iPhone with a fixed viewport of `375x667`. The `ipad-safari`
+target type is always `1080x810`.
 
 Supported types:
 
@@ -104,7 +90,7 @@ import { defineConfig } from 'happo';
 export default defineConfig({
   targets: {
     ie: {
-      browserType: 'edge',
+      type: 'edge',
       viewport: '1024x768',
       freezeAnimations: 'first-frame',
     },
@@ -123,7 +109,7 @@ import { defineConfig } from 'happo';
 export default defineConfig({
   targets: {
     chrome: {
-      browserType: 'chrome',
+      type: 'chrome',
       viewport: '1024x768',
       chunks: 2,
     },
@@ -147,7 +133,7 @@ import { defineConfig } from 'happo';
 export default defineConfig({
   targets: {
     chrome: {
-      browserType: 'chrome',
+      type: 'chrome',
       viewport: '1024x768',
       maxHeight: 10000,
     },
@@ -170,7 +156,7 @@ import { defineConfig } from 'happo';
 export default defineConfig({
   targets: {
     chrome: {
-      browserType: 'chrome',
+      type: 'chrome',
       viewport: '1024x768',
       maxWidth: 10000,
     },
@@ -191,7 +177,7 @@ import { defineConfig } from 'happo';
 export default defineConfig({
   targets: {
     safari: {
-      browserType: 'safari',
+      type: 'safari',
       viewport: '1024x768',
       hideBehavior: 'ignore',
     },
@@ -218,12 +204,12 @@ import { defineConfig } from 'happo';
 export default defineConfig({
   targets: {
     chrome: {
-      browserType: 'chrome',
+      type: 'chrome',
       viewport: '1024x768',
       useFullPageFallbackForTallScreenshots: false,
     },
     firefox: {
-      browserType: 'firefox',
+      type: 'firefox',
       viewport: '1024x768',
       useFullPageFallbackForTallScreenshots: false,
     },
@@ -287,7 +273,7 @@ import { defineConfig } from 'happo';
 export default defineConfig({
   targets: {
     chrome: {
-      browserType: 'chrome',
+      type: 'chrome',
       viewport: '1024x768',
       prefersColorScheme: 'dark',
     },
@@ -318,7 +304,7 @@ import { defineConfig } from 'happo';
 export default defineConfig({
   targets: {
     chrome: {
-      browserType: 'chrome',
+      type: 'chrome',
       viewport: '1024x768',
       prefersReducedMotion: true,
     },
@@ -367,7 +353,7 @@ import { defineConfig } from 'happo';
 export default defineConfig({
   targets: {
     chrome: {
-      browserType: 'chrome',
+      type: 'chrome',
       viewport: '1024x768',
       allowPointerEvents: true,
     },
@@ -386,7 +372,7 @@ you need to tell a CDN or other service that the request originates from a Happo
 run, or if you need to pass authentication headers.
 
 **Note:** This option only applies to desktop browsers (Chrome, Firefox, Edge,
-Safari).
+Safari, and accessibility).
 
 ```js title="happo.config.ts"
 import { defineConfig } from 'happo';
@@ -394,7 +380,7 @@ import { defineConfig } from 'happo';
 export default defineConfig({
   targets: {
     chrome: {
-      browserType: 'chrome',
+      type: 'chrome',
       viewport: '1024x768',
       outgoingRequestHeaders: [
         { name: 'X-Happo-Run', value: 'true' },
@@ -435,7 +421,11 @@ The type of integration. Supported values:
 - `'custom'` - For custom bundle integrations
 - `'pages'` - For full-page screenshot integrations
 
-### `integration.configDir` (Storybook only)
+Each integration has a different set of options that it supports.
+
+### Storybook Integration Options
+
+#### `integration.configDir`
 
 The directory containing your Storybook configuration. Defaults to `.storybook`.
 
@@ -452,7 +442,7 @@ export default defineConfig({
 });
 ```
 
-### `integration.staticDir` (Storybook only)
+#### `integration.staticDir`
 
 The directory containing static files to serve with Storybook. This corresponds
 to the `staticDirs` option in your Storybook configuration.
@@ -470,7 +460,7 @@ export default defineConfig({
 });
 ```
 
-### `integration.outputDir` (Storybook only)
+#### `integration.outputDir`
 
 The directory to output the static Storybook package to. This is useful when
 using `usePrebuiltPackage` to specify where your prebuilt Storybook files are
@@ -489,7 +479,7 @@ export default defineConfig({
 });
 ```
 
-### `integration.usePrebuiltPackage` (Storybook only)
+#### `integration.usePrebuiltPackage`
 
 When set to `true`, Happo will use a prebuilt Storybook package instead of
 building one. Make sure that files are built to the `outputDir` directory when
@@ -509,7 +499,7 @@ export default defineConfig({
 });
 ```
 
-### `integration.skip` (Storybook only)
+#### `integration.skip`
 
 Items to skip when generating snapshots. Can be an async function that resolves
 to an array of `{component, variant}`, or an array of `{component, variant}`.
@@ -548,7 +538,9 @@ export default defineConfig({
 });
 ```
 
-### `integration.build` (Custom only)
+### Custom Integration Options
+
+#### `integration.build`
 
 An async function that builds your custom bundle and returns an object with
 `rootDir` (path to the folder where files have been built) and `entryPoint`
@@ -570,7 +562,9 @@ export default defineConfig({
 });
 ```
 
-### `integration.allowFailures` (Cypress/Playwright only)
+### Cypress and Playwright Integration Options
+
+#### `integration.allowFailures`
 
 When set to `true`, allows Happo tests to fail without causing the overall test
 run to fail. This is useful when you want to collect visual diffs without
@@ -589,7 +583,9 @@ export default defineConfig({
 });
 ```
 
-### `integration.pages` (Pages only)
+### Pages Integration Options
+
+#### `integration.pages`
 
 A list of pages to screenshot. Each page object must include a `url` (the URL of
 the page to screenshot) and a `title` (used as the "component" identifier in
@@ -625,6 +621,20 @@ export default defineConfig({
     ],
   },
 
+  // ... rest of config
+});
+```
+
+## `endpoint`
+
+The endpoint to use for the Happo run (this is used for on-premise Happo).
+Defaults to `https://happo.io`.
+
+```js title="happo.config.ts"
+import { defineConfig } from 'happo';
+
+export default defineConfig({
+  endpoint: 'https://happo.my-company.com',
   // ... rest of config
 });
 ```

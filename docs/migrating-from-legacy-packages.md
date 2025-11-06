@@ -84,7 +84,7 @@ export default defineConfig({
 
   targets: {
     'chrome-desktop': {
-      browserType: 'chrome',
+      type: 'chrome',
       viewport: '1024x768',
     },
   },
@@ -130,17 +130,17 @@ export default defineConfig({
 
   targets: {
     'firefox-desktop': {
-      browserType: 'firefox',
+      type: 'firefox',
       viewport: '1024x768',
       chunks: 2,
       freezeAnimations: 'last-frame',
     },
     'chrome-mobile': {
-      browserType: 'chrome',
+      type: 'chrome',
       viewport: '375x667',
     },
     'ios-safari': {
-      browserType: 'ios-safari',
+      type: 'ios-safari',
     },
   },
 });
@@ -149,7 +149,7 @@ export default defineConfig({
 **Key changes:**
 
 - Remove `new RemoteBrowserTarget()` wrapper
-- Use `browserType` instead of the first constructor argument
+- Use `type` instead of the first constructor argument
 - All target options remain the same (viewport, chunks, freezeAnimations, etc.)
 - Mobile Safari targets (`ios-safari`, `ipad-safari`) don't require a viewport
   (they use a fixed size)
@@ -168,7 +168,7 @@ export default defineConfig({
   // ... rest of config
   targets: {
     chrome: {
-      browserType: 'firefox',
+      type: 'firefox',
       viewport: '1024x768',
       freezeAnimations: 'first-frame',
     },
@@ -375,7 +375,7 @@ export default defineConfig({
 
   targets: {
     chrome: {
-      browserType: 'chrome',
+      type: 'chrome',
       viewport: '1024x768',
     },
   },
@@ -445,7 +445,7 @@ export default defineConfig({
 
   targets: {
     chrome: {
-      browserType: 'chrome',
+      type: 'chrome',
       viewport: '1024x768',
     },
   },
@@ -535,7 +535,7 @@ necessary:
 1. **Update configuration file**: Convert your `.happo.js` to use the new
    format:
    - Remove `RemoteBrowserTarget` imports/usage
-   - Convert targets to plain objects with `browserType`
+   - Convert targets to plain objects with `type`
    - Optionally convert to TypeScript (`happo.config.ts`)
 1. **Update integration configs**: Add `integration` field
 1. **Update imports**: Update any imports from legacy packages (e.g.,
@@ -562,7 +562,7 @@ This error occurs if you haven't updated your dependencies. Make sure to:
 ### "RemoteBrowserTarget is not defined"
 
 This error occurs if you're still using the old target syntax. Convert all
-`new RemoteBrowserTarget(...)` to plain objects with `browserType`.
+`new RemoteBrowserTarget(...)` to plain objects with `type`.
 
 ### "Node.js version mismatch"
 
