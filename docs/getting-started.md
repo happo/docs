@@ -4,10 +4,12 @@ title: Getting started
 sidebar_label: Getting started
 ---
 
-Happo is a [cross-browser](browsers.md) screenshot testing service. It helps you
-test the visual appearance of your application by automatically comparing the UI
-with a previous version. [Set it up to run in CI](continuous-integration.md) and
-get build statuses posted directly to your pull requests.
+Happo is a visual regression testing service with support for
+[multiple browsers](browsers.md) and [accessibility testing](accessibility.md).
+It helps you test the appearance of your application by automatically comparing
+the UI with a previous version.
+[Set it up to run in CI](continuous-integration.md) and get build statuses
+posted directly to your pull requests.
 
 ## Choose an integration
 
