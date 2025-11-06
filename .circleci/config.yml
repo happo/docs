@@ -96,7 +96,7 @@ jobs:
             fi
 
             # Get HTML reliably, follow redirects and decompress
-            content="$(curl -fsSL --compressed http://${CONTAINER_IP}:3344)"
+            content="$(curl -fsSL --compressed http://${CONTAINER_IP}:3344/docs/getting-started)"
 
             # Normalize and search as text
             if printf '%s' "$content" \
