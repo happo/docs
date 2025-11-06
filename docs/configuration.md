@@ -25,6 +25,20 @@ export default defineConfig({
 });
 ```
 
+## `endpoint`
+
+The endpoint to use for the Happo run. Defaults to `https://happo.io`. This is
+used for on-premise Happo.
+
+```js title="happo.config.ts"
+import { defineConfig } from 'happo';
+
+export default defineConfig({
+  endpoint: 'https://happo.my-company.com',
+  // ... rest of config
+});
+```
+
 ## `targets`
 
 Specify the browsers you want to include in your happo run. For example:
@@ -65,10 +79,9 @@ export default defineConfig({
 });
 ```
 
-Viewport sizes can range from `300x300` to `2000x2000` for Chrome and Firefox.
-Edge and Safari must be between `400x400` and `1200x1200`. The `ios-safari`
-target runs on an iPhone with a fixed viewport of `375x667`. The `ipad-safari`
-target is always `1080x810`.
+Viewport sizes can range from `300x300` to `2000x2000`. The `ios-safari` target
+runs on an iPhone with a fixed viewport of `375x667`. The `ipad-safari` target
+is always `1080x810`.
 
 Supported types:
 
@@ -366,11 +379,255 @@ If you're interested in testing hover, focus, and active states with Happo, you
 may also want to use the
 [`applyPseudoClasses` option](#target-applypseudoclasses).
 
+### Target `outgoingRequestHeaders`
+
+Add additional headers to outgoing requests from the browser. This is useful if
+you need to tell a CDN or other service that the request originates from a Happo
+run, or if you need to pass authentication headers.
+
+**Note:** This option only applies to desktop browsers (Chrome, Firefox, Edge,
+Safari).
+
+```js title="happo.config.ts"
+import { defineConfig } from 'happo';
+
+export default defineConfig({
+  targets: {
+    chrome: {
+      browserType: 'chrome',
+      viewport: '1024x768',
+      outgoingRequestHeaders: [
+        { name: 'X-Happo-Run', value: 'true' },
+        { name: 'Authorization', value: 'Bearer token123' },
+      ],
+    },
+  },
+});
+```
+
 ## `project`
 
 If you have multiple projects configured for your happo.io account, specify the
 name of the project you want to associate with. If left empty, the default
 project will be used.
+
+```js title="happo.config.ts"
+import { defineConfig } from 'happo';
+
+export default defineConfig({
+  project: 'my-project-name',
+  // ... rest of config
+});
+```
+
+## `integration`
+
+Specify the type of integration you're using with Happo. The integration type
+determines how Happo discovers and renders your components.
+
+### `integration.type`
+
+The type of integration. Supported values:
+
+- `'storybook'` - For Storybook integrations
+- `'cypress'` - For Cypress E2E test integrations
+- `'playwright'` - For Playwright E2E test integrations
+- `'custom'` - For custom bundle integrations
+- `'pages'` - For full-page screenshot integrations
+
+### `integration.configDir` (Storybook only)
+
+The directory containing your Storybook configuration. Defaults to `.storybook`.
+
+```js title="happo.config.ts"
+import { defineConfig } from 'happo';
+
+export default defineConfig({
+  integration: {
+    type: 'storybook',
+    configDir: '.storybook',
+  },
+
+  // ... rest of config
+});
+```
+
+### `integration.staticDir` (Storybook only)
+
+The directory containing static files to serve with Storybook. This corresponds
+to the `staticDirs` option in your Storybook configuration.
+
+```js title="happo.config.ts"
+import { defineConfig } from 'happo';
+
+export default defineConfig({
+  integration: {
+    type: 'storybook',
+    staticDir: './public',
+  },
+
+  // ... rest of config
+});
+```
+
+### `integration.outputDir` (Storybook only)
+
+The directory to output the static Storybook package to. This is useful when
+using `usePrebuiltPackage` to specify where your prebuilt Storybook files are
+located.
+
+```js title="happo.config.ts"
+import { defineConfig } from 'happo';
+
+export default defineConfig({
+  integration: {
+    type: 'storybook',
+    outputDir: './storybook-static',
+  },
+
+  // ... rest of config
+});
+```
+
+### `integration.usePrebuiltPackage` (Storybook only)
+
+When set to `true`, Happo will use a prebuilt Storybook package instead of
+building one. Make sure that files are built to the `outputDir` directory when
+using this option.
+
+```js title="happo.config.ts"
+import { defineConfig } from 'happo';
+
+export default defineConfig({
+  integration: {
+    type: 'storybook',
+    usePrebuiltPackage: true,
+    outputDir: './storybook-static',
+  },
+
+  // ... rest of config
+});
+```
+
+### `integration.skip` (Storybook only)
+
+Items to skip when generating snapshots. Can be an async function that resolves
+to an array of `{component, variant}`, or an array of `{component, variant}`.
+
+```js title="happo.config.ts"
+import { defineConfig } from 'happo';
+
+export default defineConfig({
+  integration: {
+    type: 'storybook',
+    skip: [
+      { component: 'Button', variant: 'disabled' },
+      { component: 'Modal', variant: 'large' },
+    ],
+  },
+
+  // ... rest of config
+});
+```
+
+Or as an async function:
+
+```js title="happo.config.ts"
+import { defineConfig } from 'happo';
+
+export default defineConfig({
+  integration: {
+    type: 'storybook',
+    skip: async () => {
+      // Dynamically determine which items to skip
+      return [{ component: 'Button', variant: 'disabled' }];
+    },
+  },
+
+  // ... rest of config
+});
+```
+
+### `integration.build` (Custom only)
+
+An async function that builds your custom bundle and returns an object with
+`rootDir` (path to the folder where files have been built) and `entryPoint`
+(local file name of the built JavaScript bundle).
+
+```js title="happo.config.ts"
+import { defineConfig } from 'happo';
+
+export default defineConfig({
+  integration: {
+    type: 'custom',
+    build: async () => ({
+      rootDir: './tmp/happo-custom',
+      entryPoint: 'bundle.js',
+    }),
+  },
+
+  // ... rest of config
+});
+```
+
+### `integration.allowFailures` (Cypress/Playwright only)
+
+When set to `true`, allows Happo tests to fail without causing the overall test
+run to fail. This is useful when you want to collect visual diffs without
+blocking your CI pipeline.
+
+```js title="happo.config.ts"
+import { defineConfig } from 'happo';
+
+export default defineConfig({
+  integration: {
+    type: 'cypress',
+    allowFailures: true,
+  },
+
+  // ... rest of config
+});
+```
+
+### `integration.pages` (Pages only)
+
+A list of pages to screenshot. Each page object must include a `url` (the URL of
+the page to screenshot) and a `title` (used as the "component" identifier in
+Happo reports, so ensure it is unique for each page). Optionally, you can
+specify `waitForContent` to wait for specific content to appear on the page
+before taking the screenshot, or `waitForSelector` to wait for a selector to
+appear in the document before taking the screenshot.
+
+**Note:** The URLs to the website need to be publicly available, otherwise Happo
+workers won't be able to access the pages.
+
+```js title="happo.config.ts"
+import { defineConfig } from 'happo';
+
+export default defineConfig({
+  integration: {
+    type: 'pages',
+    pages: [
+      {
+        url: 'https://example.com/home',
+        title: 'Home Page',
+      },
+      {
+        url: 'https://example.com/about',
+        title: 'About Page',
+        waitForContent: 'About Us',
+      },
+      {
+        url: 'https://example.com/products',
+        title: 'Products Page',
+        waitForSelector: '.product-list',
+      },
+    ],
+  },
+
+  // ... rest of config
+});
+```
 
 ## `githubApiUrl`
 

@@ -1,5 +1,11 @@
 import { execSync } from 'child_process';
-import { writeFileSync, readdirSync, statSync, unlinkSync } from 'fs';
+import {
+  writeFileSync,
+  readdirSync,
+  statSync,
+  unlinkSync,
+  readFileSync,
+} from 'fs';
 import { join, relative, resolve } from 'path';
 
 export default async function buildHappoCustom() {
@@ -28,6 +34,18 @@ export default async function buildHappoCustom() {
   const htmlFiles = findHtmlFiles(buildDir);
 
   console.log(`Found ${htmlFiles.length} index.html files`);
+
+  // Strip script tags from HTML files
+  console.log('Stripping script tags from HTML files...');
+  for (const htmlFile of htmlFiles) {
+    const filePath = join(buildDir, htmlFile);
+    let htmlContent = readFileSync(filePath, 'utf-8');
+    htmlContent = htmlContent.replace(
+      /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi,
+      '',
+    );
+    writeFileSync(filePath, htmlContent, 'utf-8');
+  }
 
   // Extract paths for each file
   const examples = [];
