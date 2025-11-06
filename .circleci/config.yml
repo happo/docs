@@ -1,6 +1,117 @@
 version: 2.1
 
 jobs:
+  test_docker_image:
+    docker:
+      - image: cimg/base:current
+
+    environment:
+      DOCKER_BUILDKIT: 1
+
+    steps:
+      - checkout
+      - setup_remote_docker:
+          docker_layer_caching: true
+
+      - run:
+          name: Build Docker image
+          command: |
+            docker build \
+              --progress=plain \
+              --tag happo-test-docs \
+              -f Dockerfile .
+
+      - run:
+          name: Log the size of the image
+          command: docker image ls happo-test-docs
+
+      - run:
+          name: Run Docker image
+          command: |
+            docker run -d -p 3344:3344 --name happo-container \
+              happo-test-docs
+
+      - run:
+          name: Wait for the container to be healthy
+          command: |
+            timeout=60
+            start_time=$(date +%s)
+            echo "Waiting for server to be ready"
+
+            # Get the container's IP address
+            CONTAINER_IP=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' happo-container)
+            echo "Container IP: $CONTAINER_IP"
+
+            # Check if the port is open
+            while ! nc -z $CONTAINER_IP 3344; do
+              current_time=$(date +%s)
+              elapsed=$((current_time - start_time))
+              if [ $elapsed -ge $timeout ]; then
+                echo "Timeout reached. Port 3344 is not open."
+                break
+              fi
+              echo "Port 3344 is not open yet. Waiting..."
+              sleep 5
+            done
+
+            while true; do
+              if curl -sf http://$CONTAINER_IP:3344 > /dev/null; then
+                echo "Server is ready!"
+                break
+              fi
+
+              current_time=$(date +%s)
+              elapsed=$((current_time - start_time))
+
+              if [ $elapsed -ge $timeout ]; then
+                echo "Timeout reached. Server did not become ready in time."
+                echo "Container logs:"
+                docker logs happo-container
+                echo "Attempting to curl the index page:"
+                curl -v http://$CONTAINER_IP:3344
+                docker inspect happo-container
+                docker stop happo-container
+                docker rm happo-container
+                exit 1
+              fi
+
+              if [ $((elapsed % 10)) -eq 0 ]; then
+                echo "Still waiting... (${elapsed}s elapsed)"
+              fi
+              sleep 1
+            done
+
+      - run:
+          name: Test Docker image
+          command: |
+            CONTAINER_IP=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' happo-container)
+
+            # Check status code
+            response=$(curl -s -o /dev/null -w "%{http_code}" http://$CONTAINER_IP:3344)
+            if [ "$response" != "200" ]; then
+              echo "Error: Expected status code 200, but got $response"
+              exit 1
+            else
+              echo "✅ http://$CONTAINER_IP:3344 responded with status code $response"
+            fi
+
+            # Get HTML reliably, follow redirects and decompress
+            content="$(curl -fsSL --compressed http://${CONTAINER_IP}:3344/docs/getting-started)"
+
+            # Normalize and search as text
+            if printf '%s' "$content" \
+              | tr -d '\r' \
+              | grep -Fqi 'Getting started'; then
+              echo "✅ 'Getting started' text found on the page"
+            else
+              echo "Error: Expected text 'Getting started' not found on the page"
+              echo "Page content:"
+              printf '%s\n' "$content"
+              exit 1
+            fi
+
+            echo "Docker image test passed successfully!"
+
   publish-docker:
     docker:
       - image: cimg/base:current
@@ -18,6 +129,9 @@ jobs:
             docker push enduire/happo-docs:$IMAGE_TAG
 workflows:
   version: 2.1
+  run_all:
+    jobs:
+      - test_docker_image
   release:
     jobs:
       - publish-docker:
