@@ -12,12 +12,18 @@ export default defineConfig({
 
   targets: {
     chrome: {
-      browserType: 'chrome',
+      type: 'chrome',
       viewport: '1600x900',
     },
+
     chromeSmall: {
-      browserType: 'chrome',
+      type: 'chrome',
       viewport: '375x667',
+    },
+
+    accessibility: {
+      type: 'accessibility',
+      viewport: '1600x900',
     },
   },
 });
