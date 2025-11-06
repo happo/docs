@@ -589,10 +589,11 @@ export default defineConfig({
 
 A list of pages to screenshot. Each page object must include a `url` (the URL of
 the page to screenshot) and a `title` (used as the "component" identifier in
-Happo reports, so ensure it is unique for each page). Optionally, you can
-specify `waitForContent` to wait for specific content to appear on the page
-before taking the screenshot, or `waitForSelector` to wait for a selector to
-appear in the document before taking the screenshot.
+Happo reports, so ensure it is unique for each page).
+
+Optionally, you can specify `waitForContent` to wait for specific content to
+appear on the page before taking the screenshot, or `waitForSelector` to wait
+for a selector to appear in the document before taking the screenshot.
 
 **Note:** The URLs to the website need to be publicly available, otherwise Happo
 workers won't be able to access the pages.
