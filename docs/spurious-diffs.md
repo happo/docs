@@ -79,8 +79,8 @@ for the Happo test suite.
 #### `prefers-reduced-motion` media query
 
 One way to avoid flaky diffs caused by animations is to disable animations for
-browsers that signal they prefer reduced motion and
-[configure your Happo targets to use the `prefersReducedMotion` option](./configuration#target-prefersreducedmotion).
+browsers that signal they prefer reduced motion. By default,
+[Happo is configured to prefer reduced motion](./configuration#target-prefersreducedmotion).
 
 ### Stack traces
 

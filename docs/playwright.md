@@ -271,11 +271,16 @@ Usage instructions for `--notify` are available in
 By default, happo will download assets found locally and include them in an
 assets package sent to happo.io. Any external URL will be left as-is, which
 means they are expected to be publicly accessible by Happo workers. To include
-external assets in the assets package as well, set a `HAPPO_DOWNLOAD_ALL`
-environment variable.
+external assets in the assets package as well, set
+`integration.downloadAllAssets` to `true` in your `happo.config.ts` file.
 
-```bash
-HAPPO_DOWNLOAD_ALL=true npx happo -- playwright test
+```js title="happo.config.ts"
+export default defineConfig({
+  integration: {
+    type: 'playwright',
+    downloadAllAssets: true,
+  },
+});
 ```
 
 With this environment variable set, all assets are assumed to be private (i.e.

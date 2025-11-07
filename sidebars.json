@@ -8,7 +8,7 @@
       "cli",
       "browsers"
     ],
-    "Configuration": ["configuration", "plugins"],
+    "Configuration": ["configuration"],
     "Accessibility": ["accessibility"],
     "Integrations": [
       "storybook",

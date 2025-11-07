@@ -240,34 +240,22 @@ If there are no diffs, the status is automatically set to success.
 If you for some reason can't install the Happo GitHub App (e.g. when using
 GitHub Enterprise) you can still get the Happo status posted to your PR -- as a
 comment on the pull request. To get this working, you have to provide the Happo
-CI script with either a `HAPPO_GITHUB_TOKEN` auth token or
-`HAPPO_GITHUB_USER_CREDENTIALS` containing a username and a personal access
-token.
+CI script a `--githubToken` auth token.
 
-If you are using GitHub Actions, the easiest thing is to set the
-`HAPPO_GITHUB_TOKEN` based on the automatically provided
+If you are using GitHub Actions, the easiest thing is to set the `--githubToken`
+based on the automatically provided
 [`secrets.GITHUB_TOKEN` variable](https://docs.github.com/en/actions/concepts/security/github_token).
 
 ```yaml
-env: HAPPO_GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
-```
-
-If you are not in a GitHub Actions environment, you can instead use a personal
-access token:
-
-```bash
-HAPPO_GITHUB_USER_CREDENTIALS="trotzig:21A4XgnSkt7f36ehlK5"
+npx happo --githubToken ${{ secrets.GITHUB_TOKEN }}
 ```
 
 [Here's a guide from github.com](https://help.github.com/en/articles/creating-a-personal-access-token-for-the-command-line)
 on how to generate the personal token.
 
-The environment variable must contain both the username of the profile and the
-personal access token, separated by a colon.
-
-If you're using GitHub Enterprise, apart from defining the environment variable
-you also need to add
-[`githubApiUrl` to `.happo.js`](configuration.md#githubapiurl).
+If you're using GitHub Enterprise, apart from setting the `--githubToken` you
+also need to add
+[`githubApiUrl` to your happo config file](configuration.md#githubapiurl).
 
 ### Bitbucket
 

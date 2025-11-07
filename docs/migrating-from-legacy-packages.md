@@ -523,15 +523,22 @@ necessary:
 - `CURRENT_SHA` -- use `--afterSha` instead
 - `HAPPO_BEFORE_SHA_TAG_MATCHER` -- use `--beforeShaTagMatcher` instead
 - `HAPPO_BUILD_STORYBOOK_COMMAND` -- this is no longer used
+- `HAPPO_DELETE_OLD_COMMENTS` -- this is now the behavior and the env var is no
+  longer used
+- `HAPPO_DOWNLOAD_ALL` -- use `integration.downloadAllAssets` in your config
+  file instead
 - `HAPPO_FALLBACK_SHAS_COUNT` -- use `--fallbackShasCount` instead
 - `HAPPO_FALLBACK_SHAS` -- use `--fallbackShas` instead
-- `HAPPO_GITHUB_BASE` and `GITHUB_BASE` -- use `--githubBase` instead
+- `HAPPO_GITHUB_BASE` and `GITHUB_BASE` -- this is no longer used
+- `HAPPO_GITHUB_TOKEN` -- use `--githubToken` instead
+- `HAPPO_GITHUB_USER_CREDENTIALS` -- use `--githubToken` instead
 - `HAPPO_IS_ASYNC` -- async mode is now the only mode
 - `HAPPO_MESSAGE` -- use `--message` instead
 - `HAPPO_NONCE` -- use `--nonce` instead
 - `HAPPO_NOTIFY` -- use `--notify` instead
 - `HAPPO_SIGNED_URL` -- we use signed upload URLs by default now
 - `PREVIOUS_SHA` -- use `--beforeSha` instead
+- `VERBOSE` -- this is no longer used
 
 ## Migration Steps
 

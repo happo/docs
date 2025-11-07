@@ -31,14 +31,18 @@ If you don't want the element to be hidden in the screenshot, you can use the
 show up in the screenshot, but be ignored when Happo compares the screenshot
 with another one.
 
-```js
-// .happo.js
-module.exports = {
+```js title="happo.config.ts"
+import { defineConfig } from 'happo';
+
+export default defineConfig({
   targets: {
-    chrome: new RemoteBrowserTarget('chrome', {
+    chrome: {
+      type: 'chrome',
       viewport: '1024x768',
       hideBehavior: 'ignore',
     }),
   },
-};
+
+  // ... rest of config
+});
 ```

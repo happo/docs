@@ -120,8 +120,8 @@ have ~350 snapshots in their test suite. Happo runs take about 4 mins in CI. Out
 of that, ~3 mins is spent `npm install`ing and building files, then the actual
 Happo run takes just over a minute. They use a "generated examples" approach
 where they use an already-existing style guide to generate happo examples. The
-`.happo.js` config and a call to the `happo-ci-travis` script provided by the
-happo.io library is what's required to get things working in CI.
+Happo config and a call to the happo script is what's required to get things
+working in CI.
 
 ### Airbnb's Lunar project
 
@@ -131,5 +131,4 @@ projects — one with a light theme and one with a dark theme. Happo CI runs tak
 10 mins in total (5 mins installing and building, 5 mins taking screenshots).
 They use the happo-plugin-storybook plugin where happo examples are taken
 straight from a Storybook setup. The config required to get happo running in CI
-involves a .happo.js file and a call to the `happo-ci-travis` script provided by
-the happo.io library.
+involves a Happo config file and a call to the happo script.

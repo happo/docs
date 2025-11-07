@@ -75,19 +75,6 @@ var renderIter = function () {
 renderIter();
 ```
 
-## Run in VERBOSE mode
-
-If you want to know what Happo is doing _before_ it hands over to the Happo
-backend, you can invoke the CLI with a `VERBOSE=true` environment variable.
-
-```sh
-VERBOSE=true npm run happo run
-```
-
-This will increase the amount of logs generated during the happo run. Depending
-on the integration type you're using, it will also store payloads so that you
-can inspect the html and css created
-
 ## Failed on worker
 
 In some cases, your happo runs will fail with a `Failed on worker` message. In
