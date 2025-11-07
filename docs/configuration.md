@@ -295,8 +295,10 @@ color: black;
 
 ### Target `prefersReducedMotion`
 
-Set `prefersReducedMotion: true` to make the browser prefer reduced motion when
-rendering the UI. **Note:** This option has no effect in iOS Safari.
+By default, Happo is configured to prefer reduced motion. Set this option to
+`false` to disable this behavior.
+
+**Note:** This option has no effect in iOS Safari.
 
 ```js title="happo.config.ts"
 import { defineConfig } from 'happo';
@@ -306,14 +308,14 @@ export default defineConfig({
     chrome: {
       type: 'chrome',
       viewport: '1024x768',
-      prefersReducedMotion: true,
+      prefersReducedMotion: false,
     },
   },
 });
 ```
 
-When enabled, media queries that use `prefers-reduced-motion: reduce` will be
-activated:
+When `true` (default behavior), media queries that use
+`prefers-reduced-motion: reduce` will be activated:
 
 ```css
 @media (prefers-reduced-motion: reduce) {

@@ -13,30 +13,29 @@ you maintain accessibility standards across your codebase.
 
 To run accessibility tests with Happo, you need to set up one of our existing
 integrations. Once you have a working integration, it's a matter of a small
-configuration tweak where you add an `accessibility` target to your `.happo.js`
-configuration.
+configuration tweak where you add an `accessibility` target to your Happo
+configuration file.
 
 1. Integrate Happo with one of our supported testing frameworks:
    - [Storybook Integration](/docs/storybook)
    - [Playwright Integration](/docs/playwright)
    - [Cypress Integration](/docs/cypress)
 
-2. Add an `accessibility` target to your `.happo.js` configuration file:
+2. Add an `accessibility` target to your Happo configuration file:
 
-```js
-const { RemoteBrowserTarget } = require('happo.io');
-module.exports = {
+```js title="happo.config.ts"
+import { defineConfig } from 'happo';
+
+export default defineConfig({
   targets: {
-    // Your existing screenshot targets
-    chrome: {
-      // ... existing chrome config
-    },
-    // Add the accessibility target
-    accessibility: new RemoteBrowserTarget('accessibility', {
+    // ... Your existing screenshot targets
+
+    accessibility: {
+      type: 'accessibility',
       viewport: '1200x768',
-    }),
+    },
   },
-};
+});
 ```
 
 You can run accessibility tests alongside your screenshot tests, or use them
