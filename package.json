@@ -1,22 +1,22 @@
 {
   "scripts": {
-    "examples": "docusaurus-examples",
-    "start": "docusaurus start",
-    "serve": "docusaurus serve",
     "build": "docusaurus build",
-    "publish-gh-pages": "docusaurus publish",
-    "write-translations": "docusaurus write-translations",
-    "rename-version": "docusaurus rename-version",
-    "prettier-fix": "prettier --write .",
-    "lint": "prettier --check .",
-    "swizzle": "docusaurus swizzle",
     "deploy": "docusaurus deploy",
     "docusaurus": "docusaurus",
-    "release": "set -a && source .env && set +a && release-with-ease"
+    "examples": "docusaurus-examples",
+    "lint": "prettier --check .",
+    "prettier-fix": "prettier --write .",
+    "publish-gh-pages": "docusaurus publish",
+    "release": "set -a && source .env && set +a && release-with-ease",
+    "rename-version": "docusaurus rename-version",
+    "serve": "docusaurus serve",
+    "start": "docusaurus start",
+    "swizzle": "docusaurus swizzle",
+    "write-translations": "docusaurus write-translations"
   },
   "devDependencies": {
     "esbuild": "^0.25.12",
-    "happo": "6.0.0",
+    "happo": "6.0.1",
     "prettier": "3.6.2",
     "release-with-ease": "^1.0.1"
   },
@@ -24,6 +24,7 @@
   "dependencies": {
     "@docusaurus/core": "3.9.2",
     "@docusaurus/faster": "^3.9.2",
+    "@docusaurus/plugin-client-redirects": "^3.9.2",
     "@docusaurus/preset-classic": "3.9.2",
     "@plausible-analytics/tracker": "^0.4.4",
     "react": "^19.2.0",

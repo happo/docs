@@ -29,7 +29,7 @@
       "image-api",
       "browser-updates",
       "spurious-diffs",
-      "ignoring-diffs",
+      "reporting-flake",
       "debugging",
       "migrating-from-legacy-packages"
     ]

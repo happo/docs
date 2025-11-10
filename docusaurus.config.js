@@ -52,7 +52,19 @@ module.exports = {
   ],
 
   clientModules: [require.resolve('./src/clientModules/plausible.js')],
-  plugins: [],
+  plugins: [
+    [
+      '@docusaurus/plugin-client-redirects',
+      {
+        redirects: [
+          {
+            from: '/docs/ignoring-diffs',
+            to: '/docs/reporting-flake',
+          },
+        ],
+      },
+    ],
+  ],
 
   themeConfig: {
     navbar: {
