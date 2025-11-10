@@ -38,10 +38,11 @@ module.exports = {
           showLastUpdateAuthor: false,
           showLastUpdateTime: false,
           sidebarPath: require.resolve('./sidebars.json'),
-          lastVersion: 'legacy',
+          lastVersion: 'current',
+          includeCurrentVersion: true,
           versions: {
             current: {
-              label: 'Next', // Change this to "Current" when we release the next version
+              label: 'Current',
             },
             legacy: {
               label: 'Legacy',
@@ -72,7 +73,7 @@ module.exports = {
         {
           type: 'docsVersionDropdown',
           versions: {
-            current: { label: 'Next' }, // Change this to "Current" when we release the next version
+            current: { label: 'Current' },
             legacy: { label: 'Legacy' },
           },
         },
