@@ -4,6 +4,11 @@ This repo is the home of happo.io documentation, served at docs.happo.io
 
 # Changelog
 
+## 3.40.0
+
+- Graduate next docs to current 
+- Update CLI documentation to reflect new flags
+
 ## 3.39.0
 
 - Update happo from beta 6 to beta 7
