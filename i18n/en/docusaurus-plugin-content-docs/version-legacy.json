@@ -1,7 +1,7 @@
 {
   "version.label": {
-    "message": "Current",
-    "description": "The label for version current"
+    "message": "Legacy",
+    "description": "The label for version legacy"
   },
   "sidebar.docs.category.Overview": {
     "message": "Overview",
@@ -11,6 +11,10 @@
     "message": "Configuration",
     "description": "The label for category 'Configuration' in sidebar 'docs'"
   },
+  "sidebar.docs.category.Accessibility": {
+    "message": "Accessibility",
+    "description": "The label for category 'Accessibility' in sidebar 'docs'"
+  },
   "sidebar.docs.category.Integrations": {
     "message": "Integrations",
     "description": "The label for category 'Integrations' in sidebar 'docs'"
@@ -18,9 +22,5 @@
   "sidebar.docs.category.Guides": {
     "message": "Guides",
     "description": "The label for category 'Guides' in sidebar 'docs'"
-  },
-  "sidebar.docs.category.Accessibility": {
-    "message": "Accessibility",
-    "description": "The label for category 'Accessibility' in sidebar 'docs'"
   }
 }
