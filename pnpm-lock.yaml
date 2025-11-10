@@ -28,8 +28,8 @@ importers:
         specifier: ^0.25.12
         version: 0.25.12
       happo:
-        specifier: 6.0.0-beta.8
-        version: 6.0.0-beta.8
+        specifier: 6.0.0
+        version: 6.0.0
       prettier:
         specifier: 3.6.2
         version: 3.6.2
@@ -3102,8 +3102,8 @@ packages:
   handle-thing@2.0.1:
     resolution: {integrity: sha512-9Qn4yBxelxoh2Ow62nP+Ka/kMnOXRi8BXnRaUwezLNhqelnN49xKz4F/dPP8OYLxLxq6JDtZb2i9XznUQbNPTg==}
 
-  happo@6.0.0-beta.8:
-    resolution: {integrity: sha512-llMIwvcGEhGxfxTdScRAeZt8g3fxC40Pd+ZjTkn4ptfie4AnUCs4remnphIU4PmGKgpbgcSaMoSJ25IRUuqlfg==}
+  happo@6.0.0:
+    resolution: {integrity: sha512-0fjDq25G2hpQfr8kr2tSyd3CCI+/u6AvnBrAVTeW0iBhRDOkm2P9juHv5XPgyW7DyGMhgHn3zmo0tuTtc+/h/w==}
     engines: {node: '>=22'}
     hasBin: true
 
@@ -3462,8 +3462,8 @@ packages:
   joi@17.13.3:
     resolution: {integrity: sha512-otDA4ldcIx+ZXsKHWmp0YizCweVRZG96J10b0FevjfuncLO1oX59THoAmHkNubYJ+9gWsYsp5k8v4ib6oDv1fA==}
 
-  jose@6.1.0:
-    resolution: {integrity: sha512-TTQJyoEoKcC1lscpVDCSsVgYzUDg/0Bt3WE//WiTPK6uOCQC2KZS4MpugbMWt/zyjkopgZoXhZuCi00gLudfUA==}
+  jose@6.1.1:
+    resolution: {integrity: sha512-GWSqjfOPf4cWOkBzw5THBjtGPhXKqYnfRBzh4Ni+ArTrQQ9unvmsA3oFLqaYKoKe5sjWmGu5wVKg9Ft1i+LQfg==}
 
   js-tokens@4.0.0:
     resolution: {integrity: sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==}
@@ -3599,6 +3599,10 @@ packages:
   lilconfig@3.1.3:
     resolution: {integrity: sha512-/vlFKAoH5Cgt3Ie+JLhRbwOsCQePABiU3tJ1egGvyQ+33R/vcwM2Zl2QR/LzjsBeItPt3oSVXapn+m4nQDvpzw==}
     engines: {node: '>=14'}
+
+  limit-concur@4.0.0:
+    resolution: {integrity: sha512-BXUCP52gLz8JA8/cRKkXswOV6FnA2gl8hL8DbgQuo8XA9NKcwU3Oq/Cg1JyAZ+gyNmFEZXI+ZYLes0BrZkl+7g==}
+    engines: {node: '>= 22'}
 
   lines-and-columns@1.2.4:
     resolution: {integrity: sha512-7ylylesZQ/PV29jhEDl3Ufjo6ZX7gCqJr5F7PKrqc93v7fzSymt1BpwEU8nAUXs8qzzvqhbjhK5QZg6Mt/HkBg==}
@@ -4042,10 +4046,6 @@ packages:
     resolution: {integrity: sha512-ur5UIdyw5Y7yEj9wLzhqXiy6GZ3Mwx0yGI+5sMn2r0N0v3cKJvUmFH5yPP+WXh9e0xfyzyJX95D8l088DNFj7A==}
     hasBin: true
 
-  p-all@5.0.1:
-    resolution: {integrity: sha512-LMT7WX9ZSaq3J1zjloApkIVmtz0ZdMFSIqbuiEa3txGYPLjUPOvgOPOx3nFjo+f37ZYL+1aY666I2SG7GVwLOA==}
-    engines: {node: '>=16'}
-
   p-cancelable@3.0.0:
     resolution: {integrity: sha512-mlVgR3PGuzlo0MmTdk4cXqXWlwQDLnONTAg6sm62XkMJEiRxN3GL3SffkYvqwonbkJBcrI7Uvv5Zh9yjvn2iUw==}
     engines: {node: '>=12.20'}
@@ -4065,10 +4065,6 @@ packages:
   p-map@4.0.0:
     resolution: {integrity: sha512-/bjOqmgETBYB5BoEeGVea8dmvHb2m9GLy1E9W43yeyfP6QQCZGFNa+XRceJEuDB6zqr+gKpIAmlLebMpykw/MQ==}
     engines: {node: '>=10'}
-
-  p-map@6.0.0:
-    resolution: {integrity: sha512-T8BatKGY+k5rU+Q/GTYgrEf2r4xRMevAN5mtXc2aPc4rS1j3s+vWTaO2Wag94neXuCAUAs8cxBL9EeB5EA6diw==}
-    engines: {node: '>=16'}
 
   p-queue@6.6.2:
     resolution: {integrity: sha512-RwFpb72c/BhQLEXIZ5K2e+AhgNVmIejGlTgiB9MzZ0e93GRvqZ7uSi0dvRF7/XIXDeNkra2fNHBxTyPDGySpjQ==}
@@ -9428,15 +9424,15 @@ snapshots:
 
   handle-thing@2.0.1: {}
 
-  happo@6.0.0-beta.8:
+  happo@6.0.0:
     dependencies:
       async-retry: 1.3.3
       base64-stream: 1.0.0
       empathic: 2.0.0
       fflate: 0.8.2
-      jose: 6.1.0
+      jose: 6.1.1
+      limit-concur: 4.0.0
       mime-types: 3.0.1
-      p-all: 5.0.1
       srcset: 5.0.2
 
   has-flag@4.0.0: {}
@@ -9837,7 +9833,7 @@ snapshots:
       '@sideway/formula': 3.0.1
       '@sideway/pinpoint': 2.0.0
 
-  jose@6.1.0: {}
+  jose@6.1.1: {}
 
   js-tokens@4.0.0: {}
 
@@ -9939,6 +9935,8 @@ snapshots:
       lightningcss-win32-x64-msvc: 1.30.2
 
   lilconfig@3.1.3: {}
+
+  limit-concur@4.0.0: {}
 
   lines-and-columns@1.2.4: {}
 
@@ -10640,10 +10638,6 @@ snapshots:
 
   opener@1.5.2: {}
 
-  p-all@5.0.1:
-    dependencies:
-      p-map: 6.0.0
-
   p-cancelable@3.0.0: {}
 
   p-finally@1.0.0: {}
@@ -10659,8 +10653,6 @@ snapshots:
   p-map@4.0.0:
     dependencies:
       aggregate-error: 3.1.0
-
-  p-map@6.0.0: {}
 
   p-queue@6.6.2:
     dependencies:
