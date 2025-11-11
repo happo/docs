@@ -1,63 +1,48 @@
-import { execSync } from 'child_process';
-import {
-  writeFileSync,
-  readdirSync,
-  statSync,
-  unlinkSync,
-  readFileSync,
-} from 'fs';
-import { join, relative, resolve } from 'path';
+import childProcess from 'node:child_process';
+import fs from 'node:fs';
+import path from 'node:path';
 
 export default async function buildHappoCustom() {
   // Build the docs
   console.log('Building docs...');
-  execSync('pnpm run build', { stdio: 'inherit' });
+  childProcess.execSync('pnpm run build', { stdio: 'inherit' });
 
   // Find all index.html files in the build folder
-  const buildDir = join(process.cwd(), 'build');
+  const buildDir = path.join(process.cwd(), 'build');
 
-  function findHtmlFiles(dir, baseDir = dir, fileList = []) {
-    const files = readdirSync(dir);
-    for (const file of files) {
-      const filePath = join(dir, file);
-      const stat = statSync(filePath);
-      if (stat.isDirectory()) {
-        findHtmlFiles(filePath, baseDir, fileList);
-      } else if (file === 'index.html') {
-        const relativePath = relative(baseDir, filePath).replace(/\\/g, '/');
-        fileList.push(relativePath);
-      }
+  const examples = [];
+  for await (const file of fs.promises.glob('**/index.html', {
+    cwd: buildDir,
+  })) {
+    const filePath = path.join(buildDir, file);
+    let htmlContent = fs.readFileSync(filePath, 'utf-8');
+
+    // Skip redirecting HTML files
+    if (
+      /meta\s+http-equiv="refresh"\s+content="\d+;\s+url=([^"]+)"/.test(
+        htmlContent,
+      )
+    ) {
+      continue;
     }
-    return fileList;
-  }
 
-  const htmlFiles = findHtmlFiles(buildDir);
-
-  console.log(`Found ${htmlFiles.length} index.html files`);
-
-  // Strip script tags from HTML files
-  console.log('Stripping script tags from HTML files...');
-  for (const htmlFile of htmlFiles) {
-    const filePath = join(buildDir, htmlFile);
-    let htmlContent = readFileSync(filePath, 'utf-8');
+    // Strip script tags from HTML files
     htmlContent = htmlContent.replace(
       /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi,
       '',
     );
-    writeFileSync(filePath, htmlContent, 'utf-8');
-  }
+    fs.writeFileSync(filePath, htmlContent, 'utf-8');
 
-  // Extract paths for each file
-  const examples = [];
-  for (const htmlFile of htmlFiles) {
     // Use the relative path without index.html as the component name
-    const component = htmlFile.replace(/\/index\.html$/, '');
+    const component = file.replace(/\/index\.html$/, '');
 
     examples.push({
       component,
-      path: htmlFile,
+      path: file,
     });
   }
+
+  console.log(`Found ${examples.length} examples`);
 
   // Generate the entryPoint.js file
   const entryPointContent = `import happoCustom from 'happo/custom';
@@ -81,8 +66,8 @@ ${examples
   .join('\n\n')}
 `;
 
-  const entryPointPath = join(buildDir, 'entryPoint.js');
-  writeFileSync(entryPointPath, entryPointContent, 'utf-8');
+  const entryPointPath = path.join(buildDir, 'entryPoint.js');
+  fs.writeFileSync(entryPointPath, entryPointContent, 'utf-8');
 
   // Bundle entryPoint.js into bundle.js using esbuild
   console.log('Bundling entryPoint.js into bundle.js...');
@@ -92,7 +77,7 @@ ${examples
     await esbuild.build({
       entryPoints: [entryPointPath],
       bundle: true,
-      outfile: join(buildDir, 'bundle.js'),
+      outfile: path.join(buildDir, 'bundle.js'),
       format: 'iife',
       platform: 'browser',
       target: 'es2015',
@@ -101,7 +86,7 @@ ${examples
     });
 
     // Clean up entryPoint.js after bundling
-    unlinkSync(entryPointPath);
+    fs.unlinkSync(entryPointPath);
 
     console.log('Successfully bundled entryPoint.js into bundle.js');
   } catch (error) {
