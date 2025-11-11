@@ -6,14 +6,6 @@ module.exports = {
   organizationName: 'happo',
   projectName: 'happo',
 
-  scripts: [
-    {
-      'data-domain': 'docs.happo.io',
-      src: 'https://plausible.io/js/script.js',
-      defer: true,
-    },
-  ],
-
   favicon: 'img/favicon.ico',
   customFields: {},
   onBrokenLinks: 'log',
@@ -59,6 +51,7 @@ module.exports = {
     ],
   ],
 
+  clientModules: [require.resolve('./src/clientModules/plausible.js')],
   plugins: [],
 
   themeConfig: {
