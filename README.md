@@ -4,6 +4,10 @@ This repo is the home of happo.io documentation, served at docs.happo.io
 
 # Changelog
 
+## 3.40.1
+
+- Load plausible tracker via npm library
+
 ## 3.40.0
 
 - Graduate next docs to current 
