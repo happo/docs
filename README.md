@@ -4,6 +4,12 @@ This repo is the home of happo.io documentation, served at docs.happo.io
 
 # Changelog
 
+## 3.42.0
+
+- Encourage use of data-happo-hide instead of cy.happoHideDynamicElements.
+- Bump happo from 6.0.1 to 6.0.2.
+- Bump js-yaml from 3.14.1 to 3.14.2.
+
 ## 3.41.0
 
 - Update documentation to clarify ignoring diffs and reporting flake.
