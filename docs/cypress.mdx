@@ -246,32 +246,6 @@ cy.get('.footer').happoScreenshot({
 "Footer" is now rendered in Chrome (target specified in `happo.config.ts`) and
 Firefox (dynamic target).
 
-## Hiding dynamic content
-
-If you have dynamic content that changes often, you can ask Happo to hide it
-from the screenshot. This can help prevent unwanted diffs caused by e.g.
-timestamps, dates, randomized content.
-
-```js
-cy.happoHideDynamicElements();
-```
-
-Confusingly enough, elements keep being visible while you run the Cypress test
-suite. Instead, a `data-happo-hide` attribute is added. This will inform Happo's
-workers to hide the elements before taking the screenshot. To cover up/replace
-elements instead of hiding them, use the `replace` option:
-
-```js
-cy.happoHideDynamicElements({ replace: true });
-```
-
-Elements will then be replaced (actually covered) by black rectangles. Please
-note that in some cases this can affect layout. Simply hiding elements (the
-default) is slightly safer, since all we have to do is set `visibility: hidden`.
-
-You can use `data-happo-hide` manually in your source code as well if you prefer
-to hide certain elements without using `happoHideDynamicElements`.
-
 ### Selectors
 
 By default `happoHideDynamicElements` will attempt to find `<time>` elements to
