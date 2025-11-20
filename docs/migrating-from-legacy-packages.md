@@ -415,6 +415,22 @@ const happoTask = require('happo/cypress/task');
 The `happo-e2e` wrapper command is replaced by the main `happo` command. Replace
 `npx happo-e2e -- cypress run` with `npx happo -- cypress run`
 
+##### Removed `cy.happoHideDynamicElements`
+
+The `cy.happoHideDynamicElements` function has been removed in the unified
+`happo` package.
+
+To achieve the same functionality, transition to using the `data-happo-hide`
+attribute on elements you want to hide from screenshots. This can be done
+directly in the code that renders the DOM nodes, or dynamically in your Cypress
+tests. For example, you might add:
+
+```js
+cy.get('#some-dynamic-element').invoke('attr', 'data-happo-hide', 'true');
+```
+
+For more details, see [Hiding Content](/hiding-content.md).
+
 #### Playwright Integration
 
 The configuration changes for Playwright integration:
