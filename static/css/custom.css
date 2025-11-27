@@ -1,65 +1,18 @@
-/**
- * Copyright (c) 2017-present, Facebook, Inc.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
-
-/* your custom css */
-
-body,
-button,
-input,
-textarea {
-  font-family:
-    Helvetica Neue,
-    Arial,
-    sans-serif;
-  color: #4d4d4d;
-}
-
-.post img {
+article img {
   max-width: 100%;
   height: auto;
   border: 1px solid #ccc;
   border-radius: 3px;
 }
 
-.post img + em {
+article img + em {
   font-style: normal;
   font-size: smaller;
   opacity: 0.7;
 }
-.post table img {
+
+article table img {
   border: none;
   vertical-align: middle;
   max-width: 30px;
-}
-
-.fixedHeaderContainer header .headerTitleWithLogo {
-  flex-shrink: 0;
-}
-
-@media (max-width: 480px) {
-  .headerTitleWithLogo {
-    display: block !important;
-  }
-}
-
-@media only screen and (min-device-width: 360px) and (max-device-width: 736px) {
-}
-
-@media only screen and (min-width: 1024px) {
-}
-
-@media only screen and (max-width: 1023px) {
-  .docMainWrapper .wrapper {
-    padding-top: 30px;
-  }
-}
-
-@media only screen and (min-width: 1400px) {
-}
-
-@media only screen and (min-width: 1500px) {
 }
