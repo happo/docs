@@ -36,7 +36,9 @@ flaky diffs.
 If you have dates/timestamps, either injecting a fixed
 `new Date('2024-05-23T08:28:02.446Z')` into your component or freezing time via
 something like [mockdate](https://www.npmjs.com/package/mockdate) or
-[Sinon.js](https://sinonjs.org/) can help.
+[Sinon.js](https://sinonjs.org/) can help. You can also use the
+[`data-happo-hide` attribute](hiding-content.md) on the DOM element with the
+timestamp.
 
 ### External data
 
@@ -67,14 +69,58 @@ browser to fall back to system fonts.
 
 1. **Use locally hosted fonts:** The most stable solution is to host fonts
    locally within your testing environment. This eliminates external
-   dependencies and ensures consistent font loading
+   dependencies and ensures consistent font loading.
 1. **Disable throttling for font URLs:** Contact your CDN provider to disable
-   rate limiting for font URLs from your Happo testing environment
+   rate limiting for font URLs from your Happo testing environment. Using a
+   custom header on outgoing requests using the
+   [`outgoingRequestHeaders` option](configuration.md#target-outgoingrequestheaders)
+   could make CDN configuration simpler.
+
+### AVIF images
+
+Avoid using images served in [AVIF format](https://en.wikipedia.org/wiki/AVIF).
+These are known to render in a non-deterministic way which will cause small but
+significant changes in pixel output. Use WEBP, PNG or JPG instead. If your
+images are served by a CDN, it's possible that they are automatically converted
+to AVIF even if the original image was of a different format.
 
 ### Animations
 
-If you have animations controlled from JavaScript, find a way to disable them
-for the Happo test suite.
+Happo freezes most types of animations (e.g. CSS transitions & animations, SVG
+animations, etc). But if you have animations controlled from JavaScript, you
+need to find a way to disable them for the Happo test suite.
+
+**Examples of animations Happo can stop automatically:**
+
+- CSS transitions, e.g. `.hero-img { transition: opacity 0.3s }`
+- CSS animations, e.g. `.nav-menu { animation: fade-in 0.3s }`
+- SVG animations, e.g.
+  `<rect><animate attributeName="rx" values="0;5;0" dur="10s" /></rect>`
+
+**Example of an animation that you need to disable yourself:**
+
+```js
+const element = document.getElementById('some-element-you-want-to-animate');
+let start;
+
+function step(timestamp) {
+  if (start === undefined) {
+    start = timestamp;
+  }
+  const elapsed = timestamp - start;
+
+  const shift = 0.1 * elapsed;
+  element.style.transform = `translateX(${shift}px)`;
+  if (shift < 200) {
+    requestAnimationFrame(step);
+  }
+}
+
+if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  // The browser isn't asking for reduced motion -- start the animation!
+  requestAnimationFrame(step);
+}
+```
 
 #### `prefers-reduced-motion` media query
 
