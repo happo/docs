@@ -4,6 +4,15 @@ This repo is the home of happo.io documentation, served at docs.happo.io
 
 # Changelog
 
+## 3.43.0
+
+- Bring back usage of custom.css for improved image styling.
+- Clean out unused styles and fix selectors in custom.css.
+- Add AVIF information and enhance animations on the Flake page.
+- Bump node-forge from 1.3.1 to 1.3.2.
+- Bump esbuild from 0.25.12 to 0.27.0.
+- Bump happo from 6.0.2 to 6.0.4.
+
 ## 3.42.0
 
 - Encourage use of data-happo-hide instead of cy.happoHideDynamicElements.
