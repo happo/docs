@@ -45,7 +45,10 @@ module.exports = {
         blog: false, // Disable the blog plugin
 
         theme: {
-          customCss: [require.resolve('./src/css/customTheme.css')],
+          customCss: [
+            require.resolve('./src/css/customTheme.css'),
+            require.resolve('./static/css/custom.css'),
+          ],
         },
       },
     ],
