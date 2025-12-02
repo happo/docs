@@ -9,6 +9,24 @@ tests, including CI integration. The following documentation covers all
 available commands and options to help you configure Happo for your specific
 needs.
 
+## Authentication
+
+The `happo` CLI requires authentication to communicate with the happo.io service.
+You can authenticate in two ways:
+
+1. **API Key and Secret** (recommended for CI and production): Provide `apiKey`
+   and `apiSecret` in your configuration file or as environment variables. See
+   [Configuration](configuration.md#apikey-and-apisecret) for details.
+
+2. **Interactive Browser Authentication**: If no `apiKey` or `apiSecret` is
+   detected, the CLI will prompt you to authenticate in your browser. This
+   creates short-lived authentication tokens.
+
+   > **Important:** Interactive authentication will not work in CI environments
+   > or non-interactive terminals. You must provide explicit `apiKey` and
+   > `apiSecret` values for these scenarios. See
+   > [Continuous Integration](continuous-integration.md) for setup instructions.
+
 ## Installation
 
 The commands listed come from the `happo` npm library.

@@ -20,9 +20,9 @@ let you know exactly what has changed in your UI.
 > [the Playwright integration page](playwright.md#continuous-integration) for
 > instructions on how to integrate with CI there.
 
-Since a lot of projects follow a pull-request/merge-request model, Happo
-provides a unified CLI command that automatically detects CI environments. The
-main `happo` CLI command will:
+To simplify using Happo in a pull-request/merge-request model, Happo provides a
+unified CLI command that automatically detects CI environments. The main `happo`
+CLI command will:
 
 1. Figure out the right baseline report to compare with, starting at the merge
    base for the pull request branch
