@@ -371,15 +371,16 @@ API key and secret through environment variables.
 ```yaml title=".circleci/config.yml"
 version: 2.1
 orbs:
-  node: circleci/node@4.1.0
-  cypress: cypress-io/cypress@1.27.0
+  node: circleci/node@7.2.1
+  cypress: cypress-io/cypress@6.0.0
 
 workflows:
   cypress:
     jobs:
       - cypress/run:
           name: Run Cypress with Happo
-          command-prefix: 'npx happo -- npx'
+          cypress-command: |
+            npx happo -- npx cypress run
 ```
 
 ### Travis CI example
@@ -450,8 +451,8 @@ Here's an example configuration for a parallel build running in Circle CI
 ```yaml title=".circleci/config.yml"
 version: 2.1
 orbs:
-  node: circleci/node@4.1.0
-  cypress: cypress-io/cypress@1.27.0
+  node: circleci/node@7.2.1
+  cypress: cypress-io/cypress@6.0.0
 workflows:
   cypress:
     jobs:
@@ -464,7 +465,8 @@ workflows:
           start: npm run start-dev-server
           parallel: true
           parallelism: 4
-          command-prefix: 'npx happo --nonce ${CIRCLE_WORKFLOW_ID} -- npx'
+          cypress-command: |
+            npx happo --nonce ${CIRCLE_WORKFLOW_ID} -- npx cypress run
           post-steps:
             - run: 'npx happo --nonce ${CIRCLE_WORKFLOW_ID} finalize'
 ```
