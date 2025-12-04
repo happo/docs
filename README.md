@@ -4,6 +4,15 @@ This repo is the home of happo.io documentation, served at docs.happo.io
 
 # Changelog
 
+## 3.44.0
+
+- Update Cypress orb documentation to version 6.0.0.
+- Bump react and react-dom from 19.2.0 to 19.2.1.
+- Bump esbuild from 0.27.0 to 0.27.1.
+- Update js-yaml from 4.1.0 to 4.1.1 to resolve a security vulnerability.
+- Bump prettier from 3.7.3 to 3.7.4.
+- Update some transitive dependencies to resolve security vulnerabilities.
+
 ## 3.43.0
 
 - Bring back usage of custom.css for improved image styling.
