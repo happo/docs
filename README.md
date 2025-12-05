@@ -4,6 +4,10 @@ This repo is the home of happo.io documentation, served at docs.happo.io
 
 # Changelog
 
+## 3.44.1
+
+- Add documentation for interactive authentication
+
 ## 3.44.0
 
 - Update Cypress orb documentation to version 6.0.0.
