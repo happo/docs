@@ -25,6 +25,12 @@ export default defineConfig({
 });
 ```
 
+> **Note:** If `apiKey` and `apiSecret` are not provided, the CLI will attempt to
+> authenticate interactively by opening a browser. This interactive authentication
+> creates short-lived tokens and **will not work in CI environments or
+> non-interactive terminals**. For CI and production use, you must provide explicit
+> `apiKey` and `apiSecret` values.
+
 ## `targets`
 
 Specify the browsers you want to include in your happo run. For example:
