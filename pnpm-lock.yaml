@@ -34,8 +34,8 @@ importers:
         specifier: ^0.27.1
         version: 0.27.1
       happo:
-        specifier: 6.1.2
-        version: 6.1.2
+        specifier: 6.2.0
+        version: 6.2.0
       prettier:
         specifier: 3.7.4
         version: 3.7.4
@@ -3118,8 +3118,8 @@ packages:
   handle-thing@2.0.1:
     resolution: {integrity: sha512-9Qn4yBxelxoh2Ow62nP+Ka/kMnOXRi8BXnRaUwezLNhqelnN49xKz4F/dPP8OYLxLxq6JDtZb2i9XznUQbNPTg==}
 
-  happo@6.1.2:
-    resolution: {integrity: sha512-SvvqlWrTc1laU1h1hCbfOpiyfSe0vbDQih+TLMTwy8+qNt0rHz0QwjIsH63rG55afIXvZQmfGG+wRjPRRhh84A==}
+  happo@6.2.0:
+    resolution: {integrity: sha512-ZxOgB+qffCnWD253yepX5aEFnhJXB3PodxWgIQukIYDmbMFQ92pYWqaYFHzRydRm7Hwt5wopGjfJTe6eaVZ7rA==}
     engines: {node: ^22.18.0 || ^23.6.0 || >=24.0.0}
     hasBin: true
 
@@ -9473,7 +9473,7 @@ snapshots:
 
   handle-thing@2.0.1: {}
 
-  happo@6.1.2:
+  happo@6.2.0:
     dependencies:
       async-retry: 1.3.3
       base64-stream: 1.0.0
