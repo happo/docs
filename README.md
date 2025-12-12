@@ -4,6 +4,10 @@ This repo is the home of happo.io documentation, served at docs.happo.io
 
 # Changelog
 
+## 3.45.0
+
+- Update React from 19.2.1 to 19.2.3, fixing important security vulnerabilities.
+
 ## 3.44.1
 
 - Add documentation for interactive authentication
