@@ -81,6 +81,7 @@ following structure:
 - `component` - (string) name of the component
 - `variant` - (string) name of the component variant
 - `render` - (async function) render things into the document here
+- `waitForContent` - (string, optional) wait for content to be present
 
 Here's a full example:
 
@@ -103,6 +104,31 @@ happoCustom.registerExample({
   render: () => {
     document.body.innerHTML = '<div style="background-color:blue">Hello</div>';
   },
+});
+```
+
+#### Waiting for content
+
+In some cases, examples might not be ready by the time Happo takes the
+screenshot. Although adding a delay could help, it will only work well if the
+asynchronous event is consistently timed. In these cases the `waitForContent`
+parameter might help.
+
+Let's assume that we have an example that needs to fetch some external data. In
+order to wait for the data to finish loading, we can add a `waitForContent`
+parameter with some unique string from the loaded state:
+
+```js title="main.js"
+happoCustom.registerExample({
+  component: 'Description',
+  variant: 'loaded',
+  render: async () => {
+    document.body.innerHTML = '<div id="description">Loading...</div>';
+    const data = await fetch('http://example.com/api/data');
+    document.querySelector('#description').innerHTML =
+      `<p>Description: ${data.description}</p>`;
+  },
+  waitForContent: 'Description:',
 });
 ```
 
