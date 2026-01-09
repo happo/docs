@@ -63,17 +63,106 @@ If you quickly want to iterate through all components, copy and paste this
 script in the JavaScript console:
 
 ```js
+window.happo.init({ chunk: { index: 0, total: 1 } });
 var renderIter = function () {
   window.happo.nextExample().then(function (a) {
     if (!a) {
       return;
     }
     console.log(a);
-    renderIter();
+    requestAnimationFrame(() => renderIter());
   });
 };
 renderIter();
 ```
+
+### Profiling static packages
+
+When debugging performance issues or memory leaks in your static packages,
+Chrome DevTools provides powerful profiling tools. Here's how to use them:
+
+#### Running the profiler in Chrome DevTools
+
+1. Open Chrome DevTools (F12 or Cmd+Option+I on Mac)
+2. Navigate to the **Performance** tab
+3. Click the **Record** button (or press Cmd+E / Ctrl+E)
+4. Interact with your static package (e.g., call `window.happo.nextExample()` to
+   cycle through components, or use the `renderIter()` setup described above)
+5. Click **Stop** when you're done recording
+6. Analyze the timeline to identify performance bottlenecks, long tasks, or
+   memory issues
+
+#### Creating a heap snapshot for Detached Nodes
+
+Detached Nodes are DOM elements that have been removed from the document tree
+but are still referenced in JavaScript, preventing garbage collection and
+causing memory leaks. This is a common source of slowness in Happo test suites,
+and can cause instability (browser crashes, timeouts) on the Happo workers.
+
+To identify Detached Nodes:
+
+1. Open Chrome DevTools and go to the **Memory** tab
+2. Select **Detached elements** in the list of profiling types
+3. Click **Take snapshot**
+4. Review the list of detached nodes to identify which elements are not being
+   properly cleaned up
+
+#### Tips for getting rid of Detached Nodes
+
+Detached Nodes often occur when event listeners, timers, or references to DOM
+elements aren't cleaned up when components unmount. Here's a React example
+showing the problem and solution:
+
+**Before (causing Detached Nodes):**
+
+```jsx
+function MyComponent() {
+  const [count, setCount] = useState(0);
+
+  // ❌ Event listener is never cleaned up
+  useEffect(() => {
+    const handleClick = () => {
+      setCount(c => c + 1);
+    };
+    document.addEventListener('click', handleClick);
+  }, []);
+
+  return <div>Count: {count}</div>;
+}
+```
+
+**After (properly cleaned up):**
+
+```jsx
+function MyComponent() {
+  const [count, setCount] = useState(0);
+
+  // ✅ Event listener is cleaned up on unmount
+  useEffect(() => {
+    const handleClick = () => {
+      setCount(c => c + 1);
+    };
+    document.addEventListener('click', handleClick);
+
+    // Cleanup function removes the event listener
+    return () => {
+      document.removeEventListener('click', handleClick);
+    };
+  }, []);
+
+  return <div>Count: {count}</div>;
+}
+```
+
+Common sources of Detached Nodes and how to fix them:
+
+- **Event listeners**: Always remove event listeners in the cleanup function of
+  `useEffect`
+- **Timers**: Clear `setInterval` and `setTimeout` in cleanup functions
+- **Subscriptions**: Unsubscribe from observables, WebSocket connections, or
+  other subscriptions
+- **DOM references**: Avoid storing references to DOM elements in component
+  state or refs that persist after unmount
 
 ## Failed on worker
 
