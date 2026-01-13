@@ -4,6 +4,13 @@ This repo is the home of happo.io documentation, served at docs.happo.io
 
 # Changelog
 
+## 3.45.1
+
+- Add profiling documentation for local test suite profiling
+- Document waitForContent for custom integration type
+- Bump happo from 6.2.2 to 6.2.3
+- Bump esbuild from 0.27.1 to 0.27.2
+
 ## 3.45.0
 
 - Update React from 19.2.1 to 19.2.3, fixing important security vulnerabilities.
