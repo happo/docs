@@ -21,18 +21,23 @@ based on its contents (the pixels). We compare hashes, not screenshots.
 In cases where the default bitmap hashing comparison is too limiting, you can
 tell Happo to deep-compare screenshots. A shallow diff (bitmap hash comparisons)
 is then first applied, and any diffs remaining after that will be deep-compared.
-The behavior of the deep comparison is configured per project. Here's how to
-find the settings:
+The behavior of the deep comparison can be configured per project, overridden in
+`happo.config`, or passed per comparison with the API:
 
 1. Go to the [projects admin page](https://happo.io/projects)
 2. Click the link in the "Diff threshold" column for the project you want to
    configure
 3. Choose settings that fit your test suite
 
+You can also
+[set these properties in configuration](configuration.md#deepcompare), or
+[pass them in the comparison API call](https://happo.io/docs/api#endpoints). If
+you do this, the project settings will be overridden.
+
 If you can't find the settings, it could be that you aren't an administrator of
 the account. Only admins can update these settings.
 
-There are three settings that control deep comparisons, outlined below.
+There are four settings that control deep comparisons, outlined below.
 
 ### Compare threshold
 
@@ -77,6 +82,12 @@ before comparing them. This can help smooth out some rough edges that can
 otherwise cause diffs. Note that blurring images when comparing them does
 nothing to the original screenshots -- it's simply a preprocessing step for the
 deep comparison.
+
+### Ignore whitespace
+
+When enabled, whitespace-only differences are ignored during deep comparison.
+This can help reduce diffs coming from spurious content shifts, especially when
+there's extra space at the bottom of the screenshots.
 
 ## Recommended settings
 
