@@ -25,11 +25,11 @@ export default defineConfig({
 });
 ```
 
-> **Note:** If `apiKey` and `apiSecret` are not provided, the CLI will attempt to
-> authenticate interactively by opening a browser. This interactive authentication
-> creates short-lived tokens and **will not work in CI environments or
-> non-interactive terminals**. For CI and production use, you must provide explicit
-> `apiKey` and `apiSecret` values.
+> **Note:** If `apiKey` and `apiSecret` are not provided, the CLI will attempt
+> to authenticate interactively by opening a browser. This interactive
+> authentication creates short-lived tokens and **will not work in CI
+> environments or non-interactive terminals**. For CI and production use, you
+> must provide explicit `apiKey` and `apiSecret` values.
 
 ## `targets`
 
@@ -410,6 +410,25 @@ import { defineConfig } from 'happo';
 
 export default defineConfig({
   project: 'my-project-name',
+  // ... rest of config
+});
+```
+
+## `deepCompare`
+
+Override the project-level deep-compare settings for comparisons started from
+this configuration file. This uses the same settings as the
+[Compare with a threshold](compare-threshold.md) guide and the API `deepCompare`
+payload. Omit this option to use the project defaults.
+
+```js title="happo.config.ts"
+import { defineConfig } from 'happo';
+
+export default defineConfig({
+  deepCompare: {
+    compareThreshold: 0.002,
+  },
+
   // ... rest of config
 });
 ```
