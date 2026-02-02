@@ -28,8 +28,50 @@ practice to follow up with a deeper fix.
 
 ## Global effect
 
-Diffs reported as flaky apply to all future and past Happo reports. This can
-lead to some confusion when your Happo build status (in e.g. GitHub) shows a
-number of diffs, but the Happo report page shows fewer diffs (or even none).
-Build statuses aren't updated when you report a diff as flaky, you still need to
-[manually approve or reject](reviewing-diffs.md).
+Diffs reported as flaky apply to all future and past Happo reports. You may
+still need to [manually approve or reject](reviewing-diffs.md).
+
+## Technical details
+
+### What a diff is
+
+A **diff** is a visual difference Happo found between the baseline and the new
+run for a specific snapshot—for example, "Button / default / Chrome". Happo
+compares the two rendered images using your project's
+[compare threshold](compare-threshold.md) (and any other compare settings you've
+configured). If the difference is above that threshold, it's shown as a diff.
+Each diff corresponds to one component, variant, and target combination.
+
+### How Happo identifies snapshots
+
+Happo identifies each snapshot by what it is: component name, variant, target
+(browser/viewport), and a hash of the image data. When you report a diff as
+flake, Happo remembers **that specific before/after pair**. So the same flake is
+ignored everywhere it appears--in past, current, and future comparisons--as long
+as it's the same baseline and new snapshot. If your baseline or your rendered
+output changes later, Happo may show a new diff for that same
+component/variant/target, and that new diff won't be covered by the flake you
+reported earlier.
+
+### What happens when you report a diff as flake
+
+When you click **Report Flake**:
+
+- **On the comparison page**
+
+  That diff is hidden from the comparison (and from any other comparison where
+  the same snapshot pair appears). You may see fewer diffs, or none, on the
+  page.
+
+- **Build status**
+
+  Your CI build status (e.g. the GitHub check) for that comparison is updated
+  automatically if there are no longer any diffs remaining in the comparison.
+
+- **Why flake can seem to come back**
+
+  Because flake is tied to that exact before/after pair, a new run that produces
+  a different snapshot (e.g. after a baseline update or a change in rendering)
+  can show a new diff that isn't covered by the flake you reported. Fixing the
+  underlying cause of the flake is the only way to prevent it from reappearing
+  over time.
