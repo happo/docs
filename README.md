@@ -4,6 +4,16 @@ This repo is the home of happo.io documentation, served at docs.happo.io
 
 # Changelog
 
+## 3.46.0
+
+- Increase color contrast of links to improve accessibility.
+- Update lodash to version 4.17.23 to resolve a security vulnerability.
+- Make custom theme CSS selector more specific for better style application.
+- Update documentation for deepCompare and ignoreWhitespace options.
+- Bump happo from 6.2.6 to 6.3.0.
+- Bump react and react-dom to version 19.2.4.
+- Bump prettier from 3.8.0 to 3.8.1.
+
 ## 3.45.1
 
 - Add profiling documentation for local test suite profiling
