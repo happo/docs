@@ -1,9 +1,13 @@
-:root {
-  --ifm-color-primary-lightest: #1adeb9;
-  --ifm-color-primary-lighter: #17c5a3;
-  --ifm-color-primary-light: #16bc9c;
-  --ifm-color-primary: #14ab8e;
-  --ifm-color-primary-dark: #129a80;
-  --ifm-color-primary-darker: #119179;
-  --ifm-color-primary-darkest: #0e7863;
+@layer customTheme;
+
+@layer customTheme {
+  :root:not(#\#):not(#\#) {
+    --ifm-color-primary-lightest: #1adeb9;
+    --ifm-color-primary-lighter: #17c5a3;
+    --ifm-color-primary-light: #16bc9c;
+    --ifm-color-primary: #14ab8e;
+    --ifm-color-primary-dark: #129a80;
+    --ifm-color-primary-darker: #119179;
+    --ifm-color-primary-darkest: #0e7863;
+  }
 }

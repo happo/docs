@@ -1,18 +1,20 @@
-article img {
-  max-width: 100%;
-  height: auto;
-  border: 1px solid #ccc;
-  border-radius: 3px;
-}
+@layer customTheme {
+  article img {
+    max-width: 100%;
+    height: auto;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+  }
 
-article img + em {
-  font-style: normal;
-  font-size: smaller;
-  opacity: 0.7;
-}
+  article img + em {
+    font-style: normal;
+    font-size: smaller;
+    opacity: 0.7;
+  }
 
-article table img {
-  border: none;
-  vertical-align: middle;
-  max-width: 30px;
+  article table img {
+    border: none;
+    vertical-align: middle;
+    max-width: 30px;
+  }
 }
