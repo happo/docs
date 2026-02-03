@@ -4,6 +4,10 @@ This repo is the home of happo.io documentation, served at docs.happo.io
 
 # Changelog
 
+## 3.47.0
+
+- Add more technical details to Reporting Flake docs
+
 ## 3.46.0
 
 - Increase color contrast of links to improve accessibility.
