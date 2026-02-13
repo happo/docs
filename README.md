@@ -4,6 +4,13 @@ This repo is the home of happo.io documentation, served at docs.happo.io
 
 # Changelog
 
+## 3.48.0
+
+- Update to release-with-ease 2 with Anthropic integration
+- Bump webpack to 5.105.2
+- Bump esbuild to 0.27.3
+- Bump happo to 6.3.2
+
 ## 3.47.0
 
 - Add more technical details to Reporting Flake docs
