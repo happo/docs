@@ -34,8 +34,8 @@ importers:
         specifier: ^0.27.3
         version: 0.27.3
       happo:
-        specifier: 6.3.2
-        version: 6.3.2
+        specifier: 6.3.3
+        version: 6.3.3
       prettier:
         specifier: 3.8.1
         version: 3.8.1
@@ -3125,8 +3125,8 @@ packages:
   handle-thing@2.0.1:
     resolution: {integrity: sha512-9Qn4yBxelxoh2Ow62nP+Ka/kMnOXRi8BXnRaUwezLNhqelnN49xKz4F/dPP8OYLxLxq6JDtZb2i9XznUQbNPTg==}
 
-  happo@6.3.2:
-    resolution: {integrity: sha512-kDjQ5/7jPKL5AMHHfkIaMpe7313axxOBHrvt74OhjzikPIY9wsWGO1Zf6OjWbvmRpjBXC7JT69Ar9tXiyNcdgQ==}
+  happo@6.3.3:
+    resolution: {integrity: sha512-bMJzR1a2nLVCfdicnGsrdvFZb3D0e95Wk69EQh/thzTySCZqbMb51JJG81S66kDtrYLnZmvbuZShO7lhZxy1dA==}
     engines: {node: ^22.18.0 || ^23.6.0 || >=24.0.0}
     hasBin: true
 
@@ -6887,7 +6887,7 @@ snapshots:
     dependencies:
       '@docusaurus/types': 3.9.2(@swc/core@1.13.5)(esbuild@0.27.3)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@types/history': 4.7.11
-      '@types/react': 19.2.13
+      '@types/react': 19.2.14
       '@types/react-router-config': 5.0.11
       '@types/react-router-dom': 5.3.3
       react: 19.2.4
@@ -8155,19 +8155,19 @@ snapshots:
   '@types/react-router-config@5.0.11':
     dependencies:
       '@types/history': 4.7.11
-      '@types/react': 19.2.13
+      '@types/react': 19.2.14
       '@types/react-router': 5.1.20
 
   '@types/react-router-dom@5.3.3':
     dependencies:
       '@types/history': 4.7.11
-      '@types/react': 19.2.13
+      '@types/react': 19.2.14
       '@types/react-router': 5.1.20
 
   '@types/react-router@5.1.20':
     dependencies:
       '@types/history': 4.7.11
-      '@types/react': 19.2.13
+      '@types/react': 19.2.14
 
   '@types/react@19.2.13':
     dependencies:
@@ -9486,7 +9486,7 @@ snapshots:
 
   handle-thing@2.0.1: {}
 
-  happo@6.3.2:
+  happo@6.3.3:
     dependencies:
       async-retry: 1.3.3
       base64-stream: 1.0.0
