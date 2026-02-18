@@ -40,8 +40,8 @@ importers:
         specifier: 3.8.1
         version: 3.8.1
       release-with-ease:
-        specifier: ^2.0.0
-        version: 2.0.0
+        specifier: ^2.0.1
+        version: 2.0.1
 
 packages:
 
@@ -4751,8 +4751,8 @@ packages:
     resolution: {integrity: sha512-G08Dxvm4iDN3MLM0EsP62EDV9IuhXPR6blNz6Utcp7zyV3tr4HVNINt6MpaRWbxoOHT3Q7YN2P+jaHX8vUbgog==}
     engines: {node: '>= 0.10'}
 
-  release-with-ease@2.0.0:
-    resolution: {integrity: sha512-EvOFq6ILyqVV6sxmUevTkQW3FeY3PQcf9CQmhpytGBQC61D19ggqHAi8GVhE9QJT081HJx6mggddx0CbSv/GGw==}
+  release-with-ease@2.0.1:
+    resolution: {integrity: sha512-BuPW5BcyzSUnAHtC8ti2jplLd/ZzgDygpJIW7rIGKh5zX5M24dLVQJfFqdLWM7eDVMHnN07kkWR9dyy2KD7gLg==}
     hasBin: true
 
   remark-directive@3.0.1:
@@ -6887,7 +6887,7 @@ snapshots:
     dependencies:
       '@docusaurus/types': 3.9.2(@swc/core@1.13.5)(esbuild@0.27.3)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@types/history': 4.7.11
-      '@types/react': 19.2.13
+      '@types/react': 19.2.14
       '@types/react-router-config': 5.0.11
       '@types/react-router-dom': 5.3.3
       react: 19.2.4
@@ -8155,19 +8155,19 @@ snapshots:
   '@types/react-router-config@5.0.11':
     dependencies:
       '@types/history': 4.7.11
-      '@types/react': 19.2.13
+      '@types/react': 19.2.14
       '@types/react-router': 5.1.20
 
   '@types/react-router-dom@5.3.3':
     dependencies:
       '@types/history': 4.7.11
-      '@types/react': 19.2.13
+      '@types/react': 19.2.14
       '@types/react-router': 5.1.20
 
   '@types/react-router@5.1.20':
     dependencies:
       '@types/history': 4.7.11
-      '@types/react': 19.2.13
+      '@types/react': 19.2.14
 
   '@types/react@19.2.13':
     dependencies:
@@ -11467,7 +11467,7 @@ snapshots:
 
   relateurl@0.2.7: {}
 
-  release-with-ease@2.0.0: {}
+  release-with-ease@2.0.1: {}
 
   remark-directive@3.0.1:
     dependencies:
