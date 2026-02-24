@@ -16,7 +16,7 @@
   },
   "devDependencies": {
     "esbuild": "^0.27.3",
-    "happo": "6.3.3",
+    "happo": "6.3.4",
     "prettier": "3.8.1",
     "release-with-ease": "^2.0.1"
   },
