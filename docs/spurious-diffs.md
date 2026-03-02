@@ -46,6 +46,28 @@ If a component depends on external data (e.g. via an API), consider splitting
 out the data fetching from the visual component and test the visual component
 without data fetching, injecting the data needed to render it.
 
+### CI merge commits and mixed baselines
+
+You can sometimes see diffs where the "after" image includes changes from a
+later commit on the main/base branch. The most likely cause is that the CI
+system is creating a dynamic merge commit (PR head merged with the current main
+tip) and Happo is using that merge instead of the PR head itself.
+
+In GitHub Actions for instance, a way to fix this is to tell the checkout step
+to use a specific ref, like this:
+
+```yaml
+- uses: actions/checkout@v6
+  with:
+    ref: ${{ github.event.pull_request.head.sha || github.ref }}
+    fetch-depth: 100
+```
+
+Other CI systems may do the same kind of merge-by-default (sometimes called
+"merge refs" or "merge builds"). Look for settings that control whether the job
+checks out a synthetic merge commit vs the PR head SHA, and switch to the PR
+head SHA when you want deterministic Happo diffs.
+
 ### Font loading issues
 
 Font loading can be a common source of flaky diffs, especially when using
