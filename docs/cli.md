@@ -86,6 +86,35 @@ npm run happo finalize
 npm run happo finalize --nonce [NONCE]
 ```
 
+### Flake command
+
+List [reported flakes](reporting-flake.md) for a project. By default, results
+are printed in a human-readable format, one flake per line.
+
+```sh
+npm run happo flake
+```
+
+Use `--allProjects` to list flakes across all projects:
+
+```sh
+npm run happo flake --allProjects
+```
+
+Output as JSON for programmatic use:
+
+```sh
+npm run happo flake --format=json
+```
+
+Filter and paginate results:
+
+```sh
+npm run happo flake --project=my-project --limit=10 --page=2
+npm run happo flake --component=Button --variant=primary --target=chrome
+npm run happo flake --sha=ff2df74c1730341240840010c7518b2c1f4b55cb
+```
+
 ## Options
 
 ### `--config` / `-c`
@@ -214,4 +243,83 @@ environment.
 
 ```sh
 npm run happo --githubToken $GITHUB_TOKEN
+```
+
+## Flake command options
+
+These options apply only to the `happo flake` command.
+
+### `--allProjects`
+
+List flakes across all projects. By default, only flakes for the current
+project (from your config) are shown.
+
+```sh
+npm run happo flake --allProjects
+```
+
+### `--format <format>`
+
+Output format. Use `"human"` (default) for readable output or `"json"` for raw
+JSON output suitable for scripting.
+
+```sh
+npm run happo flake --format=json
+```
+
+### `--project <name>`
+
+Project to filter flakes for. Defaults to the project defined in your config.
+
+```sh
+npm run happo flake --project=my-project
+```
+
+### `--limit <number>`
+
+Maximum number of flake results to return. Default: `100`. Maximum: `1000`.
+
+```sh
+npm run happo flake --limit=50
+```
+
+### `--page <number>`
+
+Page number for paginated results. Default: `1`.
+
+```sh
+npm run happo flake --page=2
+```
+
+### `--component <name>`
+
+Filter flakes by component name.
+
+```sh
+npm run happo flake --component=Button
+```
+
+### `--variant <name>`
+
+Filter flakes by variant name.
+
+```sh
+npm run happo flake --variant=primary
+```
+
+### `--target <name>`
+
+Filter flakes by target name (browser/viewport).
+
+```sh
+npm run happo flake --target=chrome
+```
+
+### `--sha <sha>`
+
+Filter flakes by a specific before/after SHA. Returns only flakes associated
+with that commit.
+
+```sh
+npm run happo flake --sha=ff2df74c1730341240840010c7518b2c1f4b55cb
 ```
