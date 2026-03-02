@@ -4,6 +4,13 @@ This repo is the home of happo.io documentation, served at docs.happo.io
 
 # Changelog
 
+## 3.49.0
+
+- Document happo flake CLI command
+- Update ajv to 6.14.0
+- Update happo dependency to 6.3.4
+- Update release-with-ease to 2.0.1
+
 ## 3.48.0
 
 - Update to release-with-ease 2 with Anthropic integration
