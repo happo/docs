@@ -4,6 +4,10 @@ This repo is the home of happo.io documentation, served at docs.happo.io
 
 # Changelog
 
+## 3.49.1
+
+- Add documentation for merge ref checkouts to improve discoverability of this workflow
+
 ## 3.49.0
 
 - Document happo flake CLI command
