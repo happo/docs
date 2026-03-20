@@ -24,7 +24,6 @@ export default defineConfig({
     accessibility: {
       type: 'accessibility',
       viewport: '1600x900',
-      chunks: 4,
     },
   },
 });
