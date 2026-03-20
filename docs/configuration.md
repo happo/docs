@@ -106,8 +106,11 @@ export default defineConfig({
 
 ### Target `chunks`
 
-Targets run in parallel by default. To split a specific target into multiple
-chunks (running in parallel), use the `chunks` option:
+As of v6.4.1, Happo automatically sets the number of chunks based on an
+estimated snapshot count. Most projects don't need to configure this manually.
+
+If you want to override the automatic behavior, use the `chunks` option to
+explicitly split a target into multiple parallel workers:
 
 ```js title="happo.config.ts"
 import { defineConfig } from 'happo';
@@ -126,6 +129,18 @@ export default defineConfig({
 Happo.io attempts to run chunks in parallel, but there's no guarantee. The
 `chunks` option adds some overhead, so if your test suite isn't large, using
 more than one chunk might actually slow things down.
+
+**When to set `chunks` manually:**
+
+- **Storybook with many interaction tests:** The automatic estimate is based on
+  story count and does not account for interaction tests. If you use the
+  Storybook integration and have a large number of interaction tests, the
+  estimate may be too low and you may benefit from setting a higher chunk count
+  explicitly.
+- **Consistently slow runs:** If happo runs are taking longer than expected and
+  parallelism seems insufficient, try increasing chunks.
+- **Reducing parallelism:** If you want to limit resource usage, you can set
+  `chunks: 1` to disable splitting entirely.
 
 ### Target `maxHeight`
 
