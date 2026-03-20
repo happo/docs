@@ -86,6 +86,13 @@ npm run happo finalize
 npm run happo finalize --nonce [NONCE]
 ```
 
+Use `--skippedExamples` to exclude specific component snapshots from the
+comparison:
+
+```sh
+npm run happo finalize --nonce [NONCE] --skippedExamples '[{"component":"Button","variant":"primary","target":"chrome"}]'
+```
+
 ### Flake command
 
 List [reported flakes](reporting-flake.md) for a project. By default, results
@@ -233,6 +240,16 @@ with the `finalize` command.
 ```sh
 npm run happo --nonce my-unique-nonce -- playwright test
 npm run happo finalize --nonce my-unique-nonce
+```
+
+### `--skippedExamples <json>`
+
+JSON array of component snapshots to exclude from the visual diff comparison
+when using the `finalize` command. Each entry must have `component`, `variant`,
+and `target` fields. Defaults to an empty array (nothing skipped).
+
+```sh
+npm run happo finalize --nonce my-unique-nonce --skippedExamples '[{"component":"Button","variant":"primary","target":"chrome"}]'
 ```
 
 ### `--githubToken <token>`
