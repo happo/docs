@@ -107,7 +107,30 @@ export default defineConfig({
 ### Target `chunks`
 
 As of v6.4.1, Happo automatically sets the number of chunks based on an
-estimated snapshot count. Most projects don't need to configure this manually.
+estimated snapshot count when using the Storybook integration. Most projects
+don't need to configure this manually.
+
+If you are using the [custom integration type](#custom-integration-options),
+automatic chunk sizing requires returning `estimatedSnapsCount` from your
+`build` function:
+
+```js title="happo.config.ts"
+import { defineConfig } from 'happo';
+
+export default defineConfig({
+  integration: {
+    type: 'custom',
+    build: async () => ({
+      rootDir: './tmp/happo-custom',
+      entryPoint: 'bundle.js',
+      estimatedSnapsCount: 42,
+    }),
+  },
+});
+```
+
+Without this value, Happo cannot auto-chunk custom integrations and you will
+need to set `chunks` explicitly.
 
 If you want to override the automatic behavior, use the `chunks` option to
 explicitly split a target into multiple parallel workers:
