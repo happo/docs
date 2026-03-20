@@ -1,7 +1,7 @@
 @layer customTheme;
 
 @layer customTheme {
-  :root:not(#\#):not(#\#) {
+  :root:not(#\#):not(#\#):not(#\#):not(#\#) {
     --ifm-color-primary-lightest: oklch(70% 0.12 174);
     --ifm-color-primary-lighter: oklch(65% 0.12 174);
     --ifm-color-primary-light: oklch(60% 0.12 174);
@@ -9,5 +9,20 @@
     --ifm-color-primary-dark: oklch(50% 0.12 174);
     --ifm-color-primary-darker: oklch(45% 0.12 174);
     --ifm-color-primary-darkest: oklch(40% 0.12 174);
+
+    --ifm-menu-color-active: var(--ifm-color-primary-darker);
+    --ifm-breadcrumb-color-active: var(--ifm-color-primary-dark);
+    --docsearch-muted-color: oklch(from currentColor l c h / 60%);
+    --ifm-menu-color-background-active: oklch(
+      from var(--ifm-color-primary) l c h / 4%
+    );
+    --ifm-menu-color-background-hover: oklch(
+      from var(--ifm-color-primary) l 0 h / 4%
+    );
+
+    & main,
+    & footer {
+      --ifm-link-decoration: underline oklch(from currentColor l c h / 20%);
+    }
   }
 }

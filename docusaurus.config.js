@@ -1,4 +1,6 @@
-module.exports = {
+import { themes as prismThemes } from 'prism-react-renderer';
+
+export default {
   title: 'Happo docs',
   tagline: 'Cross-browser screenshot testing',
   url: 'https://docs.happo.io',
@@ -103,6 +105,11 @@ module.exports = {
     },
 
     image: 'img/happo-logo.svg',
+
+    // https://docusaurus.io/docs/markdown-features/code-blocks#theming
+    prism: {
+      theme: prismThemes.nightOwl,
+    },
 
     footer: {
       style: 'dark',
