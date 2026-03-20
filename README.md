@@ -4,6 +4,15 @@ This repo is the home of happo.io documentation, served at docs.happo.io
 
 # Changelog
 
+## 3.50.0
+
+- Document all five deepCompare configuration options (compareThreshold, diffAlgorithm, ignoreThreshold, ignoreWhitespace, applyBlur) with reference tables
+- Support auto-chunking via estimatedSnapsCount for custom integrations, removing need for manual chunks configuration
+- Document --skippedExamples option for filtering snapshot examples
+- Reduce documentation duplication by extracting shared MDX partials for installation, API keys, and troubleshooting
+- Improve accessibility with increased color contrast for links in code blocks and throughout documentation
+- Add package manager tabs (npm, pnpm, yarn) to installation instructions
+
 ## 3.49.1
 
 - Add documentation for merge ref checkouts to improve discoverability of this workflow
