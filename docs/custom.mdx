@@ -62,6 +62,40 @@ export default defineConfig({
 });
 ```
 
+### Enabling auto-chunking
+
+As of v6.4.1, Happo can automatically parallelize rendering across multiple
+workers based on an estimated snapshot count. For the custom integration, you
+opt into this by returning `estimatedSnapsCount` from your `build` function:
+
+```js title="happo.config.ts"
+import { defineConfig } from 'happo';
+import buildCustomPackage from './buildCustomPackage';
+
+export default defineConfig({
+  apiKey: process.env.HAPPO_API_KEY,
+  apiSecret: process.env.HAPPO_API_SECRET,
+
+  integration: {
+    type: 'custom',
+    build: async () => {
+      const { snapshotCount } = await buildCustomPackage();
+
+      return {
+        rootDir: './tmp/happo-custom',
+        entryPoint: 'bundle.js',
+        estimatedSnapsCount: snapshotCount,
+      };
+    },
+  },
+});
+```
+
+The value doesn't need to be exact — it's used as a hint to determine how many
+parallel workers to spin up. Without it, Happo will not auto-chunk and you'll
+need to set [`chunks`](configuration.md#target-chunks) explicitly if you want
+parallel workers.
+
 ## Prepare JavaScript bundle
 
 The `happo/custom` library has two methods you should use when creating your
