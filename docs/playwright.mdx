@@ -3,6 +3,16 @@ id: playwright
 title: Playwright
 ---
 
+```mdx-code-block
+import Installation from './_partials/installation.mdx';
+import ApiKeySecurityNote from './_partials/api-key-security-note.mdx';
+import SkippingSnapshots from './_partials/skipping-snapshots.mdx';
+import Support from './_partials/support.mdx';
+import WhereAreMyScreenshots from './_partials/where-are-my-screenshots.mdx';
+import EmailNotifications from './_partials/email-notifications.mdx';
+import StylesMissing from './_partials/styles-missing.mdx';
+```
+
 The [`happo/playwright`](https://github.com/happo/happo) module makes it easy to
 integrate a [Playwright](https://playwright.dev/) test suite with
 [Happo](https://happo.io).
@@ -15,11 +25,7 @@ Before you start following the instructions here, you'll need
 
 ## Installation
 
-In your project, install the `happo` npm module.
-
-```sh
-npm install --save-dev happo
-```
+<Installation />
 
 ## Setup
 
@@ -66,19 +72,7 @@ export default defineConfig({
 
 See [Configuration](configuration.md#targets) for more configuration options.
 
-NOTE: For security reasons, you'll most likely want to pass in `apiKey` and
-`apiSecret` via environment variables:
-
-```js title="happo.config.ts"
-import { defineConfig } from 'happo';
-
-export default defineConfig({
-  apiKey: process.env.HAPPO_API_KEY,
-  apiSecret: process.env.HAPPO_API_SECRET,
-
-  // ... more config
-});
-```
+<ApiKeySecurityNote />
 
 ### With Playwright fixtures
 
@@ -256,13 +250,7 @@ CircleCI for instance, you can use
 You can also use a timestamp or a randomly generated string. The important thing
 is that it's unique to the current CI run.
 
-### Email notifications
-
-If you set the `--notify` CLI argument as part of your Playwright run, an email
-will be sent out when the Happo comparison report is ready.
-
-Usage instructions for `--notify` are available in
-[the Continuous Integration docs](continuous-integration.md#email-notifications).
+<EmailNotifications framework="Playwright" />
 
 ## Advanced usage
 
@@ -312,37 +300,11 @@ happoScreenshot(page.locator('.header'), {
 });
 ```
 
-### Skipping snapshots
-
-If you run a subset of the tests in your test suite, Happo will show "Deleted
-examples" in the report. To prevent this from happening, you can pass a
-`--skippedExamples` option to the `happo finalize` call.
-
-The `--skippedExamples` option needs to be an array coded as a JSON string. Each
-item in the array needs a `component`, `variant`, and `target`, all strings.
-Here's an example call:
-
-```sh
-npx happo finalize --skippedExamples '[{"component":"Button","variant":"default","target":"chrome-small"}]'
-```
-
-Remember to skip examples in all targets you have defined in `happo.config.ts`.
-If you for instance have targets named `"chrome-small"` & `"firefox-large"`, you
-should add two items per snapshot you are skipping. E.g.
-
-```sh
-npx happo finalize --skippedExamples '[{"component":"Button","variant":"default","target":"chrome-small"},{"component":"Button","variant":"default","target":"firefox-large"}]'
-```
-
-Finding the skipped snapshots can be a little tricky, but a little bit of code
-introspection could help. Here's an example of a script that can serve as a
-base: https://github.com/happo/happo-e2e/issues/21#issuecomment-1825776491
+<SkippingSnapshots />
 
 ## Troubleshooting
 
-### I need support!
-
-We're here to help — send an email to support@happo.io and we'll assist you.
+<Support />
 
 ### Happo isn't producing any screenshots
 
@@ -352,26 +314,6 @@ tokens (`apiKey` and `apiSecret` in config). Check to make sure your
 information in the console logs from Playwright. Look for lines starting with
 `[HAPPO]`.
 
-### Where are my screenshots?
+<WhereAreMyScreenshots />
 
-During test suite execution, Happo will only record information. All screenshots
-are taken asynchronously outside of the test run. This means that your test
-suite will finish sooner than the Happo job is done. To follow along the
-progress, look for a url logged by Happo:
-
-```bash
-[HAPPO] https://happo.io/a/284/async-reports/34
-```
-
-### Styles are missing from my screenshots
-
-Styles and assets are collected automatically during your test suite. If you
-notice styles/images/fonts etc are missing, one of a few things might have
-happened:
-
-- CSS selectors depend on context that is missing to Happo. If you e.g. have
-  something like `#start-page .header { color: red }` and screenshoot `.header`,
-  the red color will be missing. This is because Happo only sees the `.header`
-  element, never the surrounding page.
-- There could be a bug in how `happo/playwright` collects styles and assets.
-  Reach out to support@happo.io and we'll triage.
+<StylesMissing module="happo/playwright" />

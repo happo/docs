@@ -1,0 +1,12 @@
+### Styles are missing from my screenshots
+
+Styles and assets are collected automatically during your test suite. If you
+notice styles/images/fonts etc are missing, one of a few things might have
+happened:
+
+- CSS selectors depend on context that is missing to Happo. If you e.g. have
+  something like `#start-page .header { color: red }` and screenshoot `.header`,
+  the red color will be missing. This is because Happo only sees the `.header`
+  element, never the surrounding page.
+- There could be a bug in how `{props.module}` collects styles and assets.
+  Reach out to support@happo.io and we'll triage.
