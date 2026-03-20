@@ -12,7 +12,7 @@
 
     --ifm-menu-color-active: var(--ifm-color-primary-darker);
     --ifm-breadcrumb-color-active: var(--ifm-color-primary-dark);
-    --docsearch-muted-color: oklch(from currentColor l c h / 60%);
+    --docsearch-muted-color: oklch(from currentColor l c h / 61%);
     --ifm-menu-color-background-active: oklch(
       from var(--ifm-color-primary) l c h / 4%
     );

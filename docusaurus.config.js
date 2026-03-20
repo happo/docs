@@ -108,7 +108,19 @@ export default {
 
     // https://docusaurus.io/docs/markdown-features/code-blocks#theming
     prism: {
-      theme: prismThemes.nightOwl,
+      theme: {
+        ...prismThemes.nightOwl,
+        styles: [
+          ...prismThemes.nightOwl.styles,
+          {
+            types: ['comment'],
+            style: {
+              color: 'oklch(60% 0 0)',
+              fontStyle: 'italic',
+            },
+          },
+        ],
+      },
     },
 
     footer: {
