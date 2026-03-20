@@ -4,6 +4,10 @@ title: Getting started
 sidebar_label: Getting started
 ---
 
+```mdx-code-block
+import Installation from './_partials/installation.mdx';
+```
+
 Happo is a visual regression testing service with support for
 [multiple browsers](browsers.md) and [accessibility testing](accessibility.md).
 It helps you test the appearance of your application by automatically comparing
@@ -33,12 +37,9 @@ application, experience with other test frameworks, and more.
 ## Basic setup
 
 Independently of how you end up integrating Happo in your project, there are
-some steps you always need to take care of. The first thing is to install the
-`happo` npm module:
+some steps you always need to take care of.
 
-```sh
-npm install --save-dev happo
-```
+<Installation />
 
 You also need a [configuration](configuration.md) file. Save `happo.config.ts`
 (or `.js`) in the root directory of your project (right next to where the
