@@ -3,12 +3,11 @@ id: native
 title: Native Apps
 ---
 
-Happo is mainly targeted at web applications and websites, but its underlying
-visual testing system is agnostic about the technologies used. This means that
-anything that can produce screenshots can make use of Happo. If you have native
-apps (like iOS, Android or other platforms) you can leverage Happo for
-screenshot testing with a little bit of custom setup. In this integration guide,
-we'll use [the Happo API](api.md) directly.
+Happo works great for native apps. Many Happo customers use it for visual
+testing of their iOS, Android, and other native platform apps, and it's a
+first-class use case. Happo's visual testing system is technology-agnostic —
+anything that can produce screenshots can integrate with Happo. In this
+integration guide, we'll use [the Happo API](api.md) directly.
 
 ## Creating a test runner
 
