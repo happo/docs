@@ -1,22 +1,15 @@
-# dependencies
-/node_modules
-
-# production
-/build
-
-# generated files
-.docusaurus
-.cache-loader
-
-# misc
 .DS_Store
-.env.local
+.cache-loader
+.claude/settings.local.json
+.claude/worktrees/
+.docusaurus
+.env
 .env.development.local
-.env.test.local
+.env.local
 .env.production.local
-
+.env.test.local
+/build
+/node_modules
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-
-.env
