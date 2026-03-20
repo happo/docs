@@ -455,9 +455,10 @@ export default defineConfig({
 ## `deepCompare`
 
 Override the project-level deep-compare settings for comparisons started from
-this configuration file. This uses the same settings as the
-[Compare with a threshold](compare-threshold.md) guide and the API `deepCompare`
-payload. Omit this option to use the project defaults.
+this configuration file. Omit this option to use the project defaults.
+
+See the [Compare with a threshold](compare-threshold.md) guide for a full
+explanation of each setting.
 
 ```js title="happo.config.ts"
 import { defineConfig } from 'happo';
@@ -465,11 +466,23 @@ import { defineConfig } from 'happo';
 export default defineConfig({
   deepCompare: {
     compareThreshold: 0.002,
+    diffAlgorithm: 'color-delta',
+    ignoreThreshold: 0,
+    ignoreWhitespace: false,
+    applyBlur: false,
   },
 
   // ... rest of config
 });
 ```
+
+| Option | Type | Default | Description |
+|---|---|---|---|
+| `compareThreshold` | `number` | — | How different two pixels are allowed to be (0–1). Required when using deepCompare. |
+| `diffAlgorithm` | `'color-delta'` \| `'ssim'` | `'color-delta'` | Algorithm used for pixel comparison. `'ssim'` is experimental. |
+| `ignoreThreshold` | `number` | `0` | Fraction of pixels allowed to exceed `compareThreshold` before the screenshot is considered a diff (e.g. `0.01` = 1% of pixels). |
+| `ignoreWhitespace` | `boolean` | `false` | When `true`, whitespace-only differences are ignored. |
+| `applyBlur` | `boolean` | `false` | When `true`, a blur is applied before comparing to smooth out subtle edge differences. |
 
 ## `integration`
 

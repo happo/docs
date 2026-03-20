@@ -37,7 +37,15 @@ you do this, the project settings will be overridden.
 If you can't find the settings, it could be that you aren't an administrator of
 the account. Only admins can update these settings.
 
-There are four settings that control deep comparisons, outlined below.
+There are five settings that control deep comparisons, outlined below.
+
+### Diff algorithm
+
+The algorithm used to compare pixels. The default is `color-delta`, which
+computes the perceptual color difference between pixels. You can also choose
+`ssim` (Structural Similarity Index), which compares structural patterns rather
+than individual pixel colors. `ssim` is experimental and may produce different
+results depending on your screenshots.
 
 ### Compare threshold
 
