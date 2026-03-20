@@ -105,7 +105,7 @@ ${examples
   console.log(`Generated bundle.js with ${examples.length} examples`);
   console.log(`Custom package created in: ${buildDir}`);
 
-  return { rootDir: buildDir, entryPoint: 'bundle.js' };
+  return { rootDir: buildDir, entryPoint: 'bundle.js', estimatedSnapsCount: examples.length };
 }
 
 // Run the function if this file is executed directly
