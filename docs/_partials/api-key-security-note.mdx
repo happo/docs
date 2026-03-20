@@ -1,0 +1,13 @@
+NOTE: For security reasons, you'll most likely want to pass in `apiKey` and
+`apiSecret` via environment variables:
+
+```js title="happo.config.ts"
+import { defineConfig } from 'happo';
+
+export default defineConfig({
+  apiKey: process.env.HAPPO_API_KEY,
+  apiSecret: process.env.HAPPO_API_SECRET,
+
+  // ... more config
+});
+```
