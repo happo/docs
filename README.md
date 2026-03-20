@@ -4,6 +4,11 @@ This repo is the home of happo.io documentation, served at docs.happo.io
 
 # Changelog
 
+## 3.51.0
+
+- Reframe native apps as a first-class use case in documentation
+- Apply installation partial to full-page, CLI, and getting-started docs for improved consistency
+
 ## 3.50.0
 
 - Document all five deepCompare configuration options (compareThreshold, diffAlgorithm, ignoreThreshold, ignoreWhitespace, applyBlur) with reference tables
