@@ -25,5 +25,17 @@
     & footer {
       --ifm-link-decoration: underline oklch(from currentColor l c h / 20%);
     }
+
+    &[data-theme='dark'] {
+      --ifm-color-primary-lightest: oklch(85% 0.12 174);
+      --ifm-color-primary-lighter: oklch(80% 0.12 174);
+      --ifm-color-primary-light: oklch(75% 0.12 174);
+      --ifm-color-primary: oklch(72% 0.12 174);
+      --ifm-color-primary-dark: oklch(68% 0.12 174);
+      --ifm-color-primary-darker: oklch(64% 0.12 174);
+      --ifm-color-primary-darkest: oklch(61% 0.12 174);
+
+      --ifm-code-background: oklch(30% 0 0);
+    }
   }
 }
