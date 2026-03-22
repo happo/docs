@@ -4,6 +4,12 @@ This repo is the home of happo.io documentation, served at docs.happo.io
 
 # Changelog
 
+## 3.52.0
+
+- Improve color contrast in dark mode for better accessibility
+- Add dark mode variants to visual regression tests
+- Document allowPointerEvents default change in v6.8.0
+
 ## 3.51.0
 
 - Reframe native apps as a first-class use case in documentation
