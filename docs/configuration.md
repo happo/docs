@@ -371,27 +371,12 @@ When `true` (default behavior), media queries that use
 
 ### Target `allowPointerEvents`
 
-By default, Happo injects this CSS to prevent spurious hover effects caused by
-the system mouse pointer:
+Since v6.8.0, pointer events are allowed by default. Happo no longer injects
+CSS to disable pointer events, so mouse interactions in tests work without any
+extra configuration.
 
-```css
-* {
-  pointer-events: none !important;
-}
-```
-
-If you rely on mouse interaction in your tests (e.g., when using
-[Storybook interactive stories](storybook.md#overriding-the-default-render-timeout)),
-you might see an error like this in your logs:
-
-> Error: Unable to perform pointer interaction as the element has
-> `pointer-events: none`
-
-In some cases, this error prevents the variant from being included in the
-report.
-
-To resolve this, tell Happo to skip injecting the `pointer-events: none` CSS
-block using the `allowPointerEvents` option:
+If you notice unexpected diffs caused by hover effects, you can set
+`allowPointerEvents: false` to restore the previous behavior:
 
 ```js title="happo.config.ts"
 import { defineConfig } from 'happo';
@@ -401,11 +386,25 @@ export default defineConfig({
     chrome: {
       type: 'chrome',
       viewport: '1024x768',
-      allowPointerEvents: true,
+      allowPointerEvents: false,
     },
   },
 });
 ```
+
+:::note
+Before v6.8.0, the default was `allowPointerEvents: false`, which caused Happo
+to inject this CSS:
+
+```css
+* {
+  pointer-events: none !important;
+}
+```
+
+This prevented spurious hover effects but also caused Storybook interaction
+tests that relied on pointer events to be silently skipped.
+:::
 
 If you're interested in testing hover, focus, and active states with Happo, you
 may also want to use the
