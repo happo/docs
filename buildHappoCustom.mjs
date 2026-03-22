@@ -61,6 +61,19 @@ ${examples
     document.write(htmlContent);
     document.close();
   },
+});
+
+happoCustom.registerExample({
+  component: ${JSON.stringify(example.component)},
+  variant: 'dark',
+  render: async () => {
+    const response = await fetch(${JSON.stringify(example.path)});
+    const htmlContent = await response.text();
+    const darkHtmlContent = htmlContent.replace(/(<html\\b[^>]*)>/, '$1 data-theme="dark">');
+    document.open();
+    document.write(darkHtmlContent);
+    document.close();
+  },
 });`;
   })
   .join('\n\n')}
@@ -105,7 +118,7 @@ ${examples
   console.log(`Generated bundle.js with ${examples.length} examples`);
   console.log(`Custom package created in: ${buildDir}`);
 
-  return { rootDir: buildDir, entryPoint: 'bundle.js', estimatedSnapsCount: examples.length };
+  return { rootDir: buildDir, entryPoint: 'bundle.js', estimatedSnapsCount: examples.length * 2 };
 }
 
 // Run the function if this file is executed directly
