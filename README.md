@@ -4,6 +4,12 @@ This repo is the home of happo.io documentation, served at docs.happo.io
 
 # Changelog
 
+## 3.53.0
+
+- Document autoApplyPseudoStateAttributes integration option for enhanced pseudo-state handling
+- Update happo dependency to 6.8.0 with latest improvements
+- Update release-with-ease dependency to 2.0.2
+
 ## 3.52.0
 
 - Improve color contrast in dark mode for better accessibility
