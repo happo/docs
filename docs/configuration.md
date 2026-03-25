@@ -641,6 +641,37 @@ export default defineConfig({
 
 ### Cypress and Playwright Integration Options
 
+#### `integration.autoApplyPseudoStateAttributes`
+
+> **Experimental**
+
+When set to `true`, Happo automatically collects and represents `:focus`,
+`:focus-visible`, `:active`, and `:hover` states in screenshots. This lets you
+capture interactive states without manually adding `data-happo-*` attributes to
+your markup.
+
+This option requires the [`applyPseudoClasses` target option](#target-applypseudoclasses).
+
+```js title="happo.config.ts"
+import { defineConfig } from 'happo';
+
+export default defineConfig({
+  targets: {
+    chrome: {
+      type: 'chrome',
+      viewport: '1024x768',
+      applyPseudoClasses: true,
+    },
+  },
+  integration: {
+    type: 'playwright',
+    autoApplyPseudoStateAttributes: true,
+  },
+
+  // ... rest of config
+});
+```
+
 #### `integration.allowFailures`
 
 When set to `true`, allows Happo tests to fail without causing the overall test
