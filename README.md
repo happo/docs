@@ -4,6 +4,12 @@ This repo is the home of happo.io documentation, served at docs.happo.io
 
 # Changelog
 
+## 3.54.0
+
+- Update Docusaurus to 3.10.0 with configuration fix for `future.faster` setting
+- Upgrade esbuild to 0.28.0
+- Update happo to 6.9.0
+
 ## 3.53.0
 
 - Document autoApplyPseudoStateAttributes integration option for enhanced pseudo-state handling
