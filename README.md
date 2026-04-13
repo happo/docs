@@ -4,6 +4,12 @@ This repo is the home of happo.io documentation, served at docs.happo.io
 
 # Changelog
 
+## 3.55.0
+
+- Fix broken links in documentation that were inadvertently broken during conversion from .md to .mdx files
+- Update prettier to 3.8.2
+- Update react and react-dom to 19.2.5
+
 ## 3.54.0
 
 - Update Docusaurus to 3.10.0 with configuration fix for `future.faster` setting
