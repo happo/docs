@@ -321,11 +321,10 @@ module.exports = {
 };
 ```
 
-:::note
-As of v6.8.0, `allowPointerEvents` defaults to `true` and this CSS is no longer
-injected. See the [current documentation](../../docs/configuration.md#target-allowpointerevents)
-for updated guidance.
-:::
+:::note As of v6.8.0, `allowPointerEvents` defaults to `true` and this CSS is no
+longer injected. See the
+[current documentation](../../docs/configuration.md#target-allowpointerevents)
+for updated guidance. :::
 
 If you're interested in testing hover, focus, and active states with Happo, you
 may also want to use the
