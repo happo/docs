@@ -103,8 +103,8 @@ Happo reads the following attributes from the incoming SAML assertion:
 
 - **email** (required) -- The user's email address. Used to identify the Happo
   user, and sign-in will fail if it's missing. The attribute can be named
-  `email` or `emailaddress` -- Happo accepts both. The provider-specific
-  setups below use `emailaddress`.
+  `email` or `emailaddress` -- Happo accepts both. The provider-specific setups
+  below use `emailaddress`.
 - **name** (optional) -- The user's display name, shown in the Happo UI
   alongside their avatar.
 - **picture** (optional) -- A URL pointing to the user's avatar image.
@@ -126,9 +126,9 @@ users. These users have access to and can review reports, and they have basic
 access to some other account specific pages (like the dashboard).
 
 If the `roles` attribute contains `Happo Admin`, the user is made an
-administrator of the Happo account. If it contains `Happo Reviewer`, the user
-is granted the Reviewer role -- this is required when the account is configured
-to only allow reviewing by users with the Reviewer role.
+administrator of the Happo account. If it contains `Happo Reviewer`, the user is
+granted the Reviewer role -- this is required when the account is configured to
+only allow reviewing by users with the Reviewer role.
 
 ## Google Workspace (GSuite)
 
@@ -280,8 +280,8 @@ use [Auth0 specific instructions](#auth0-by-okta).
 
 > **Important toggles for Okta**
 >
-> - In **Configure SAML → Show Advanced Settings**, set **Signature
->   Algorithm** to `RSA-SHA256` and **Digest Algorithm** to `SHA256`.
+> - In **Configure SAML → Show Advanced Settings**, set **Signature Algorithm**
+>   to `RSA-SHA256` and **Digest Algorithm** to `SHA256`.
 > - Set **Assertion Signature** to **Signed**. **Response Signature** can stay
 >   on the Okta default; Happo only requires the assertion to be signed.
 > - The **Single sign-on URL** must be

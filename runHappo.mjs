@@ -53,9 +53,7 @@ async function enumerateSourceComponents() {
     'versioned_docs/version-*/**/*.{md,mdx}',
   )) {
     if (/(?:^|\/)_partials\//.test(file)) continue;
-    const match = file.match(
-      /^versioned_docs\/version-([^/]+)\/(.+)\.mdx?$/,
-    );
+    const match = file.match(/^versioned_docs\/version-([^/]+)\/(.+)\.mdx?$/);
     if (match) components.push(`docs/${match[1]}/${match[2]}`);
   }
 
@@ -81,9 +79,7 @@ async function computeSkipList() {
   for (const file of changed) {
     const component = fileToComponent(file);
     if (component === 'unknown') {
-      console.log(
-        `Non-doc change detected (${file}); running all components.`,
-      );
+      console.log(`Non-doc change detected (${file}); running all components.`);
       return null;
     }
     touched.add(component);

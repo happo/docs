@@ -71,9 +71,9 @@ We support multiple WCAG conformance levels:
 ### Configuring axe options
 
 Happo workers read an optional `window.happoAxeOptions` object before running
-accessibility checks. When present, the options you specify are merged in on
-top of the Happo defaults, which lets you tweak the axe-core run without
-replacing the defaults wholesale. See the
+accessibility checks. When present, the options you specify are merged in on top
+of the Happo defaults, which lets you tweak the axe-core run without replacing
+the defaults wholesale. See the
 [axe-core API reference](https://github.com/dequelabs/axe-core/blob/develop/doc/API.md#options-parameter)
 for the full list of supported options.
 
@@ -96,8 +96,8 @@ Where you define `window.happoAxeOptions` depends on your testing framework.
 
 #### Storybook
 
-Set the options in `.storybook/preview.js` so they are defined before any
-story is rendered:
+Set the options in `.storybook/preview.js` so they are defined before any story
+is rendered:
 
 ```js title=".storybook/preview.js"
 import 'happo/storybook/register';
@@ -144,7 +144,7 @@ options are set on every page load, before any app code runs:
 ```js title="cypress/support/e2e.js"
 import 'happo/cypress';
 
-Cypress.on('window:before:load', (win) => {
+Cypress.on('window:before:load', win => {
   win.happoAxeOptions = {
     rules: {
       'color-contrast': { enabled: false },
