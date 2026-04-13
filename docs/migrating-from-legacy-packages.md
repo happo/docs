@@ -493,7 +493,7 @@ integration type (originally in the `happo-static` package).
 This puts the bundling and rendering of the examples to the DOM completely in
 your control. If you are using the legacy Happo examples integration, you will
 need to convert these to a Happo custom type. Follow the
-[Happo Custom integration documentation](custom.md).
+[Happo Custom integration documentation](custom.mdx).
 
 ### E2E Command Changes
 

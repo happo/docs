@@ -22,14 +22,14 @@ The Source page has some details about what was used to produce the screenshot,
 and there are a few buttons here that can be useful. Depending on the type of
 integration you are using, you'll see one or more of these buttons:
 
-- A "View recorded HTML" button (for [Happo Examples](examples.md) and
-  [Cypress setups](cypress.md)) that allow you to see the rendered HTML directly
+- A "View recorded HTML" button (for [Happo Examples](examples.mdx) and
+  [Cypress setups](cypress.mdx)) that allow you to see the rendered HTML directly
   in the browser, along with the CSS used.
 - A "Download assets" button, where you can grab the images, fonts, etc, that
   were used when taking the screenshot.
 - A "Download static package" button that let's you fetch the statically built
   package used to render the example. This will e.g. show up if you're using
-  [Storybook](storybook.md), or if you're using [Happo Examples](examples.md)
+  [Storybook](storybook.mdx), or if you're using [Happo Examples](examples.mdx)
   with the `prerender: false` option.
 - A "Re-generate snapshot" button, that will let you retry taking the
   screenshot. Continue reading for more on this option!
@@ -100,7 +100,7 @@ click on the one that has a failure icon.
 
 ### `Timed out while waiting for window.happo`
 
-A common error when using [the Storybook integration](storybook.md) is
+A common error when using [the Storybook integration](storybook.mdx) is
 `Timed out while waiting for window.happo`. This is often caused by missing to
 register the `happo-plugin-storybook` plugin. See how to get rid of this in
-[the Storybook docs](storybook.md#troubleshooting).
+[the Storybook docs](storybook.mdx#troubleshooting).

@@ -297,7 +297,7 @@ the system mouse pointer:
 ```
 
 If you rely on mouse interaction in your tests (e.g., when using
-[Storybook interactive stories](storybook.md#overriding-the-default-render-timeout)),
+[Storybook interactive stories](storybook.mdx#overriding-the-default-render-timeout)),
 you might see an error like this in your logs:
 
 > Error: Unable to perform pointer interaction as the element has
@@ -340,7 +340,7 @@ project will be used.
 ## `include`
 
 > This option only applies when using
-> [the Happo Examples integration](examples.md)
+> [the Happo Examples integration](examples.mdx)
 
 Controls which files Happo will extract examples from. The default is
 `'**/@(*-happo|happo).@(js|jsx)'`. This option is useful if you want to apply a
@@ -349,7 +349,7 @@ different naming scheme, such as `**/*-examples.js`.
 ## `stylesheets`
 
 > This option only applies when using
-> [the Happo Examples integration](examples.md)
+> [the Happo Examples integration](examples.mdx)
 
 If you rely on external stylesheets, list their URLs or absolute file paths in
 this config option, such as `['/path/to/file.css', 'http://cdn/style.css']`. If
@@ -373,7 +373,7 @@ receive styles from that stylesheet.
 ## `type`
 
 > This option only applies when using
-> [the Happo Examples integration](examples.md)
+> [the Happo Examples integration](examples.mdx)
 
 Either `react` (default) or `plain`. Determines the strategy Happo will use when
 rendering examples. When set to `react`, example functions are expected to
@@ -384,7 +384,7 @@ return a React component (e.g., `export default () => <Foo />`). When set to
 ## `customizeWebpackConfig`
 
 > This option only applies when using
-> [the Happo Examples integration](examples.md)
+> [the Happo Examples integration](examples.mdx)
 
 A function you can use to override or modify the default webpack config used
 internally by Happo during a run. **Always return the passed `config`.** For
@@ -449,7 +449,7 @@ module.exports = {
 ## `publicFolders`
 
 > This option only applies when using
-> [the Happo Examples integration](examples.md)
+> [the Happo Examples integration](examples.mdx)
 
 An array of absolute paths specifying where public assets are located. Useful if
 you have examples that depend on publicly available images (e.g.,
@@ -466,7 +466,7 @@ module.exports = {
 ## `prerender`
 
 > This option only applies when using
-> [the Happo Examples integration](examples.md)
+> [the Happo Examples integration](examples.mdx)
 
 Controls whether examples are pre-rendered in a JSDOM environment (or Chrome if
 you're using
@@ -504,7 +504,7 @@ so ensure it's unique for each page.
 ## `setupScript`
 
 > This option only applies when using
-> [the Happo Examples integration](examples.md)
+> [the Happo Examples integration](examples.mdx)
 
 An absolute path to a file that will be executed before rendering your
 components. This is useful if you want to inject global CSS styling (e.g., a CSS
@@ -522,7 +522,7 @@ module.exports = {
 ## `renderWrapperModule`
 
 > This option only applies when using
-> [the Happo Examples integration](examples.md)
+> [the Happo Examples integration](examples.mdx)
 
 An absolute path to a file exporting a function where you can wrap the rendering
 of Happo examples. This is useful if you have a theme provider or store
@@ -548,7 +548,7 @@ export default component => <ThemeProvider>{component}</ThemeProvider>;
 ## `rootElementSelector`
 
 > This option only applies when using
-> [the Happo Examples integration](examples.md)
+> [the Happo Examples integration](examples.mdx)
 
 A selector used to find a DOM element that Happo will use as the container. In
 most cases, leave this empty and let Happo determine the root element
@@ -580,7 +580,7 @@ module.exports = {
 ## `jsdomOptions`
 
 > This option only applies when using
-> [the Happo Examples integration](examples.md)
+> [the Happo Examples integration](examples.mdx)
 
 Happo uses jsdom internally. By default, it provides sensible defaults to the
 `JSDOM` constructor. See
@@ -633,7 +633,7 @@ output to determine what threshold value you want to use.
 ## `asyncTimeout`
 
 > This option only applies when using
-> [the Happo Examples integration](examples.md)
+> [the Happo Examples integration](examples.mdx)
 
 If an example renders nothing to the DOM, Happo will wait a short while for
 content to appear. Specified in milliseconds, the default is `200`.
