@@ -16,8 +16,8 @@ consists of a set of components and variants of those components. There are many
 ways to do this, and it all depends on your existing tech stack, your
 application, experience with other test frameworks, and more.
 
-- A [Storybook](storybook.mdx) application can serve as the test suite driver for
-  Happo.
+- A [Storybook](storybook.mdx) application can serve as the test suite driver
+  for Happo.
 - By using the [Static bundle integration](static.md), you can bring your own
   javascript bundle and have full control over the build phase and execution.
 - By integrating Happo with [Cypress](cypress.mdx) or

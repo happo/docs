@@ -8,13 +8,8 @@
       "cli",
       "browsers"
     ],
-    "Configuration": [
-      "configuration",
-      "plugins"
-    ],
-    "Accessibility": [
-      "accessibility"
-    ],
+    "Configuration": ["configuration", "plugins"],
+    "Accessibility": ["accessibility"],
     "Integrations": [
       "examples",
       "static",

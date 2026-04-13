@@ -6,7 +6,8 @@ This repo is the home of happo.io documentation, served at docs.happo.io
 
 ## 3.55.0
 
-- Fix broken links in documentation that were inadvertently broken during conversion from .md to .mdx files
+- Fix broken links in documentation that were inadvertently broken during
+  conversion from .md to .mdx files
 - Update prettier to 3.8.2
 - Update react and react-dom to 19.2.5
 
@@ -18,7 +19,8 @@ This repo is the home of happo.io documentation, served at docs.happo.io
 
 ## 3.53.0
 
-- Document autoApplyPseudoStateAttributes integration option for enhanced pseudo-state handling
+- Document autoApplyPseudoStateAttributes integration option for enhanced
+  pseudo-state handling
 - Update happo dependency to 6.8.0 with latest improvements
 - Update release-with-ease dependency to 2.0.2
 
@@ -31,20 +33,27 @@ This repo is the home of happo.io documentation, served at docs.happo.io
 ## 3.51.0
 
 - Reframe native apps as a first-class use case in documentation
-- Apply installation partial to full-page, CLI, and getting-started docs for improved consistency
+- Apply installation partial to full-page, CLI, and getting-started docs for
+  improved consistency
 
 ## 3.50.0
 
-- Document all five deepCompare configuration options (compareThreshold, diffAlgorithm, ignoreThreshold, ignoreWhitespace, applyBlur) with reference tables
-- Support auto-chunking via estimatedSnapsCount for custom integrations, removing need for manual chunks configuration
+- Document all five deepCompare configuration options (compareThreshold,
+  diffAlgorithm, ignoreThreshold, ignoreWhitespace, applyBlur) with reference
+  tables
+- Support auto-chunking via estimatedSnapsCount for custom integrations,
+  removing need for manual chunks configuration
 - Document --skippedExamples option for filtering snapshot examples
-- Reduce documentation duplication by extracting shared MDX partials for installation, API keys, and troubleshooting
-- Improve accessibility with increased color contrast for links in code blocks and throughout documentation
+- Reduce documentation duplication by extracting shared MDX partials for
+  installation, API keys, and troubleshooting
+- Improve accessibility with increased color contrast for links in code blocks
+  and throughout documentation
 - Add package manager tabs (npm, pnpm, yarn) to installation instructions
 
 ## 3.49.1
 
-- Add documentation for merge ref checkouts to improve discoverability of this workflow
+- Add documentation for merge ref checkouts to improve discoverability of this
+  workflow
 
 ## 3.49.0
 
@@ -124,7 +133,7 @@ This repo is the home of happo.io documentation, served at docs.happo.io
 
 ## 3.40.0
 
-- Graduate next docs to current 
+- Graduate next docs to current
 - Update CLI documentation to reflect new flags
 
 ## 3.39.0
