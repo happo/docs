@@ -16,17 +16,17 @@ consists of a set of components and variants of those components. There are many
 ways to do this, and it all depends on your existing tech stack, your
 application, experience with other test frameworks, and more.
 
-- A [Storybook](storybook.md) application can serve as the test suite driver for
+- A [Storybook](storybook.mdx) application can serve as the test suite driver for
   Happo.
 - By using the [Static bundle integration](static.md), you can bring your own
   javascript bundle and have full control over the build phase and execution.
-- By integrating Happo with [Cypress](cypress.md) or
+- By integrating Happo with [Cypress](cypress.mdx) or
   [Playwright](playwright.md), you can turn your end-to-end tests into a Happo
   test suite.
 - If you want to test an existing (public) website, you can use
   [the `pages` option](full-page.md).
 - If you want to create a custom test suite for React or other js framework
-  apps, you can use [Happo Examples](examples.md).
+  apps, you can use [Happo Examples](examples.mdx).
 - For native apps and others not running in a browser, use [the API](native.md)
   directly.
 

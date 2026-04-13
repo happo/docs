@@ -16,8 +16,8 @@ let you know exactly what has changed in your UI.
 
 > The instructions on this page apply to all integrations except the Cypress and
 > Playwright integrations. Refer to
-> [the Cypress integration page](cypress.md#continuous-integration) and
-> [the Playwright integration page](playwright.md#continuous-integration) for
+> [the Cypress integration page](cypress.mdx#continuous-integration) and
+> [the Playwright integration page](playwright.mdx#continuous-integration) for
 > instructions on how to integrate with CI there.
 
 To simplify using Happo in a pull-request/merge-request model, Happo provides a
