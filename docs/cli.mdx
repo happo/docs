@@ -86,12 +86,6 @@ npm run happo finalize
 npm run happo finalize --nonce [NONCE]
 ```
 
-Use `--skippedExamples` to exclude specific component snapshots from the
-comparison:
-
-```sh
-npm run happo finalize --nonce [NONCE] --skippedExamples '[{"component":"Button","variant":"primary","target":"chrome"}]'
-```
 
 ### Flake command
 
@@ -242,14 +236,34 @@ npm run happo --nonce my-unique-nonce -- playwright test
 npm run happo finalize --nonce my-unique-nonce
 ```
 
-### `--skippedExamples <json>`
+### `--skip <json>`
 
-JSON array of component snapshots to exclude from the visual diff comparison
-when using the `finalize` command. Each entry must have `component`, `variant`,
-and `target` fields. Defaults to an empty array (nothing skipped).
+JSON array of components or story files to exclude from snapshot rendering.
+Defaults to an empty array (nothing skipped).
+
+Each entry can take one of these forms:
+
+- `{ "component": "Card" }` — skip all variants of a component
+- `{ "component": "Card", "variant": "bordered" }` — skip a specific variant
+- `{ "storyFile": "./src/stories/Card.stories.js" }` — skip all stories in a
+  file (Storybook only)
 
 ```sh
-npm run happo finalize --nonce my-unique-nonce --skippedExamples '[{"component":"Button","variant":"primary","target":"chrome"}]'
+npm run happo --skip '[{"component":"Card"},{"component":"Button","variant":"primary"}]'
+```
+
+```sh
+npm run happo --skip '[{"storyFile":"./src/stories/Card.stories.js"}]'
+```
+
+### `--only <json>`
+
+JSON array of components or story files to exclusively render, skipping all
+others. Uses the same entry format as [`--skip`](#--skip-json). Only available
+with the Storybook integration.
+
+```sh
+npm run happo --only '[{"component":"Card"},{"storyFile":"./src/stories/Button.stories.js"}]'
 ```
 
 ### `--githubToken <token>`
