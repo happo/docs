@@ -4,6 +4,11 @@ This repo is the home of happo.io documentation, served at docs.happo.io
 
 # Changelog
 
+## 3.55.1
+
+- Document --skip and --only CLI arguments for filtering test execution
+- Replace deprecated --skippedExamples reference with current argument documentation
+
 ## 3.55.0
 
 - Fix broken links in documentation that were inadvertently broken during conversion from .md to .mdx files
