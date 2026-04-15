@@ -18,7 +18,7 @@
     "esbuild": "^0.28.0",
     "happo": "6.9.0",
     "prettier": "3.8.2",
-    "release-with-ease": "^2.0.2"
+    "release-with-ease": "^2.2.0"
   },
   "version": "3.55.1",
   "dependencies": {
