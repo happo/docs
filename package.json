@@ -1,4 +1,9 @@
 {
+  "name": "docs",
+  "repository": "git@github.com:happo/docs.git",
+  "author": "Henric Persson <henric.trotzig@gmail.com>",
+  "license": "proprietary",
+  "private": true,
   "scripts": {
     "build": "docusaurus build",
     "deploy": "docusaurus deploy",
