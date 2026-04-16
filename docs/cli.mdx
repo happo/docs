@@ -256,6 +256,9 @@ npm run happo --skip '[{"component":"Card"},{"component":"Button","variant":"pri
 npm run happo --skip '[{"storyFile":"./src/stories/Card.stories.js"}]'
 ```
 
+See [Partial runs](storybook#partial-runs) in the Storybook guide for how to
+use `--skip` to reduce quota usage.
+
 ### `--only <json>`
 
 JSON array of components or story files to exclusively render, skipping all
@@ -265,6 +268,9 @@ with the Storybook integration.
 ```sh
 npm run happo --only '[{"component":"Card"},{"storyFile":"./src/stories/Button.stories.js"}]'
 ```
+
+See [Partial runs](storybook#partial-runs) in the Storybook guide for how to
+use `--only` to reduce quota usage.
 
 ### `--githubToken <token>`
 

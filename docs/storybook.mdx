@@ -94,6 +94,81 @@ To execute the test suite, run
 npm run happo
 ```
 
+## Partial runs
+
+Happo supports running only a subset of your stories using the
+[`--only`](cli#--only-json) and [`--skip`](cli#--skip-json) CLI options
+(available since v6.10.0). This is useful for reducing quota usage and speeding
+up your test suite — similar to how `--onlyStoryFiles` works with other providers.
+
+### Using `--only` for inclusion
+
+Pass `--only` with a JSON array of components or story files to render. All
+other stories will be excluded from the run but included in the Happo report.
+You can mix `component` and `storyFile` entries, though most runs will stick to
+one type:
+
+```sh
+npm run happo --only '[{"component":"Card"},{"storyFile":"./src/stories/Button.stories.js"}]'
+```
+
+### Using `--skip` for exclusion
+
+Pass `--skip` with a JSON array of components or story files to exclude from the
+run. Everything else will be rendered as normal:
+
+```sh
+npm run happo --skip '[{"component":"Card"},{"storyFile":"./src/stories/Button.stories.js"}]'
+```
+
+Both options accept the same entry format — see the
+[CLI reference](cli#--skip-json) for the full list of entry forms.
+
+### How it works
+
+When you run Happo with `--only` or `--skip`, Happo will:
+
+1. Find a recent baseline report by traversing the git history backwards from
+   the merge-base with the base branch (for PRs) or simply backwards in git
+   history (for pushes to the main/default branch).
+2. Statically determine which stories were excluded from the run using the
+   `index.json` file built by Storybook.
+3. Send information about the excluded stories to Happo, along with a reference
+   to the baseline report.
+4. Generate fresh screenshots for the included stories only.
+5. Combine the new screenshots with the matching screenshots from the baseline
+   report to produce a full comparison report. Only the new screenshots are
+   counted against your Happo quota.
+
+### CI setup
+
+To use partial runs in CI, set up triggers to run Happo on pushes to PRs as
+well as pushes to the main/default branch. Happo will perform partial runs for
+PRs and full baseline runs for the main branch.
+
+### Edge cases
+
+- **Deleted stories** — even when using `--only`, Happo always tells the server
+  which stories were excluded. This means deleted stories still appear correctly
+  in comparison reports.
+- **Pending baseline reports** — if the baseline report isn't ready yet (e.g.
+  you merged while a previous report was still being created), Happo will wait
+  for it before finalizing the new report. Happo will make a best effort to
+  filter out the excluded stories, but if the story files are ill-formatted or
+  otherwise unresolvable, it will fall back to generating a full Happo report.
+
+### Reading partial run reports
+
+In Happo comparison reports, the sidebar shows the effects of a partial run.
+You will see something like:
+
+> 6,809 snapshots — 2,233 quota used — 113 components
+
+Clicking that text takes you to a page showing which snapshots were freshly
+rendered and which were carried over from the baseline report. For debugging
+purposes, it's good practice to log the value of your `--only` (or `--skip`)
+filter in your CI logs so you can verify what was included in a given run.
+
 ## Tips and Tricks
 
 If you want to have better control over what addons and/or decorators get loaded
