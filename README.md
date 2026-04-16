@@ -4,6 +4,13 @@ This repo is the home of happo.io documentation, served at docs.happo.io
 
 # Changelog
 
+## 3.55.2
+
+- Add documentation for partial runs feature using --only and --skip CLI options to reduce quota usage and speed up CI [by @trotzig in #285]
+- Update happo dependency to 6.10.2
+- Update prettier to 3.8.3
+- Update release-with-ease to 2.2.0
+
 ## 3.55.1
 
 - Document --skip and --only CLI arguments for filtering test execution
