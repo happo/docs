@@ -4,6 +4,10 @@ This repo is the home of happo.io documentation, served at docs.happo.io
 
 # Changelog
 
+## 3.57.0
+
+- Document --skip flag usage on Custom, Playwright, and Cypress integration pages
+
 ## 3.56.0
 
 - Document window.happoAxeOptions for customizing accessibility test rules
