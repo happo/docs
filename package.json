@@ -25,7 +25,7 @@
     "prettier": "3.8.3",
     "release-with-ease": "^2.2.0"
   },
-  "version": "3.56.0",
+  "version": "3.57.0",
   "dependencies": {
     "@docusaurus/core": "3.10.0",
     "@docusaurus/faster": "^3.10.0",
