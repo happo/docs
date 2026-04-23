@@ -283,6 +283,18 @@ cy.happoHideDynamicElements({
 });
 ```
 
+## Partial runs
+
+To exclude specific components or variants from a run, pass the
+[`--skip`](cli#--skip-json) CLI option to the `happo` wrapper:
+
+```sh
+npx happo --skip '[{"component":"Card"},{"component":"Button"}]' -- cypress run
+```
+
+Any matching `happoScreenshot` calls will be skipped during the run. See the
+[CLI reference](cli#--skip-json) for the full list of entry forms.
+
 ## Continuous Integration
 
 If you run the test suite in a CI environment, the `happo` module will do its

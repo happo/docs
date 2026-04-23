@@ -204,6 +204,18 @@ command line.
 npx happo
 ```
 
+## Partial runs
+
+To exclude specific components or variants from a run, use the
+[`--skip`](cli#--skip-json) CLI option:
+
+```sh
+npx happo --skip '[{"component":"Card"},{"component":"Button"}]'
+```
+
+Any matching `registerExample` calls will be skipped during the run. See the
+[CLI reference](cli#--skip-json) for the full list of entry forms.
+
 ## Testing locally
 
 If you serve the custom folder (`./tmp/happo-custom` in our case) through an
