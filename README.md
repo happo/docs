@@ -4,6 +4,11 @@ This repo is the home of happo.io documentation, served at docs.happo.io
 
 # Changelog
 
+## 3.56.0
+
+- Document window.happoAxeOptions for customizing accessibility test rules
+- Add package metadata to prevent accidental npm publishing
+
 ## 3.55.2
 
 - Add documentation for partial runs feature using --only and --skip CLI options to reduce quota usage and speed up CI [by @trotzig in #285]
