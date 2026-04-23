@@ -68,6 +68,91 @@ We support multiple WCAG conformance levels:
 - [WCAG 2.1 Level A](https://www.w3.org/TR/WCAG21/)
 - [WCAG 2.1 Level AA](https://www.w3.org/TR/WCAG21/)
 
+### Configuring axe options
+
+Happo workers read an optional `window.happoAxeOptions` object before running
+accessibility checks. When present, the options you specify are merged in on
+top of the Happo defaults, which lets you tweak the axe-core run without
+replacing the defaults wholesale. See the
+[axe-core API reference](https://github.com/dequelabs/axe-core/blob/develop/doc/API.md#options-parameter)
+for the full list of supported options.
+
+A typical configuration might disable a rule that produces noise for your app,
+or narrow the run to a specific set of WCAG tags:
+
+```js
+window.happoAxeOptions = {
+  runOnly: {
+    type: 'tag',
+    values: ['wcag2a', 'wcag2aa'],
+  },
+  rules: {
+    'color-contrast': { enabled: false },
+  },
+};
+```
+
+Where you define `window.happoAxeOptions` depends on your testing framework.
+
+#### Storybook
+
+Set the options in `.storybook/preview.js` so they are defined before any
+story is rendered:
+
+```js title=".storybook/preview.js"
+import 'happo/storybook/register';
+
+window.happoAxeOptions = {
+  rules: {
+    'color-contrast': { enabled: false },
+  },
+};
+```
+
+#### Playwright
+
+Use `page.addInitScript` to make sure the options are defined on every page
+before Happo captures accessibility snapshots:
+
+```js title="tests/test.spec.js"
+import { test } from 'happo/playwright';
+
+test.beforeEach(async ({ page }) => {
+  await page.addInitScript(() => {
+    window.happoAxeOptions = {
+      runOnly: {
+        type: 'tag',
+        values: ['wcag2a', 'wcag2aa'],
+      },
+    };
+  });
+});
+
+test('start page', async ({ page, happoScreenshot }) => {
+  await page.goto('http://localhost:7676');
+  await happoScreenshot(page.locator('.hero-image'), {
+    component: 'Hero Image',
+  });
+});
+```
+
+#### Cypress
+
+Register a `window:before:load` listener in `cypress/support/e2e.js` so the
+options are set on every page load, before any app code runs:
+
+```js title="cypress/support/e2e.js"
+import 'happo/cypress';
+
+Cypress.on('window:before:load', (win) => {
+  win.happoAxeOptions = {
+    rules: {
+      'color-contrast': { enabled: false },
+    },
+  };
+});
+```
+
 Below is an example of how violations appear in a Happo report. When you make
 changes to remove violations, the comparison report page will show you the
 before and after violation count. Click the violation types to filter the report
