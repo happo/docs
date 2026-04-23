@@ -31,7 +31,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Fetch base branch
-        run: git fetch --no-tags --depth=0 origin main
+        run: git fetch --no-tags origin main
 
       - name: Run Happo
         env:
