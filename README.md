@@ -4,6 +4,10 @@ This repo is the home of happo.io documentation, served at docs.happo.io
 
 # Changelog
 
+## 3.57.1
+
+- Add troubleshooting guidance for guest and cross-tenant sign-in issues (AADSTS650059) with signInAudience manifest fix
+
 ## 3.57.0
 
 - Document --skip flag usage on Custom, Playwright, and Cypress integration pages
