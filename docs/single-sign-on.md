@@ -414,9 +414,29 @@ EntraID.
 
 #### Assign users to Happo application
 
-To allow people to sign in to Happo, you need to assign them to it. In the
-"Users & Groups" page of the Enterprise Application you created, add the users
-that you want to have access to Happo.
+By default, EntraID requires users to be explicitly assigned to the Enterprise
+Application before they can sign in. In the "Users & Groups" page of the
+Enterprise Application you created, add the users that you want to have access
+to Happo.
+
+If you'd rather let anyone in your directory sign in without assigning them
+individually, go to the **Properties** page of the Enterprise Application and
+set **Assignment required?** to **No**.
+
+#### Allowing guests and cross-tenant users
+
+Non-gallery Enterprise Applications are single-tenant by default
+(`signInAudience` is set to `AzureADMyOrg`), which means only native members of
+your tenant can sign in. Guests, B2B users, and users from federated tenants
+will be rejected with error `AADSTS650059`:
+
+> The application is not configured for use in the tenant. The value
+> AzureADMyOrg set for application property signInAudience is limiting its use
+> in the tenant.
+
+To allow these users in, open the underlying **App registration** for the
+application, go to **Manifest**, change `signInAudience` to
+`AzureADMultipleOrgs`, and save.
 
 ### Setup on the Happo side
 
