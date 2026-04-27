@@ -23,7 +23,7 @@ The SSO settings for Happo are available on
 If you haven't already done so, you need to reach out to Happo to unlock the
 settings for your account.
 
-There are 5 fields to fill in:
+There are 6 fields to fill in:
 
 #### Domain
 
@@ -32,6 +32,11 @@ first ask them to identify the account using a domain. Once that step is done,
 we initiate the sign-in over on the IdP that you have configured. The domain
 isn't always needed to initiate the sign-in, as in the case of a user landing on
 a URL leading directly to a Happo report for a Happo account.
+
+Each domain can only be associated with a single Happo account. If you try to
+save a domain that is already in use elsewhere, the form will reject it. If you
+believe this is in error (e.g. you own the domain but a different account is
+holding it), reach out to support@happo.io and we'll help you reclaim it.
 
 #### Issuer ID
 
@@ -49,15 +54,63 @@ URL" or something similar.
 
 #### Logout URL
 
-If your IdP supports Single Log-Out (SLO), you can enter the logout URL here. If
-not, simply set this to `https://happo.io`.
+The Logout URL is where Happo sends the user when they sign out. If your IdP
+supports Single Log-Out (SLO), enter the SLO endpoint URL here. The IdP must
+redirect the user back to `https://happo.io/` once its own logout completes --
+otherwise users get stuck on the IdP's logout page after signing out of Happo.
+
+If your IdP does not support SLO, simply set this field to `https://happo.io/`.
 
 #### Certificate
 
-Happo will verify all incoming SSO requests using the public key provided by
-your IdP. Happo validates the assertion signature, not the response signature.
+Paste the **public** signing certificate from your IdP into this field. Include
+the full PEM block, with the `-----BEGIN CERTIFICATE-----` and
+`-----END CERTIFICATE-----` markers on their own lines. Never paste a private
+key here -- Happo only needs the public certificate to verify signatures.
 
-### Roles
+IdP signing certificates typically have a 1-2 year validity. We recommend
+rotating the certificate in Happo before the IdP-side certificate expires;
+otherwise sign-in will start failing for all users on the day of expiry. Most
+IdPs let you generate a new certificate while keeping the old one valid for a
+short overlap window.
+
+#### Authentication Contexts
+
+Optional. A comma-separated list of
+[`RequestedAuthnContext`](https://docs.oasis-open.org/security/saml/v2.0/saml-core-2.0-os.pdf)
+values that Happo should send with the SAML AuthnRequest. Most installations
+should leave this blank. Set it only if your IdP requires Happo to request a
+specific authentication method (for example
+`urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport`).
+
+### Signature and algorithm requirements
+
+Happo expects the IdP to sign SAML assertions using **SHA-256** (RSA-SHA256).
+SHA-1 is still the default in some older IdP configurations and **will not
+work** -- you must change the signing algorithm to SHA-256 in the IdP before
+saving the Happo SSO settings.
+
+Happo verifies the signature on the **assertion**, not the response wrapper.
+That means the Happo SAML library is configured with
+`wantAssertionsSigned: true` and `wantAuthnResponseSigned: false`. Several IdPs
+(including Google Workspace and Entra ID / Azure AD) sign the response by
+default and need to be reconfigured to sign the assertion instead. Signing both
+is fine; signing only the response is not.
+
+### Attribute mapping
+
+Happo reads the following attributes from the incoming SAML assertion:
+
+- **`email`** (required) -- The user's email address. This is used to identify
+  the Happo user. If this attribute is missing, sign-in will fail.
+- **`name`** (optional) -- The user's display name, shown in the Happo UI
+  alongside their avatar.
+- **`picture`** (optional) -- A URL pointing to the user's avatar image.
+- **`roles`** (optional, multi-value) -- A list of role strings. Happo looks
+  for the literal strings `Happo Admin` and `Happo Reviewer` in this list. The
+  lookup is case-sensitive.
+
+#### Roles
 
 When an SSO session is successful, Happo will assign the user one or more of
 three roles:
@@ -70,19 +123,24 @@ By default, all users that are allowed to sign in via SSO are considered Regular
 users. These users have access to and can review reports, and they have basic
 access to some other account specific pages (like the dashboard).
 
-If Happo finds a "roles" attribute in the incoming SAML data, we will look for
-the strings "Happo Admin" and "Happo Reviewer". The lookup is case-sensitive, so
-make sure capitalization is right. If "Happo Admin" is found, the user is made
-an administrator of the Happo account.
+If the `roles` attribute contains `Happo Admin`, the user is made an
+administrator of the Happo account. If it contains `Happo Reviewer`, the user
+is granted the Reviewer role -- this is required when the account is configured
+to only allow reviewing by users with the Reviewer role.
 
-If the Happo account is configured to only allow reviewing to be done by users
-with the "Reviewer" role, setting the "Happo Reviewer" role to certain users
-will be required.
-
-## Google GSuite
+## Google Workspace (GSuite)
 
 Here are instructions for using Google as an IdP. First of all, you need to sign
 in to [your Google Admin Console](https://admin.google.com/ac/home).
+
+> **Important toggles for Google Workspace**
+>
+> - In the Service Provider Details step, leave **Signed response**
+>   **unchecked**. Happo verifies the assertion signature, and Google signs the
+>   assertion by default.
+> - Google uses SHA-256 by default -- no change needed.
+> - Map `Basic information > Primary email` to the attribute name
+>   `emailaddress`, and your custom `Happo > roles` schema to `roles`.
 
 ### Setup on the Google side
 
@@ -217,6 +275,15 @@ account, enter the following properties in the SSO form:
 Here's a guide on how to use Okta as the IdP. Please note that these
 instructions are for a regular Okta application. If you're using Auth0, please
 use [Auth0 specific instructions](#auth0-by-okta).
+
+> **Important toggles for Okta**
+>
+> - In **Configure SAML → Show Advanced Settings**, set **Signature
+>   Algorithm** to `RSA-SHA256` and **Digest Algorithm** to `SHA256`.
+> - Set **Assertion Signature** to **Signed**. **Response Signature** can stay
+>   on the Okta default; Happo only requires the assertion to be signed.
+> - The **Single sign-on URL** must be
+>   `https://happo.io/auth/a/<accountId>/sso/callback`.
 
 ### Setup on the Okta side
 
@@ -385,6 +452,17 @@ account, enter the following properties in the SSO form:
 
 Here's a guide on how to use EntraID as the IdP.
 
+> **Important toggles for Entra ID**
+>
+> - The **Identifier (Entity ID)** you configure in Entra must equal the
+>   **Issuer ID** you save on the Happo side -- they have to match exactly.
+> - Happo verifies the **assertion** signature, not the response. By default
+>   Entra signs the response only. In the **SAML Signing Certificate** section,
+>   open **Edit** and change **Signing Option** to **Sign SAML response and
+>   assertion** (or just **Sign SAML assertion**).
+> - In the same **SAML Signing Certificate** edit panel, set **Signing
+>   Algorithm** to **SHA-256**. SHA-1 is rejected by Happo.
+
 ### Setup on the EntraID side
 
 First, we're going to register an Enterprise Application and configure it in
@@ -460,6 +538,66 @@ account, enter the following properties in the SSO form:
   CERTIFICATE-----".
 
 Save these settings and you should be able to sign in to Happo using EntraID.
+
+## OneLogin
+
+> **Important toggles for OneLogin**
+>
+> - In the Happo app's **Configuration** tab, set the **Audience (EntityID)**
+>   to your Happo Issuer ID
+>   (`https://happo.io/auth/a/<accountId>/sso/entityID`) and the **ACS
+>   (Consumer) URL** to `https://happo.io/auth/a/<accountId>/sso/callback`.
+> - In the **SSO** tab, set **SAML Signature Algorithm** to **SHA-256**.
+> - OneLogin signs the assertion by default -- leave that as is. Don't enable
+>   "Sign response only".
+> - Under **Parameters**, add a `roles` parameter sourced from the user's
+>   role(s) and use the literal values `Happo Admin` / `Happo Reviewer`. Add an
+>   `email` parameter mapped to the user's primary email.
+
+### Setup on the Happo side
+
+On the [Access Control page](https://happo.io/user-access) for your Happo
+account:
+
+- **Domain**: Your own domain.
+- **Issuer ID**: The same value you set as **Audience (EntityID)** in OneLogin.
+- **Entry point**: The **SAML 2.0 Endpoint (HTTP)** value from the OneLogin
+  **SSO** tab.
+- **Logout URL**: The **SLO Endpoint (HTTP)** value from the OneLogin **SSO**
+  tab if you want SLO; otherwise `https://happo.io/`.
+- **Certificate**: Click **View Details** next to the X.509 Certificate in
+  OneLogin and copy the PEM contents (including the BEGIN/END markers).
+
+## JumpCloud
+
+> **Important toggles for JumpCloud**
+>
+> - Use the JumpCloud SSO **custom SAML application** (not a pre-built
+>   connector).
+> - Set **IdP Entity ID** to your Happo Issuer ID
+>   (`https://happo.io/auth/a/<accountId>/sso/entityID`).
+> - Set **SP Entity ID** to the same value, and **ACS URL** to
+>   `https://happo.io/auth/a/<accountId>/sso/callback`.
+> - Under **SAML Signing Algorithm**, choose **RSA-SHA256**.
+> - Leave **Sign Assertion** enabled. Do **not** rely solely on **Sign
+>   Response** -- Happo verifies the assertion.
+> - Under **Attributes**, add `email` mapped to `email`, and a multi-value
+>   `roles` attribute mapped to a JumpCloud user group attribute that contains
+>   the strings `Happo Admin` / `Happo Reviewer`.
+
+### Setup on the Happo side
+
+On the [Access Control page](https://happo.io/user-access) for your Happo
+account:
+
+- **Domain**: Your own domain.
+- **Issuer ID**: The same value you set as **IdP Entity ID** in JumpCloud.
+- **Entry point**: The **IDP URL** that JumpCloud generates for the
+  application.
+- **Logout URL**: `https://happo.io/` (JumpCloud's SAML SSO does not provide a
+  Single Logout endpoint).
+- **Certificate**: Download the **IdP Certificate** from JumpCloud and paste
+  the full PEM content here.
 
 ## Testing
 
