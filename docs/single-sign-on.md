@@ -92,22 +92,24 @@ saving the Happo SSO settings.
 
 Happo verifies the signature on the **assertion**, not the response wrapper.
 That means the Happo SAML library is configured with
-`wantAssertionsSigned: true` and `wantAuthnResponseSigned: false`. Several IdPs
-(including Google Workspace and Entra ID / Azure AD) sign the response by
-default and need to be reconfigured to sign the assertion instead. Signing both
-is fine; signing only the response is not.
+`wantAssertionsSigned: true` and `wantAuthnResponseSigned: false`. Some IdPs
+(notably Entra ID / Azure AD) sign only the response by default and need to be
+reconfigured to sign the assertion instead. Signing both is fine; signing only
+the response is not.
 
 ### Attribute mapping
 
 Happo reads the following attributes from the incoming SAML assertion:
 
-- **`email`** (required) -- The user's email address. This is used to identify
-  the Happo user. If this attribute is missing, sign-in will fail.
-- **`name`** (optional) -- The user's display name, shown in the Happo UI
+- **email** (required) -- The user's email address. Used to identify the Happo
+  user, and sign-in will fail if it's missing. The attribute can be named
+  `email` or `emailaddress` -- Happo accepts both. The provider-specific
+  setups below use `emailaddress`.
+- **name** (optional) -- The user's display name, shown in the Happo UI
   alongside their avatar.
-- **`picture`** (optional) -- A URL pointing to the user's avatar image.
-- **`roles`** (optional, multi-value) -- A list of role strings. Happo looks
-  for the literal strings `Happo Admin` and `Happo Reviewer` in this list. The
+- **picture** (optional) -- A URL pointing to the user's avatar image.
+- **roles** (optional, multi-value) -- A list of role strings. Happo looks for
+  the literal strings `Happo Admin` and `Happo Reviewer` in this list. The
   lookup is case-sensitive.
 
 #### Roles
