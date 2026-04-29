@@ -4,6 +4,10 @@ This repo is the home of happo.io documentation, served at docs.happo.io
 
 # Changelog
 
+## 3.57.3
+
+- Add Local development guide documenting how to run Happo locally using the --only flag
+
 ## 3.57.2
 
 - Improve SSO documentation with signing requirements and attribute mapping details
