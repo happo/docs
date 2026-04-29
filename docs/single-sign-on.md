@@ -541,66 +541,6 @@ account, enter the following properties in the SSO form:
 
 Save these settings and you should be able to sign in to Happo using EntraID.
 
-## OneLogin
-
-> **Important toggles for OneLogin**
->
-> - In the Happo app's **Configuration** tab, set the **Audience (EntityID)**
->   to your Happo Issuer ID
->   (`https://happo.io/auth/a/<accountId>/sso/entityID`) and the **ACS
->   (Consumer) URL** to `https://happo.io/auth/a/<accountId>/sso/callback`.
-> - In the **SSO** tab, set **SAML Signature Algorithm** to **SHA-256**.
-> - OneLogin signs the assertion by default -- leave that as is. Don't enable
->   "Sign response only".
-> - Under **Parameters**, add a `roles` parameter sourced from the user's
->   role(s) and use the literal values `Happo Admin` / `Happo Reviewer`. Add an
->   `email` parameter mapped to the user's primary email.
-
-### Setup on the Happo side
-
-On the [Access Control page](https://happo.io/user-access) for your Happo
-account:
-
-- **Domain**: Your own domain.
-- **Issuer ID**: The same value you set as **Audience (EntityID)** in OneLogin.
-- **Entry point**: The **SAML 2.0 Endpoint (HTTP)** value from the OneLogin
-  **SSO** tab.
-- **Logout URL**: The **SLO Endpoint (HTTP)** value from the OneLogin **SSO**
-  tab if you want SLO; otherwise `https://happo.io/`.
-- **Certificate**: Click **View Details** next to the X.509 Certificate in
-  OneLogin and copy the PEM contents (including the BEGIN/END markers).
-
-## JumpCloud
-
-> **Important toggles for JumpCloud**
->
-> - Use the JumpCloud SSO **custom SAML application** (not a pre-built
->   connector).
-> - Set **IdP Entity ID** to your Happo Issuer ID
->   (`https://happo.io/auth/a/<accountId>/sso/entityID`).
-> - Set **SP Entity ID** to the same value, and **ACS URL** to
->   `https://happo.io/auth/a/<accountId>/sso/callback`.
-> - Under **SAML Signing Algorithm**, choose **RSA-SHA256**.
-> - Leave **Sign Assertion** enabled. Do **not** rely solely on **Sign
->   Response** -- Happo verifies the assertion.
-> - Under **Attributes**, add `email` mapped to `email`, and a multi-value
->   `roles` attribute mapped to a JumpCloud user group attribute that contains
->   the strings `Happo Admin` / `Happo Reviewer`.
-
-### Setup on the Happo side
-
-On the [Access Control page](https://happo.io/user-access) for your Happo
-account:
-
-- **Domain**: Your own domain.
-- **Issuer ID**: The same value you set as **IdP Entity ID** in JumpCloud.
-- **Entry point**: The **IDP URL** that JumpCloud generates for the
-  application.
-- **Logout URL**: `https://happo.io/` (JumpCloud's SAML SSO does not provide a
-  Single Logout endpoint).
-- **Certificate**: Download the **IdP Certificate** from JumpCloud and paste
-  the full PEM content here.
-
 ## Testing
 
 Once you have configured both the IdP and Happo, you can test the integration by
