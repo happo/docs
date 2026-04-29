@@ -19,11 +19,11 @@
       "native"
     ],
     "Guides": [
-      "local-development",
       "reviewing-diffs",
       "compare-threshold",
       "multi-project",
       "performance",
+      "local-development",
       "hiding-content",
       "user-roles",
       "single-sign-on",
