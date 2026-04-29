@@ -19,6 +19,7 @@
       "native"
     ],
     "Guides": [
+      "local-development",
       "reviewing-diffs",
       "compare-threshold",
       "multi-project",
