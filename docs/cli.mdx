@@ -262,15 +262,17 @@ use `--skip` to reduce quota usage.
 ### `--only <json>`
 
 JSON array of components or story files to exclusively render, skipping all
-others. Uses the same entry format as [`--skip`](#--skip-json). Only available
-with the Storybook integration.
+others. Uses the same entry format as [`--skip`](#--skip-json). The
+`storyFile` entry form is Storybook-only; the `component` form works for all
+integrations.
 
 ```sh
 npm run happo --only '[{"component":"Card"},{"storyFile":"./src/stories/Button.stories.js"}]'
 ```
 
 See [Partial runs](storybook#partial-runs) in the Storybook guide for how to
-use `--only` to reduce quota usage.
+use `--only` to reduce quota usage, or [Local development](local-development)
+for using it from a developer's machine.
 
 ### `--githubToken <token>`
 

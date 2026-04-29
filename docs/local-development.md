@@ -107,8 +107,10 @@ Run it from the project root with no arguments:
 node scripts/happo-changed.mjs
 ```
 
-Happo produces a partial report scoped to just the components your change
-touches, and prints the **Async comparison URL** when it's done.
+Happo runs a partial build — only the components your change touches are
+freshly rendered, and the report still includes everything else carried over
+from the baseline so the comparison is complete. The CLI prints the
+**Async comparison URL** when the run is done.
 
 ## Tips
 
