@@ -45,20 +45,14 @@ usually nicer to work with. Two patterns we've found useful are below.
 ## Pattern 1: pass the file as an argument
 
 The simplest setup is a script that takes a single file path on the command
-line and forwards it to Happo as `--only`.
+line and forwards it to Happo as `--only`. The script needs to:
 
-```js title="scripts/happo-only.mjs"
-// Usage: node scripts/happo-only.mjs <storyFile-or-component>
-
-// 1. Read the file/component name from process.argv
-
-// 2. Build the --only JSON payload, e.g.
-//    [{ storyFile: './src/stories/Button.stories.js' }]
-//    or [{ component: 'Button' }] for custom integrations
-
-// 3. Spawn `happo --only <json>` and inherit stdio so the
-//    [HAPPO] Async comparison URL shows up in your terminal
-```
+1. Read the file (or component) name from `process.argv`.
+2. Build the `--only` JSON payload — for example
+   `[{ storyFile: './src/stories/Button.stories.js' }]` for Storybook, or
+   `[{ component: 'Button' }]` for custom integrations.
+3. Spawn `happo --only <json>` with inherited stdio so the
+   `[HAPPO] Async comparison URL` line shows up in your terminal.
 
 Run it like this:
 
@@ -73,33 +67,27 @@ see the report.
 
 To run Happo against every story or component affected by your in-flight
 changes, you can combine `git diff` with a dependency-graph tool such as
-[`jest-haste-map`](https://github.com/jestjs/jest/tree/main/packages/jest-haste-map).
+[`jest-haste-map`](https://github.com/jestjs/jest/tree/main/packages/jest-haste-map)
+or [`dependency-cruiser`](https://github.com/sverweij/dependency-cruiser).
 The idea: collect the files you've changed since the base branch, then walk
 the import graph to find the story/example files that (transitively) depend
 on any of them.
 
-```js title="scripts/happo-changed.mjs"
-// 1. Collect changed files
-//    - `git diff --name-only origin/main...HEAD` for committed work
-//    - `git diff --name-only` for uncommitted edits
+The script needs to:
 
-// 2. Build a dependency graph for the project
-//    - jest-haste-map is one option; any tool that exposes
-//      "given file X, what does it import?" works
-
-// 3. Find the story / example files that depend on a changed file
-//    - For Storybook: filter to *.stories.{js,ts,jsx,tsx}
-//    - For custom integrations: filter to whatever pattern your
-//      examples live under
-
-// 4. Map each match to an --only entry
-//    - Storybook:        { storyFile: './path/to/foo.stories.js' }
-//    - Custom integration: { component: 'Foo' }
-
-// 5. Spawn `happo --only <json>` and inherit stdio
-//    Always log the JSON you computed — if a run looks wrong,
-//    that log is the fastest way to see what was included.
-```
+1. Collect changed files — `git diff --name-only origin/main...HEAD` for
+   committed work plus `git diff --name-only` for uncommitted edits.
+2. Build a dependency graph for the project. `jest-haste-map` and
+   `dependency-cruiser` are both good options; any tool that can answer
+   "given file X, what does it import?" works.
+3. Find the story or example files that depend on a changed file. For
+   Storybook, filter to `*.stories.{js,ts,jsx,tsx}`; for custom
+   integrations, filter to whatever pattern your examples live under.
+4. Map each match to an `--only` entry — `{ storyFile: './path/to/foo.stories.js' }`
+   for Storybook, `{ component: 'Foo' }` for custom integrations.
+5. Spawn `happo --only <json>` with inherited stdio. Always log the JSON
+   you computed — if a run looks wrong, that log is the fastest way to see
+   what was included.
 
 Run it from the project root with no arguments:
 
@@ -119,6 +107,3 @@ from the baseline so the comparison is complete. The CLI prints the
 - If your script can't find any affected stories, exit early instead of
   running a full Happo build — `--only` with an empty array is not the same
   as "nothing changed."
-- These scripts are also handy in CI for pre-merge smoke runs, but for the
-  full PR-vs-main comparison flow you'll want the standard partial-run setup
-  described in [Partial runs](storybook.mdx#partial-runs).
