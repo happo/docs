@@ -4,6 +4,14 @@ This repo is the home of happo.io documentation, served at docs.happo.io
 
 # Changelog
 
+## 3.57.2
+
+- Improve SSO documentation with signing requirements and attribute mapping details
+- Clarify SHA-256 signing requirement and assertion vs response signature distinction
+- Document full attribute mapping support for email, name, picture, and roles
+- Add guidance on certificate handling, rotation, and domain uniqueness
+- Provide quickstart callouts for major IdPs including Okta, Google Workspace, and Entra ID
+
 ## 3.57.1
 
 - Add troubleshooting guidance for guest and cross-tenant sign-in issues (AADSTS650059) with signInAudience manifest fix
