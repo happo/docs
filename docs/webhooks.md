@@ -86,24 +86,98 @@ payload:
 
 ### `flake`
 
-The flake event is sent when a diff is [reported as flaky](reporting-flake.md).
-Here's an example payload:
+The flake event is sent when a diff is [reported as flaky](reporting-flake.md)
+or when an existing flake report is withdrawn. The `action` field distinguishes
+the two cases.
+
+**Example — flake reported, tied to a comparison**
 
 ```json
 {
   "type": "flake",
+  "text": "Flake report [Acme Web]: Button / primary (chrome) — https://happo.io/a/42/p/7/compare/abc123/def456",
   "data": {
     "action": "reported",
-    "snapshot1Id": "3e144631ed74d5f739b6cbde63d4f52e",
-    "snapshot2Id": "308b9d83794d3fff8833e93e124a2a50",
-    "comparisonId": 6,
-    "accountId": 2,
-    "projectId": "2",
-    "link": "https://happo.io/a/2/p/2/compare/dev-5b8733872b18c9dcf58c/dev-17c0aafc"
-  },
-  "text": "Flake report [My project]: Button / default (chrome-1024x768) — https://happo.io/a/2/p/2/compare/dev-5b8733872b18c9dcf58c/dev-17c0aafc"
+    "link": "https://happo.io/a/42/p/7/compare/abc123/def456",
+    "reportedAt": "2026-05-08T14:23:11.482Z",
+    "project": {
+      "id": 7,
+      "name": "Acme Web"
+    },
+    "comparison": {
+      "id": 9182,
+      "beforeSha": "abc123",
+      "afterSha": "def456"
+    },
+    "snapshot1": {
+      "id": "0f1e2d3c4b5a69788796a5b4c3d2e1f0",
+      "component": "Button",
+      "variant": "primary",
+      "target": "chrome",
+      "url": "https://happo.io/a/42/img/happo-io/abc/0f1e2d3c4b5a6978.png",
+      "width": 200,
+      "height": 48
+    },
+    "snapshot2": {
+      "id": "fedcba9876543210fedcba9876543210",
+      "component": "Button",
+      "variant": "primary",
+      "target": "chrome",
+      "url": "https://happo.io/a/42/img/happo-io/def/fedcba9876543210.png",
+      "width": 200,
+      "height": 48
+    }
+  }
 }
 ```
+
+**Example — flake report undone, no comparison context**
+
+```json
+{
+  "type": "flake",
+  "text": "Flake report undone [Acme Web]: Badge / default (firefox) — https://happo.io/a/42/p/7/snapshot/0f1e.../compare/fedc...",
+  "data": {
+    "action": "undone",
+    "link": "https://happo.io/a/42/p/7/snapshot/0f1e2d3c4b5a69788796a5b4c3d2e1f0/compare/fedcba9876543210fedcba9876543210",
+    "reportedAt": "2026-05-08T14:31:02.117Z",
+    "project": {
+      "id": 7,
+      "name": "Acme Web"
+    },
+    "comparison": null,
+    "snapshot1": {
+      "id": "0f1e2d3c4b5a69788796a5b4c3d2e1f0",
+      "component": "Badge",
+      "variant": "default",
+      "target": "firefox",
+      "url": "https://happo.io/a/42/img/happo-io/abc/0f1e2d3c4b5a6978.png",
+      "width": 64,
+      "height": 24
+    },
+    "snapshot2": {
+      "id": "fedcba9876543210fedcba9876543210",
+      "component": "Badge",
+      "variant": "default",
+      "target": "firefox",
+      "url": "https://happo.io/a/42/img/happo-io/def/fedcba9876543210.png",
+      "width": 64,
+      "height": 24
+    }
+  }
+}
+```
+
+**Field reference**
+
+| Field | Type | Notes |
+|---|---|---|
+| `action` | `"reported"` \| `"undone"` | Whether a flake was just reported or had its report withdrawn. |
+| `link` | string | Best page link to view the diff: comparison page when available, otherwise the snapshot-vs-snapshot page. |
+| `reportedAt` | ISO 8601 string | Server-side event timestamp; useful for de-duping retries. |
+| `project.id` / `project.name` | number / string | The project the flake belongs to. |
+| `comparison` | object \| `null` | Present only when the flake is tied to a comparison. Contains `id`, `beforeSha`, `afterSha`. |
+| `snapshot1` / `snapshot2` | object | The two snapshots being compared. `url` is the proxied Happo URL (auth-aware), not the raw S3 URL. `width`/`height` may be `null` for older snapshots. If a snapshot can't be found, only `{ id }` is included. |
 
 ## Verifying signatures
 
