@@ -4,6 +4,12 @@ This repo is the home of happo.io documentation, served at docs.happo.io
 
 # Changelog
 
+## 3.58.0
+
+- Document new `flake` webhook event type with example payloads and field reference
+- Update happo dependency from 6.10.8 to 6.11.0
+- Update React and React DOM to 19.2.6
+
 ## 3.57.3
 
 - Add Local development guide documenting how to run Happo locally using the --only flag
