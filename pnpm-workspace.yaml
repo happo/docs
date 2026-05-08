@@ -1,5 +1,16 @@
-onlyBuiltDependencies:
-  - '@swc/core'
-ignoredBuiltDependencies:
-  - core-js
-  - core-js-pure
+allowBuilds:
+  '@swc/core': true
+  core-js: false
+  core-js-pure: false
+  esbuild: false
+
+linkWorkspacePackages: true
+hoistPattern:
+  - '*'
+publicHoistPattern:
+  - '*eslint*'
+  - '*prettier*'
+strictPeerDependencies: false
+autoInstallPeers: true
+savePrefix: ''
+dedupePeerDependents: true
