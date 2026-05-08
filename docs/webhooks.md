@@ -23,8 +23,7 @@ Enter a URL where your server is listening and a secret to use when signing
 requests.
 
 Use the checkboxes to select which event types the webhook should receive.
-At least one event type must be enabled. Existing webhooks are subscribed to
-the `comparison` event type by default.
+At least one event type must be enabled.
 
 ## Event types
 
@@ -86,9 +85,8 @@ payload:
 
 ### `flake`
 
-The flake event is sent when a diff is [reported as flaky](reporting-flake.md)
-or when an existing flake report is withdrawn. The `action` field distinguishes
-the two cases.
+The flake event is sent when a diff is [reported as flaky](reporting-flake.md).
+It is also sent when the report is undone.
 
 **Example — flake reported, tied to a comparison**
 
@@ -176,8 +174,8 @@ the two cases.
 | `link` | string | Best page link to view the diff: comparison page when available, otherwise the snapshot-vs-snapshot page. |
 | `reportedAt` | ISO 8601 string | Server-side event timestamp; useful for de-duping retries. |
 | `project.id` / `project.name` | number / string | The project the flake belongs to. |
-| `comparison` | object \| `null` | Present only when the flake is tied to a comparison. Contains `id`, `beforeSha`, `afterSha`. |
-| `snapshot1` / `snapshot2` | object | The two snapshots being compared. `url` is the proxied Happo URL (auth-aware), not the raw S3 URL. `width`/`height` may be `null` for older snapshots. If a snapshot can't be found, only `{ id }` is included. |
+| `comparison` | object \| `null` | Most flake reporting happens in the context of a comparison, but it is not guaranteed. Contains `id`, `beforeSha`, `afterSha` when present. |
+| `snapshot1` / `snapshot2` | object | The two snapshots being compared. `width`/`height` may be `null` for accessibility snapshots. |
 
 ## Verifying signatures
 
