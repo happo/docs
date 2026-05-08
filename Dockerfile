@@ -3,7 +3,7 @@ FROM node:24-slim
 ENV PNPM_HOME="/pnpm"
 ENV PATH="${PNPM_HOME}:${PATH}"
 
-RUN npm install -g pnpm@10 \
+RUN npm install -g pnpm@11 \
     && rm -rf /tmp/node-compile-cache
 
 WORKDIR /app
@@ -24,7 +24,7 @@ RUN groupadd --gid ${gid} ${group} \
 # Switch to the non-root user
 USER ${user}
 
-COPY --chown=${user}:${group} package.json pnpm-lock.yaml pnpm-workspace.yaml .pnpmrc /app/
+COPY --chown=${user}:${group} package.json pnpm-lock.yaml pnpm-workspace.yaml /app/
 RUN pnpm install --frozen-lockfile
 
 COPY --chown=${user}:${group} . /app/
