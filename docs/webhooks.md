@@ -22,6 +22,10 @@ account to use this feature.
 Enter a URL where your server is listening and a secret to use when signing
 requests.
 
+Use the checkboxes to select which event types the webhook should receive.
+At least one event type must be enabled. Existing webhooks are subscribed to
+the `comparison` event type by default.
+
 ## Event types
 
 ### `comparison`
@@ -77,6 +81,27 @@ payload:
     "equal": false,
     "status": "failure"
   }
+}
+```
+
+### `flake`
+
+The flake event is sent when a diff is [reported as flaky](reporting-flake.md).
+Here's an example payload:
+
+```json
+{
+  "type": "flake",
+  "data": {
+    "action": "reported",
+    "snapshot1Id": "3e144631ed74d5f739b6cbde63d4f52e",
+    "snapshot2Id": "308b9d83794d3fff8833e93e124a2a50",
+    "comparisonId": 6,
+    "accountId": 2,
+    "projectId": "2",
+    "link": "https://happo.io/a/2/p/2/compare/dev-5b8733872b18c9dcf58c/dev-17c0aafc"
+  },
+  "text": "Flake report [My project]: Button / default (chrome-1024x768) — https://happo.io/a/2/p/2/compare/dev-5b8733872b18c9dcf58c/dev-17c0aafc"
 }
 ```
 
