@@ -125,8 +125,14 @@ jobs:
           command: |
             echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
             IMAGE_TAG=${CIRCLE_TAG/v/''}
-            docker build -t enduire/happo-docs:$IMAGE_TAG .
-            docker push enduire/happo-docs:$IMAGE_TAG
+            docker buildx create --use --name happo-builder --driver docker-container
+            docker buildx build \
+              --progress=plain \
+              -t enduire/happo-docs:$IMAGE_TAG \
+              --attest type=sbom \
+              --attest type=provenance,mode=max \
+              --push \
+              .
 workflows:
   version: 2.1
   run_all:
