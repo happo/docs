@@ -31,6 +31,8 @@ charged quota for the snapshots that were actually generated.
 
 ## Running with `--only`
 
+*The `--only` flag is available in `happo` v6.10.0 and later.*
+
 The `--only` flag accepts a JSON array of components or story files to render
 exclusively. See the [CLI reference](cli#--only-json) for the full entry format.
 
