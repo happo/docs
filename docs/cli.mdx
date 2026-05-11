@@ -49,6 +49,8 @@ You'll also need to add a script to `package.json`:
 
 ### Default command
 
+*Available since happo v6.0.0.*
+
 Run happo tests to generate screenshots and upload them to the remote happo.io
 service.
 
@@ -57,6 +59,8 @@ npm run happo
 ```
 
 ### Wrapping command
+
+*Available since happo v6.0.0.*
 
 Use `happo` as a wrapping command when using Cypress or Playwright. This allows
 Happo to coordinate test execution and collect results from parallel test runs.
@@ -73,6 +77,8 @@ npm run happo --nonce [NONCE] -- playwright test
 
 ### Finalize command
 
+*Available since happo v6.0.0.*
+
 Finalize a Happo report for Cypress or Playwright tests running in parallel.
 This command is used after parallel test execution completes to aggregate
 results and finalize the report. It's used in combination with the `--nonce`
@@ -87,6 +93,8 @@ npm run happo finalize --nonce [NONCE]
 ```
 
 ### Flake command
+
+*Available since happo v6.3.0.*
 
 List [reported flakes](reporting-flake.md) for a project. By default, results
 are printed in a human-readable format, one flake per line.
@@ -119,6 +127,8 @@ npm run happo flake --sha=ff2df74c1730341240840010c7518b2c1f4b55cb
 
 ### `--config` / `-c`
 
+*Available since happo v6.0.0.*
+
 Specify a custom path to the Happo configuration file. By default, Happo looks
 for configuration files in the following order:
 
@@ -135,6 +145,8 @@ npm run happo --config path/to/happo.config.ts
 
 ### `--version` / `-v`
 
+*Available since happo v6.0.0.*
+
 Display the version number of the Happo CLI.
 
 ```sh
@@ -142,6 +154,8 @@ npm run happo --version
 ```
 
 ### `--help` / `-h`
+
+*Available since happo v6.0.0.*
 
 Display help text with available commands and options.
 
@@ -151,6 +165,8 @@ npm run happo --help
 
 ### `--baseBranch <branch>`
 
+*Available since happo v6.0.0.*
+
 Base branch to use for comparison. Default: `origin/main`.
 
 ```sh
@@ -159,6 +175,8 @@ npm run happo --baseBranch origin/long-lived-branch
 
 ### `--link <url>`
 
+*Available since happo v6.0.0.*
+
 URL to contextualize the comparison. Default: auto-detected from CI environment.
 
 ```sh
@@ -166,6 +184,8 @@ npm run happo --link https://github.com/happo/happo/pull/123
 ```
 
 ### `--message <message>`
+
+*Available since happo v6.0.0.*
 
 Message to associate with the comparison. Default: auto-detected from CI
 environment.
@@ -176,6 +196,8 @@ npm run happo --message "Add new feature"
 
 ### `--authorEmail <email>`
 
+*Available since happo v6.0.0.*
+
 Email address of the author of the comparison. Default: auto-detected from CI
 environment.
 
@@ -184,6 +206,8 @@ npm run happo --authorEmail author@example.com
 ```
 
 ### `--afterSha <sha>`
+
+*Available since happo v6.0.0.*
 
 "After" SHA to use for comparison. Default: auto-detected from CI environment,
 or HEAD SHA if not set.
@@ -194,6 +218,8 @@ npm run happo --afterSha abc123def456
 
 ### `--beforeSha <sha>`
 
+*Available since happo v6.0.0.*
+
 "Before" SHA to use for comparison. Default: auto-detected from CI environment.
 
 ```sh
@@ -201,6 +227,8 @@ npm run happo --beforeSha xyz789ghi012
 ```
 
 ### `--fallbackShas <shas>`
+
+*Available since happo v6.0.0.*
 
 Space-, newline- or comma-separated list of fallback shas for compare calls.
 Default: auto-detected from CI environment.
@@ -211,6 +239,8 @@ npm run happo --fallbackShas "sha1,sha2,sha3"
 
 ### `--fallbackShasCount <count>`
 
+*Available since happo v6.0.0.*
+
 Number of fallback shas to use for compare calls. Default: `50`.
 
 ```sh
@@ -219,6 +249,8 @@ npm run happo --fallbackShasCount 100
 
 ### `--notify <emails>`
 
+*Available since happo v6.0.0.*
+
 One or more (comma-separated) email addresses to notify with results.
 
 ```sh
@@ -226,6 +258,8 @@ npm run happo --notify me@example.com,you@example.com
 ```
 
 ### `--nonce <nonce>`
+
+*Available since happo v6.0.0.*
 
 Nonce to use for Cypress/Playwright comparison. Use the same nonce when using
 with the `finalize` command.
@@ -236,6 +270,8 @@ npm run happo finalize --nonce my-unique-nonce
 ```
 
 ### `--skip <json>`
+
+*Available since happo v6.10.0.*
 
 JSON array of components or story files to exclude from snapshot rendering.
 Defaults to an empty array (nothing skipped).
@@ -260,6 +296,8 @@ See [Partial runs](storybook#partial-runs) in the Storybook guide for how to use
 
 ### `--only <json>`
 
+*Available since happo v6.10.0.*
+
 JSON array of components or story files to exclusively render, skipping all
 others. Uses the same entry format as [`--skip`](#--skip-json). The `storyFile`
 entry form is Storybook-only; the `component` form works for all integrations.
@@ -273,6 +311,8 @@ See [Partial runs](storybook#partial-runs) in the Storybook guide for how to use
 using it from a developer's machine.
 
 ### `--githubToken <token>`
+
+*Available since happo v6.0.0.*
 
 GitHub token to use for posting Happo statuses as comments. Use in combination
 with the `githubApiUrl` configuration option. Default: auto-detected from
@@ -288,6 +328,8 @@ These options apply only to the `happo flake` command.
 
 ### `--allProjects`
 
+*Available since happo v6.3.0.*
+
 List flakes across all projects. By default, only flakes for the current project
 (from your config) are shown.
 
@@ -296,6 +338,8 @@ npm run happo flake --allProjects
 ```
 
 ### `--format <format>`
+
+*Available since happo v6.3.0.*
 
 Output format. Use `"human"` (default) for readable output or `"json"` for raw
 JSON output suitable for scripting.
@@ -306,6 +350,8 @@ npm run happo flake --format=json
 
 ### `--project <name>`
 
+*Available since happo v6.3.0.*
+
 Project to filter flakes for. Defaults to the project defined in your config.
 
 ```sh
@@ -313,6 +359,8 @@ npm run happo flake --project=my-project
 ```
 
 ### `--limit <number>`
+
+*Available since happo v6.3.0.*
 
 Maximum number of flake results to return. Default: `100`. Maximum: `1000`.
 
@@ -322,6 +370,8 @@ npm run happo flake --limit=50
 
 ### `--page <number>`
 
+*Available since happo v6.3.0.*
+
 Page number for paginated results. Default: `1`.
 
 ```sh
@@ -329,6 +379,8 @@ npm run happo flake --page=2
 ```
 
 ### `--component <name>`
+
+*Available since happo v6.3.0.*
 
 Filter flakes by component name.
 
@@ -338,6 +390,8 @@ npm run happo flake --component=Button
 
 ### `--variant <name>`
 
+*Available since happo v6.3.0.*
+
 Filter flakes by variant name.
 
 ```sh
@@ -346,6 +400,8 @@ npm run happo flake --variant=primary
 
 ### `--target <name>`
 
+*Available since happo v6.3.0.*
+
 Filter flakes by target name (browser/viewport).
 
 ```sh
@@ -353,6 +409,8 @@ npm run happo flake --target=chrome
 ```
 
 ### `--sha <sha>`
+
+*Available since happo v6.3.0.*
 
 Filter flakes by a specific before/after SHA. Returns only flakes associated
 with that commit.
