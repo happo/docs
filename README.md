@@ -4,6 +4,13 @@ This repo is the home of happo.io documentation, served at docs.happo.io
 
 # Changelog
 
+## 3.58.1
+
+- Update code formatting with latest prettier configuration
+- Use dynamic footer copyright year in documentation
+- Upgrade pnpm from v10 to v11 with configuration migration
+- Bump @plausible-analytics/tracker to 0.4.5
+
 ## 3.58.0
 
 - Document new `flake` webhook event type with example payloads and field
