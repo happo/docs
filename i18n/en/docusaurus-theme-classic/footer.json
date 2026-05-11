@@ -1,8 +1,4 @@
 {
-  "copyright": {
-    "message": "Copyright © 2024 Happo LLC",
-    "description": "The footer copyright"
-  },
   "link.title.Docs": {
     "message": "Docs",
     "description": "The title of the footer links column with title=Docs in the footer"
