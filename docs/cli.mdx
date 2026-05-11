@@ -15,8 +15,8 @@ needs.
 
 ## Authentication
 
-The `happo` CLI requires authentication to communicate with the happo.io service.
-You can authenticate in two ways:
+The `happo` CLI requires authentication to communicate with the happo.io
+service. You can authenticate in two ways:
 
 1. **API Key and Secret** (recommended for CI and production): Provide `apiKey`
    and `apiSecret` in your configuration file or as environment variables. See
@@ -85,7 +85,6 @@ npm run happo finalize
 ```sh
 npm run happo finalize --nonce [NONCE]
 ```
-
 
 ### Flake command
 
@@ -256,23 +255,22 @@ npm run happo --skip '[{"component":"Card"},{"component":"Button","variant":"pri
 npm run happo --skip '[{"storyFile":"./src/stories/Card.stories.js"}]'
 ```
 
-See [Partial runs](storybook#partial-runs) in the Storybook guide for how to
-use `--skip` to reduce quota usage.
+See [Partial runs](storybook#partial-runs) in the Storybook guide for how to use
+`--skip` to reduce quota usage.
 
 ### `--only <json>`
 
 JSON array of components or story files to exclusively render, skipping all
-others. Uses the same entry format as [`--skip`](#--skip-json). The
-`storyFile` entry form is Storybook-only; the `component` form works for all
-integrations.
+others. Uses the same entry format as [`--skip`](#--skip-json). The `storyFile`
+entry form is Storybook-only; the `component` form works for all integrations.
 
 ```sh
 npm run happo --only '[{"component":"Card"},{"storyFile":"./src/stories/Button.stories.js"}]'
 ```
 
-See [Partial runs](storybook#partial-runs) in the Storybook guide for how to
-use `--only` to reduce quota usage, or [Local development](local-development)
-for using it from a developer's machine.
+See [Partial runs](storybook#partial-runs) in the Storybook guide for how to use
+`--only` to reduce quota usage, or [Local development](local-development) for
+using it from a developer's machine.
 
 ### `--githubToken <token>`
 
@@ -290,8 +288,8 @@ These options apply only to the `happo flake` command.
 
 ### `--allProjects`
 
-List flakes across all projects. By default, only flakes for the current
-project (from your config) are shown.
+List flakes across all projects. By default, only flakes for the current project
+(from your config) are shown.
 
 ```sh
 npm run happo flake --allProjects

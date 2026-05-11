@@ -371,9 +371,9 @@ When `true` (default behavior), media queries that use
 
 ### Target `allowPointerEvents`
 
-Since v6.8.0, pointer events are allowed by default. Happo no longer injects
-CSS to disable pointer events, so mouse interactions in tests work without any
-extra configuration.
+Since v6.8.0, pointer events are allowed by default. Happo no longer injects CSS
+to disable pointer events, so mouse interactions in tests work without any extra
+configuration.
 
 If you notice unexpected diffs caused by hover effects, you can set
 `allowPointerEvents: false` to restore the previous behavior:
@@ -392,9 +392,8 @@ export default defineConfig({
 });
 ```
 
-:::note
-Before v6.8.0, the default was `allowPointerEvents: false`, which caused Happo
-to inject this CSS:
+:::note Before v6.8.0, the default was `allowPointerEvents: false`, which caused
+Happo to inject this CSS:
 
 ```css
 * {
@@ -403,8 +402,7 @@ to inject this CSS:
 ```
 
 This prevented spurious hover effects but also caused Storybook interaction
-tests that relied on pointer events to be silently skipped.
-:::
+tests that relied on pointer events to be silently skipped. :::
 
 If you're interested in testing hover, focus, and active states with Happo, you
 may also want to use the
@@ -475,13 +473,13 @@ export default defineConfig({
 });
 ```
 
-| Option | Type | Default | Description |
-|---|---|---|---|
-| `compareThreshold` | `number` | — | How different two pixels are allowed to be (0–1). Required when using deepCompare. |
-| `diffAlgorithm` | `'color-delta'` \| `'ssim'` | `'color-delta'` | Algorithm used for pixel comparison. `'ssim'` is experimental. |
-| `ignoreThreshold` | `number` | `0` | Fraction of pixels allowed to exceed `compareThreshold` before the screenshot is considered a diff (e.g. `0.01` = 1% of pixels). |
-| `ignoreWhitespace` | `boolean` | `false` | When `true`, whitespace-only differences are ignored. |
-| `applyBlur` | `boolean` | `false` | When `true`, a blur is applied before comparing to smooth out subtle edge differences. |
+| Option             | Type                        | Default         | Description                                                                                                                      |
+| ------------------ | --------------------------- | --------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| `compareThreshold` | `number`                    | —               | How different two pixels are allowed to be (0–1). Required when using deepCompare.                                               |
+| `diffAlgorithm`    | `'color-delta'` \| `'ssim'` | `'color-delta'` | Algorithm used for pixel comparison. `'ssim'` is experimental.                                                                   |
+| `ignoreThreshold`  | `number`                    | `0`             | Fraction of pixels allowed to exceed `compareThreshold` before the screenshot is considered a diff (e.g. `0.01` = 1% of pixels). |
+| `ignoreWhitespace` | `boolean`                   | `false`         | When `true`, whitespace-only differences are ignored.                                                                            |
+| `applyBlur`        | `boolean`                   | `false`         | When `true`, a blur is applied before comparing to smooth out subtle edge differences.                                           |
 
 ## `integration`
 
@@ -650,7 +648,8 @@ When set to `true`, Happo automatically collects and represents `:focus`,
 capture interactive states without manually adding `data-happo-*` attributes to
 your markup.
 
-This option requires the [`applyPseudoClasses` target option](#target-applypseudoclasses).
+This option requires the
+[`applyPseudoClasses` target option](#target-applypseudoclasses).
 
 ```js title="happo.config.ts"
 import { defineConfig } from 'happo';

@@ -23,8 +23,8 @@ and there are a few buttons here that can be useful. Depending on the type of
 integration you are using, you'll see one or more of these buttons:
 
 - A "View recorded HTML" button (for [Happo Examples](examples.mdx) and
-  [Cypress setups](cypress.mdx)) that allow you to see the rendered HTML directly
-  in the browser, along with the CSS used.
+  [Cypress setups](cypress.mdx)) that allow you to see the rendered HTML
+  directly in the browser, along with the CSS used.
 - A "Download assets" button, where you can grab the images, fonts, etc, that
   were used when taking the screenshot.
 - A "Download static package" button that let's you fetch the statically built

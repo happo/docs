@@ -6,29 +6,36 @@ This repo is the home of happo.io documentation, served at docs.happo.io
 
 ## 3.58.0
 
-- Document new `flake` webhook event type with example payloads and field reference
+- Document new `flake` webhook event type with example payloads and field
+  reference
 - Update happo dependency from 6.10.8 to 6.11.0
 - Update React and React DOM to 19.2.6
 
 ## 3.57.3
 
-- Add Local development guide documenting how to run Happo locally using the --only flag
+- Add Local development guide documenting how to run Happo locally using the
+  --only flag
 
 ## 3.57.2
 
-- Improve SSO documentation with signing requirements and attribute mapping details
-- Clarify SHA-256 signing requirement and assertion vs response signature distinction
+- Improve SSO documentation with signing requirements and attribute mapping
+  details
+- Clarify SHA-256 signing requirement and assertion vs response signature
+  distinction
 - Document full attribute mapping support for email, name, picture, and roles
 - Add guidance on certificate handling, rotation, and domain uniqueness
-- Provide quickstart callouts for major IdPs including Okta, Google Workspace, and Entra ID
+- Provide quickstart callouts for major IdPs including Okta, Google Workspace,
+  and Entra ID
 
 ## 3.57.1
 
-- Add troubleshooting guidance for guest and cross-tenant sign-in issues (AADSTS650059) with signInAudience manifest fix
+- Add troubleshooting guidance for guest and cross-tenant sign-in issues
+  (AADSTS650059) with signInAudience manifest fix
 
 ## 3.57.0
 
-- Document --skip flag usage on Custom, Playwright, and Cypress integration pages
+- Document --skip flag usage on Custom, Playwright, and Cypress integration
+  pages
 
 ## 3.56.0
 
@@ -37,7 +44,8 @@ This repo is the home of happo.io documentation, served at docs.happo.io
 
 ## 3.55.2
 
-- Add documentation for partial runs feature using --only and --skip CLI options to reduce quota usage and speed up CI [by @trotzig in #285]
+- Add documentation for partial runs feature using --only and --skip CLI options
+  to reduce quota usage and speed up CI [by @trotzig in #285]
 - Update happo dependency to 6.10.2
 - Update prettier to 3.8.3
 - Update release-with-ease to 2.2.0
@@ -45,11 +53,13 @@ This repo is the home of happo.io documentation, served at docs.happo.io
 ## 3.55.1
 
 - Document --skip and --only CLI arguments for filtering test execution
-- Replace deprecated --skippedExamples reference with current argument documentation
+- Replace deprecated --skippedExamples reference with current argument
+  documentation
 
 ## 3.55.0
 
-- Fix broken links in documentation that were inadvertently broken during conversion from .md to .mdx files
+- Fix broken links in documentation that were inadvertently broken during
+  conversion from .md to .mdx files
 - Update prettier to 3.8.2
 - Update react and react-dom to 19.2.5
 
@@ -61,7 +71,8 @@ This repo is the home of happo.io documentation, served at docs.happo.io
 
 ## 3.53.0
 
-- Document autoApplyPseudoStateAttributes integration option for enhanced pseudo-state handling
+- Document autoApplyPseudoStateAttributes integration option for enhanced
+  pseudo-state handling
 - Update happo dependency to 6.8.0 with latest improvements
 - Update release-with-ease dependency to 2.0.2
 
@@ -74,20 +85,27 @@ This repo is the home of happo.io documentation, served at docs.happo.io
 ## 3.51.0
 
 - Reframe native apps as a first-class use case in documentation
-- Apply installation partial to full-page, CLI, and getting-started docs for improved consistency
+- Apply installation partial to full-page, CLI, and getting-started docs for
+  improved consistency
 
 ## 3.50.0
 
-- Document all five deepCompare configuration options (compareThreshold, diffAlgorithm, ignoreThreshold, ignoreWhitespace, applyBlur) with reference tables
-- Support auto-chunking via estimatedSnapsCount for custom integrations, removing need for manual chunks configuration
+- Document all five deepCompare configuration options (compareThreshold,
+  diffAlgorithm, ignoreThreshold, ignoreWhitespace, applyBlur) with reference
+  tables
+- Support auto-chunking via estimatedSnapsCount for custom integrations,
+  removing need for manual chunks configuration
 - Document --skippedExamples option for filtering snapshot examples
-- Reduce documentation duplication by extracting shared MDX partials for installation, API keys, and troubleshooting
-- Improve accessibility with increased color contrast for links in code blocks and throughout documentation
+- Reduce documentation duplication by extracting shared MDX partials for
+  installation, API keys, and troubleshooting
+- Improve accessibility with increased color contrast for links in code blocks
+  and throughout documentation
 - Add package manager tabs (npm, pnpm, yarn) to installation instructions
 
 ## 3.49.1
 
-- Add documentation for merge ref checkouts to improve discoverability of this workflow
+- Add documentation for merge ref checkouts to improve discoverability of this
+  workflow
 
 ## 3.49.0
 
@@ -167,7 +185,7 @@ This repo is the home of happo.io documentation, served at docs.happo.io
 
 ## 3.40.0
 
-- Graduate next docs to current 
+- Graduate next docs to current
 - Update CLI documentation to reflect new flags
 
 ## 3.39.0

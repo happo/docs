@@ -22,8 +22,8 @@ account to use this feature.
 Enter a URL where your server is listening and a secret to use when signing
 requests.
 
-Use the checkboxes to select which event types the webhook should receive.
-At least one event type must be enabled.
+Use the checkboxes to select which event types the webhook should receive. At
+least one event type must be enabled.
 
 ## Event types
 
@@ -168,14 +168,14 @@ It is also sent when the report is undone.
 
 **Field reference**
 
-| Field | Type | Notes |
-|---|---|---|
-| `action` | `"reported"` \| `"undone"` | Whether a flake was just reported or had its report withdrawn. |
-| `link` | string | Best page link to view the diff: comparison page when available, otherwise the snapshot-vs-snapshot page. |
-| `reportedAt` | ISO 8601 string | Server-side event timestamp; useful for de-duping retries. |
-| `project.id` / `project.name` | number / string | The project the flake belongs to. |
-| `comparison` | object \| `null` | Most flake reporting happens in the context of a comparison, but it is not guaranteed. Contains `id`, `beforeSha`, `afterSha` when present. |
-| `snapshot1` / `snapshot2` | object | The two snapshots being compared. `width`/`height` may be `null` for accessibility snapshots. |
+| Field                         | Type                       | Notes                                                                                                                                       |
+| ----------------------------- | -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| `action`                      | `"reported"` \| `"undone"` | Whether a flake was just reported or had its report withdrawn.                                                                              |
+| `link`                        | string                     | Best page link to view the diff: comparison page when available, otherwise the snapshot-vs-snapshot page.                                   |
+| `reportedAt`                  | ISO 8601 string            | Server-side event timestamp; useful for de-duping retries.                                                                                  |
+| `project.id` / `project.name` | number / string            | The project the flake belongs to.                                                                                                           |
+| `comparison`                  | object \| `null`           | Most flake reporting happens in the context of a comparison, but it is not guaranteed. Contains `id`, `beforeSha`, `afterSha` when present. |
+| `snapshot1` / `snapshot2`     | object                     | The two snapshots being compared. `width`/`height` may be `null` for accessibility snapshots.                                               |
 
 ## Verifying signatures
 
