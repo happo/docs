@@ -4,6 +4,10 @@ This repo is the home of happo.io documentation, served at docs.happo.io
 
 # Changelog
 
+## 3.58.3
+
+- Document version availability for all CLI commands and options
+
 ## 3.58.2
 
 - Add SBOM and provenance attestations to Docker image builds for enhanced supply chain security
