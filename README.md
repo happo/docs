@@ -4,6 +4,13 @@ This repo is the home of happo.io documentation, served at docs.happo.io
 
 # Changelog
 
+## 3.58.4
+
+- Document config option version availability with 'Available since' annotations for each configuration option
+- Add troubleshooting guide for 'Stuck in loop processing examples' error with common causes and resolution steps
+- Document failOnWaitForTimeout behavior change where wait timeouts now fail snaps instead of silently warning
+- Update dependencies to resolve security notices
+
 ## 3.58.3
 
 - Document version availability for all CLI commands and options
