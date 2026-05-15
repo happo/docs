@@ -150,7 +150,12 @@ parameter might help.
 
 Let's assume that we have an example that needs to fetch some external data. In
 order to wait for the data to finish loading, we can add a `waitForContent`
-parameter with some unique string from the loaded state:
+parameter with some unique string from the loaded state.
+
+If the content does not appear within the worker's timeout, the snap fails by
+default. See
+[`failOnWaitForTimeout`](configuration.md#failonwaitfortimeout) if you need to
+opt out of that behavior.
 
 ```js title="main.js"
 happoCustom.registerExample({

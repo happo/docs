@@ -481,6 +481,35 @@ export default defineConfig({
 | `ignoreWhitespace` | `boolean`                   | `false`         | When `true`, whitespace-only differences are ignored.                                                                            |
 | `applyBlur`        | `boolean`                   | `false`         | When `true`, a blur is applied before comparing to smooth out subtle edge differences.                                           |
 
+## `failOnWaitForTimeout`
+
+_Available since happo v6.12.0._
+
+Controls how Happo workers react when a `waitForContent`, `waitForSelector`, or
+`waitFor` option times out before the expected content, selector, or condition
+appears. Defaults to `true`.
+
+- `true` (default) — the snap fails with a clear error. This surfaces stale
+  `waitForContent` strings, `waitForSelector` values, and `waitFor` predicates
+  immediately, so they can be fixed at the source instead of silently adding
+  multi-second waits to every run.
+- `false` — the timeout only emits a warning in the worker logs and the
+  screenshot is taken anyway against whatever happens to be on the page. This
+  is the legacy behavior.
+
+We recommend leaving this set to `true`. Set it to `false` as a temporary
+escape hatch while you investigate a failing run; the long-term fix is to
+update the offending wait so it matches the content that actually renders.
+
+```js title="happo.config.ts"
+import { defineConfig } from 'happo';
+
+export default defineConfig({
+  failOnWaitForTimeout: false,
+  // ... rest of config
+});
+```
+
 ## `integration`
 
 Specify the type of integration you're using with Happo. The integration type
@@ -700,7 +729,11 @@ Happo reports, so ensure it is unique for each page).
 
 Optionally, you can specify `waitForContent` to wait for specific content to
 appear on the page before taking the screenshot, or `waitForSelector` to wait
-for a selector to appear in the document before taking the screenshot.
+for a selector to appear in the document before taking the screenshot. If the
+content or selector does not appear within the worker's timeout, the snap
+fails by default. See
+[`failOnWaitForTimeout`](#failonwaitfortimeout) if you need to opt out of that
+behavior.
 
 **Note:** The URLs to the website need to be publicly available, otherwise Happo
 workers won't be able to access the pages.

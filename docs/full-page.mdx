@@ -77,4 +77,40 @@ export default defineConfig({
 ```
 
 Happo will wait at most 10 seconds for the content to appear before it takes the
-screenshot.
+screenshot. If the content does not appear within that time, the snap fails by
+default. See
+[`failOnWaitForTimeout`](configuration.md#failonwaitfortimeout) if you need to
+opt out of that behavior.
+
+### `waitForSelector`
+
+If present, Happo will wait for a selector to appear in the document before
+taking the screenshot. For example:
+
+```js title="happo.config.ts"
+import { defineConfig } from 'happo';
+
+export default defineConfig({
+  apiKey: process.env.HAPPO_API_KEY,
+  apiSecret: process.env.HAPPO_API_SECRET,
+
+  integration: {
+    type: 'pages',
+    pages: [
+      {
+        url: 'https://example.com/products',
+        title: 'Products',
+        waitForSelector: '.product-list',
+      },
+    ],
+  },
+
+  // ... other configuration
+});
+```
+
+Happo will wait at most 10 seconds for the selector to appear before it takes
+the screenshot. If the selector does not appear within that time, the snap
+fails by default. See
+[`failOnWaitForTimeout`](configuration.md#failonwaitfortimeout) if you need to
+opt out of that behavior.

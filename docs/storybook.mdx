@@ -343,6 +343,11 @@ iframe that you have no control over, loading a credit card form. In order to
 wait for the iframe to finish, we can add a `waitForContent` parameter with some
 unique string in the iframe.
 
+If the content does not appear within the render timeout, the snap fails by
+default. See
+[`failOnWaitForTimeout`](configuration.md#failonwaitfortimeout) if you need to
+opt out of that behavior.
+
 ````mdx-code-block
 <Tabs>
   <TabItem value="csf" label="CSF" default>
@@ -375,6 +380,11 @@ storiesOf('PaymentForm', module).add('default', () => <PaymentForm />, {
 To make Happo wait with the screenshot until a condition has been met, use the
 `waitFor` option. Specify a function that returns `true` (or anything truthy)
 when the time is right to take the screenshot.
+
+If the condition does not become truthy within the render timeout, the snap
+fails by default. See
+[`failOnWaitForTimeout`](configuration.md#failonwaitfortimeout) if you need to
+opt out of that behavior.
 
 Here's an example that waits for a specific element (`.credit-card`) to appear:
 
