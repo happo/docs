@@ -529,6 +529,22 @@ Some target options changed:
 
 - `freezeAnimations` - now defaults to `'last-frame'`
 
+### Wait Timeouts Now Fail by Default
+
+Starting in happo v6.12.0, a `waitForContent`, `waitForSelector`, or `waitFor`
+that times out before the expected content, selector, or condition appears
+will fail the snap. In the legacy packages, a timeout only emitted a warning
+in the worker logs and the screenshot was taken anyway.
+
+If a run starts failing after migrating because of this, update the offending
+`waitForContent` / `waitForSelector` / `waitFor` so it matches what actually
+renders — this is almost always the right fix, since it also removes the
+multi-second wait that was running on every snap. As a temporary escape
+hatch, set
+[`failOnWaitForTimeout: false`](configuration.md#failonwaitfortimeout) in
+your `happo.config.{js,ts,...}` to restore the legacy warn-and-screenshot
+behavior while you investigate.
+
 ### Environment Variables
 
 The following environment variables have been removed and are no longer
