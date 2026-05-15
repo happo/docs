@@ -178,3 +178,44 @@ A common error when using [the Storybook integration](storybook.mdx) is
 `Timed out while waiting for window.happo`. This is often caused by missing to
 register the `happo-plugin-storybook` plugin. See how to get rid of this in
 [the Storybook docs](storybook.mdx#troubleshooting).
+
+### `Stuck in loop processing examples`
+
+If your happo run fails with an error like
+
+> Stuck in loop processing examples. Last processed before looping: Button,
+> primary
+
+it means Happo encountered the same `component` + `variant` pair twice while
+iterating through your examples. The component and variant after "Last processed
+before looping" tell you the last example that was successfully processed
+_before_ Happo saw the duplicate — the duplicate itself is the next example
+after that one.
+
+The most common cause is **two examples sharing the same component and variant
+name**. Each example needs a unique `component` + `variant` combination, since
+Happo uses that pair as the identifier for the resulting screenshot. When two
+examples share the same identifier, the worker detects that it has already
+processed that screenshot and bails out rather than overwriting it.
+
+Things to check:
+
+- **Duplicate Storybook stories.** Two stories with the same `title` and story
+  name (in the same or different files) will collide. Search your stories for
+  the component and variant from the error message and remove or rename the
+  duplicate.
+- **Programmatically generated examples.** If you're using
+  [Happo Examples](examples.md) or the [custom integration](custom.mdx) and
+  generating examples in a loop (e.g. mapping over an array of fixtures), make
+  sure each iteration produces a unique `variant`. Duplicate keys in your source
+  data, or a missing index/suffix in the variant name, will produce duplicates.
+- **Custom `nextExample` implementations.** If you've implemented your own
+  `window.happo.nextExample()`, confirm that it advances its internal cursor on
+  every call and returns `undefined` (not the same example again) once all
+  examples have been processed. A cursor that resets or fails to increment will
+  make Happo loop back to an already-processed example.
+
+To find the duplicate locally,
+[download the static package](#static-package-downloads) from the Snap-request
+page and call `window.happo.nextExample()` repeatedly in the browser console
+until you see the same `component` + `variant` returned twice.
