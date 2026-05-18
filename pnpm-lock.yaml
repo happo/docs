@@ -34,8 +34,8 @@ importers:
         specifier: ^0.28.0
         version: 0.28.0
       happo:
-        specifier: 6.11.0
-        version: 6.11.0
+        specifier: 6.12.0
+        version: 6.12.0
       prettier:
         specifier: 3.8.3
         version: 3.8.3
@@ -2945,8 +2945,8 @@ packages:
   emoticon@4.1.0:
     resolution: {integrity: sha512-VWZfnxqwNcc51hIy/sbOdEem6D+cVtpPzEEtVAFdaas30+1dgkyaOQ4sQ6Bp0tOMqWO1v+HQfYaoodOkdhK6SQ==}
 
-  empathic@2.0.0:
-    resolution: {integrity: sha512-i6UzDscO/XfAcNYD75CfICkmfLedpyPDdozrLMmQc5ORaQcdMoc21OnlEylMIqI7U8eniKrPMxxtj8k0vhmJhA==}
+  empathic@2.0.1:
+    resolution: {integrity: sha512-YGRs8knHhKHVShLkFET/rWAU8kmHbOV5LwN938RHI0pljAJ1Gf6SzXsSmRaEzcXTtOOmVqJ5+WtQPL5uigY50Q==}
     engines: {node: '>=14'}
 
   encodeurl@2.0.0:
@@ -3126,8 +3126,8 @@ packages:
     resolution: {integrity: sha512-u5/sxGfiMfZNtJ3OvQpXcvotFpYkL0n9u9mM2vkui2nGo8b4wvDkJ8gAkYqbA8QpGyFCv3RK0Z+Iv+9veCS9bQ==}
     engines: {node: '>=0.4.0'}
 
-  fflate@0.8.2:
-    resolution: {integrity: sha512-cPJU47OaAoCbg0pBvzsgpTPhmhqI5eJjh/JIu8tPj5q+T7iLvW/JAYUqmE7KOB4R1ZyEhzBaIQpQpardBF5z8A==}
+  fflate@0.8.3:
+    resolution: {integrity: sha512-tbZNuJrLwGUp3zshBtdy4W+ORxZuIh8a5ilyIEQDC5rY1f3U20JMry0Ll3WBzU58EZKsEuJFXhb5gwv8CsPvgA==}
 
   file-loader@6.2.0:
     resolution: {integrity: sha512-qo3glqyTa61Ytg4u73GultjHGjdRyig3tG6lPtyX/jOEJvHif9uB0/OCI2Kif6ctF3caQTW2G5gym21oAsI4pw==}
@@ -3271,8 +3271,8 @@ packages:
   handle-thing@2.0.1:
     resolution: {integrity: sha512-9Qn4yBxelxoh2Ow62nP+Ka/kMnOXRi8BXnRaUwezLNhqelnN49xKz4F/dPP8OYLxLxq6JDtZb2i9XznUQbNPTg==}
 
-  happo@6.11.0:
-    resolution: {integrity: sha512-VH8qIR+C6vbCXJwLv8H+1im9ya4P5pQIg8O2RU7zyN8l8NDkyPlo8Xru7rXdQo25o1f7mpouoYlMjQKq/zczyQ==}
+  happo@6.12.0:
+    resolution: {integrity: sha512-tZ0GdViav1IhoqM/qCIZ4stqt6q4wPHJE/kxF6ZMdx/u9C9Q3BpQe2fRsqzLU3DNcv/PZM/LEMDCif0+BY5+mw==}
     engines: {node: ^22.18.0 || ^23.6.0 || >=24.0.0}
     hasBin: true
 
@@ -9427,7 +9427,7 @@ snapshots:
 
   emoticon@4.1.0: {}
 
-  empathic@2.0.0: {}
+  empathic@2.0.1: {}
 
   encodeurl@2.0.0: {}
 
@@ -9660,7 +9660,7 @@ snapshots:
     dependencies:
       xml-js: 1.6.11
 
-  fflate@0.8.2: {}
+  fflate@0.8.3: {}
 
   file-loader@6.2.0(webpack@5.106.2(@swc/core@1.15.32)(esbuild@0.28.0)):
     dependencies:
@@ -9813,12 +9813,12 @@ snapshots:
 
   handle-thing@2.0.1: {}
 
-  happo@6.11.0:
+  happo@6.12.0:
     dependencies:
       async-retry: 1.3.3
       base64-stream: 1.0.0
-      empathic: 2.0.0
-      fflate: 0.8.2
+      empathic: 2.0.1
+      fflate: 0.8.3
       jose: 6.2.3
       limit-concur: 4.0.0
       mime-types: 3.0.2
