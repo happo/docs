@@ -20,8 +20,7 @@ that posts statuses as a PR comment.
 Because your GHE instance is self-hosted, Happo can only reach it if your
 network allows inbound traffic from Happo's servers. Before starting the steps
 below, reach out to [support@happo.io](mailto:support@happo.io) and we'll work
-with you to figure out the right allowlist (IP ranges, hostnames, or a private
-networking setup) for your environment. Without this in place, the **Test
+with you to figure out the right setup for your environment. Without this in place, the **Test
 connection** step at the end of this guide will fail.
 
 ## Step 1: Find your Happo account ID
