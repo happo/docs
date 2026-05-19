@@ -193,9 +193,12 @@ See specific instructions for the different providers below.
 ### GitHub
 
 > The instructions in this section only work if you are using github.com or the
-> on-premise version of happo.io. If you're using a local GitHub Enterprise
-> setup, there is an alternative solution described in the
-> [next section](#posting-statuses-without-installing-the-happo-github-app)
+> on-premise version of happo.io. If you're using a self-hosted GitHub
+> Enterprise Server, follow
+> [the GitHub Enterprise (On-premise) guide](github-enterprise.md) instead. If
+> you can't install a GitHub App at all, there is also an alternative solution
+> described in the
+> [next section](#posting-statuses-without-installing-the-happo-github-app).
 
 #### Step 1: Install Happo GitHub app
 
