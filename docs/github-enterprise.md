@@ -15,6 +15,15 @@ can't install a GitHub App on your GHE instance for any reason, there's also a
 [token-based fallback](continuous-integration.md#posting-statuses-without-installing-the-happo-github-app)
 that posts statuses as a PR comment.
 
+## Prerequisite: Allow traffic from Happo
+
+Because your GHE instance is self-hosted, Happo can only reach it if your
+network allows inbound traffic from Happo's servers. Before starting the steps
+below, reach out to [support@happo.io](mailto:support@happo.io) and we'll work
+with you to figure out the right allowlist (IP ranges, hostnames, or a private
+networking setup) for your environment. Without this in place, the **Test
+connection** step at the end of this guide will fail.
+
 ## Step 1: Find your Happo account ID
 
 You'll need your Happo account ID to construct the webhook URL in the next
