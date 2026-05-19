@@ -64,7 +64,7 @@ instead of your personal ones.
    - **Pull requests**: Read
    - **Commit statuses**: Read & Write
    - **Checks**: Read & Write
-8. **Subscribe to events**: Pull request, Pull request review, Push.
+8. **Subscribe to events**: Pull request, Push.
 9. **Where can this app be installed?**: Only on this account (recommended).
 10. Click **Create GitHub App**.
 
@@ -106,6 +106,6 @@ GHE -- if it's empty, go back to GHE, install the app on the repo, and reload
 the page.
 
 Once the configuration is saved and a repository is connected, Happo will
-start receiving `pull_request`, `pull_request_review`, and `push` webhook
-events from your GHE instance, and will post commit statuses and check runs
-back as builds complete.
+start receiving `pull_request` and `push` webhook events from your GHE
+instance, and will post commit statuses and check runs back as builds
+complete.
