@@ -4,6 +4,12 @@ This repo is the home of happo.io documentation, served at docs.happo.io
 
 # Changelog
 
+## 3.59.0
+
+- Add GitHub Enterprise (On-premise) integration guide with setup instructions for self-hosted GHE instances
+- Bump happo dependency from 6.11.0 to 6.12.0
+- Bump release-with-ease dependency from 2.3.4 to 2.4.0
+
 ## 3.58.4
 
 - Document config option version availability with 'Available since' annotations for each configuration option
