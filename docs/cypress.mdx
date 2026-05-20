@@ -209,14 +209,14 @@ In this example, the "Footer" snapshot will only be rendered in the target named
 ### Dynamic targets
 
 If you want to create a snapshot in a target that isn't defined in the
-`happo.config.ts` config, you can use an object with `name`, `browser` and
+`happo.config.ts` config, you can use an object with `name`, `type` and
 `viewport` properties. Here's an example where a snapshot is taken in a
 dynamically generated target:
 
 ```js
 cy.get('.footer').happoScreenshot({
   component: 'Footer',
-  targets: [{ name: 'firefox-small', browser: 'firefox', viewport: '400x800' }],
+  targets: [{ name: 'firefox-small', type: 'firefox', viewport: '400x800' }],
 });
 ```
 
@@ -229,7 +229,7 @@ cy.get('.footer').happoScreenshot({
   component: 'Footer',
   targets: [
     'chrome-small',
-    { name: 'firefox-small', browser: 'firefox', viewport: '400x800' },
+    { name: 'firefox-small', type: 'firefox', viewport: '400x800' },
   ],
 });
 ```

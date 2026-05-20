@@ -155,6 +155,31 @@ export default defineConfig({
   (they use a fixed size)
 - `freezeAnimations` now defaults to `'last-frame'`
 
+#### Dynamic targets in Cypress/Playwright screenshots
+
+The dynamic target objects you can pass to a `happoScreenshot` call's
+`targets` option use the same renamed field — `browser` becomes `type`.
+
+**Before (legacy):**
+
+```js
+await happoScreenshot(heroImage, {
+  component: 'Footer',
+  variant: 'Default',
+  targets: [{ name: 'firefox-small', browser: 'firefox', viewport: '400x800' }],
+});
+```
+
+**After (new):**
+
+```js
+await happoScreenshot(heroImage, {
+  component: 'Footer',
+  variant: 'Default',
+  targets: [{ name: 'firefox-small', type: 'firefox', viewport: '400x800' }],
+});
+```
+
 ### Animations
 
 The previous default for stopping animations was to freeze them on the first
