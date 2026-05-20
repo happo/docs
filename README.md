@@ -4,6 +4,13 @@ This repo is the home of happo.io documentation, served at docs.happo.io
 
 # Changelog
 
+## 3.59.1
+
+- Document `browser` → `type` rename in dynamic targets for `happoScreenshot`
+- Update Cypress and Playwright documentation to reflect correct property naming
+- Add migration guide entry for per-screenshot targets configuration
+- Improve production deployment automation with release dispatch
+
 ## 3.59.0
 
 - Add GitHub Enterprise (On-premise) integration guide with setup instructions for self-hosted GHE instances
