@@ -4,6 +4,12 @@ This repo is the home of happo.io documentation, served at docs.happo.io
 
 # Changelog
 
+## 3.59.2
+
+- Add troubleshooting documentation for Cloudflare Access 403 errors with GitHub Enterprise on-premise
+- Document IP bypass and mTLS policy-level fixes for Happo authentication through Cloudflare Access
+- Clarify why Happo cannot authenticate directly through Cloudflare Access and provide workaround solutions
+
 ## 3.59.1
 
 - Document `browser` → `type` rename in dynamic targets for `happoScreenshot`
