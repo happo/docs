@@ -20,14 +20,14 @@ that posts statuses as a PR comment.
 Because your GHE instance is self-hosted, Happo can only reach it if your
 network allows inbound traffic from Happo's servers. Before starting the steps
 below, reach out to [support@happo.io](mailto:support@happo.io) and we'll work
-with you to figure out the right setup for your environment. Without this in place, the **Test
-connection** step at the end of this guide will fail.
+with you to figure out the right setup for your environment. Without this in
+place, the **Test connection** step at the end of this guide will fail.
 
 ## Step 1: Find your Happo account ID
 
-You'll need your Happo account ID to construct the webhook URL in the next
-step. Open the Happo dashboard and look at the URL in the address bar -- the
-account ID is the numeric segment that comes right after `/a/`. For example, in
+You'll need your Happo account ID to construct the webhook URL in the next step.
+Open the Happo dashboard and look at the URL in the address bar -- the account
+ID is the numeric segment that comes right after `/a/`. For example, in
 
 ```
 https://happo.io/a/12345/dashboard
@@ -47,12 +47,11 @@ instead of your personal ones.
 2. **GitHub App name**: `Happo`
 3. **Homepage URL**: `https://happo.io`
 4. **Callback URL**: `https://happo.io/auth/github/callback`
-5. **Webhook URL**:
-   `https://happo.io/github/on-premise/<accountId>/hook` -- substitute the
-   account ID from step 1. For example, if your account ID is `12345`, the
-   webhook URL is `https://happo.io/github/on-premise/12345/hook`.
-6. **Webhook secret**: Generate a random string and save it -- you'll paste
-   the same value into Happo in step 3. A quick way to generate one:
+5. **Webhook URL**: `https://happo.io/github/on-premise/<accountId>/hook` --
+   substitute the account ID from step 1. For example, if your account ID is
+   `12345`, the webhook URL is `https://happo.io/github/on-premise/12345/hook`.
+6. **Webhook secret**: Generate a random string and save it -- you'll paste the
+   same value into Happo in step 3. A quick way to generate one:
 
    ```bash
    openssl rand -hex 32
@@ -67,11 +66,10 @@ instead of your personal ones.
 9. **Where can this app be installed?**: Only on this account (recommended).
 10. Click **Create GitHub App**.
 
-Once the app exists, open its settings page on GHE and finish a few more
-things:
+Once the app exists, open its settings page on GHE and finish a few more things:
 
-- Under **Private keys**, click **Generate a private key**. GHE will download
-  a `.pem` file -- keep it handy, you'll paste its contents into Happo.
+- Under **Private keys**, click **Generate a private key**. GHE will download a
+  `.pem` file -- keep it handy, you'll paste its contents into Happo.
 - Under **Client secrets**, generate a client secret and save the value.
 - Install the app on the org and/or repositories that Happo should see, using
   the **Install App** tab.
@@ -79,14 +77,13 @@ things:
 ## Step 3: Enter the configuration in Happo
 
 In Happo, go to **Account settings → Integrations → GitHub Enterprise
-(On-premise)** and click **Configure GitHub Enterprise**. Fill in the form
-with the values from step 2:
+(On-premise)** and click **Configure GitHub Enterprise**. Fill in the form with
+the values from step 2:
 
 - **GitHub Enterprise URL** -- The base URL of your GHE instance, e.g.
   `https://github.example.com`.
-- **API base URL** (optional) -- Leave blank to use the default
-  `{URL}/api/v3`. Only set this if your GHE instance exposes its API at a
-  non-standard path.
+- **API base URL** (optional) -- Leave blank to use the default `{URL}/api/v3`.
+  Only set this if your GHE instance exposes its API at a non-standard path.
 - **GitHub App ID** -- The numeric ID shown on the app's settings page in GHE.
 - **GitHub App private key** -- Paste the full contents of the `.pem` file you
   downloaded, including the `-----BEGIN RSA PRIVATE KEY-----` and
@@ -104,6 +101,46 @@ The dropdown lists every repository where the Happo app has been installed in
 GHE -- if it's empty, go back to GHE, install the app on the repo, and reload
 the page.
 
-Once the configuration is saved and a repository is connected, Happo will
-start receiving `pull_request` webhook events from your GHE instance, and
-will post commit statuses and check runs back as builds complete.
+Once the configuration is saved and a repository is connected, Happo will start
+receiving `pull_request` webhook events from your GHE instance, and will post
+commit statuses and check runs back as builds complete.
+
+## Troubleshooting
+
+### "Error loading GitHub repositories" with a Cloudflare Access HTML response
+
+If the repositories list (or the **Test connection** step) fails with an error
+whose body is an HTML page titled **"Error ・ Cloudflare Access"** and a status
+code of `403`, the request from Happo is being blocked by
+[Cloudflare Access](https://developers.cloudflare.com/cloudflare-one/policies/access/)
+at your tunnel edge before it reaches GHE. The response will look something like
+this:
+
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Error ・ Cloudflare Access</title>
+  </head>
+  ...
+  <h1>Forbidden</h1>
+  <p>You don't have permission to view this.</p>
+  ...
+</html>
+```
+
+This is not something Happo can authenticate through — Happo connects to your
+GHE instance using the GitHub App credentials only, and does not send Cloudflare
+Access service tokens or client certificates. To fix it, update your Cloudflare
+Access policy in one of these ways:
+
+- **Bypass policy for Happo's egress IP (recommended).** Add a policy on the
+  Access application protecting your GHE host that bypasses authentication for
+  Happo's static egress IP. Contact [support@happo.io](mailto:support@happo.io)
+  for the current IP address.
+- **mTLS.** Configure the Access application to accept a client certificate that
+  Happo can present. Contact support to coordinate certificate exchange.
+
+If the integration was working previously and suddenly started failing with this
+error, check whether your Cloudflare Access policy was recently tightened, an IP
+bypass was removed, or a rule was rotated.
