@@ -6,6 +6,8 @@ updates:
     directory: '/'
     schedule:
       interval: daily
+    cooldown:
+      default-days: 2
     groups:
       babel:
         patterns:
