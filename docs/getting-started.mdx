@@ -43,19 +43,34 @@ some steps you always need to take care of.
 
 You also need a [configuration](configuration.md) file. Save `happo.config.ts`
 (or `.js`) in the root directory of your project (right next to where the
-`package.json` file is located). This example is showing the minimum required
-configuration:
+`package.json` file is located). Here's a complete example to get you started,
+using a [Storybook](storybook.mdx) integration with desktop and mobile
+screenshot targets plus an [accessibility](accessibility.md) target:
 
-```js
+```js title="happo.config.ts"
 import { defineConfig } from 'happo';
 
 export default defineConfig({
   apiKey: process.env.HAPPO_API_KEY,
   apiSecret: process.env.HAPPO_API_SECRET,
 
+  project: 'default',
+
+  integration: {
+    type: 'storybook',
+  },
+
   targets: {
     'chrome-desktop': {
       type: 'chrome',
+      viewport: '1024x768',
+    },
+    'chrome-mobile': {
+      type: 'chrome',
+      viewport: '375x667',
+    },
+    accessibility: {
+      type: 'accessibility',
       viewport: '1024x768',
     },
   },
@@ -74,9 +89,13 @@ can sign up for a free trial at [happo.io/signup](https://happo.io/signup)
 > [migration guide](migrating-from-legacy-packages.md) for detailed
 > instructions.
 
-You can add more than one `target` if you want to run tests across multiple
-browsers and/or screen sizes. See [Supported browsers](browsers.md) for a full
-list of browsers we support.
+Each entry under `targets` runs your test suite across a different browser,
+screen size, or check. Adjust these to match the browsers and viewports you care
+about—see [Supported browsers](browsers.md) for a full list of browsers we
+support and [Accessibility testing](accessibility.md) for more on accessibility
+targets. The `integration` option tells Happo where your test suite comes from;
+swap in [Cypress](cypress.mdx), [Playwright](playwright.mdx), or another
+[integration](#choose-an-integration) as needed.
 
 ## Creating your first report
 
