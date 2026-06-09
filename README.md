@@ -4,6 +4,10 @@ This repo is the home of happo.io documentation, served at docs.happo.io
 
 # Changelog
 
+## 3.60.1
+
+- Improve getting-started configuration example with more complete starter template
+
 ## 3.60.0
 
 - Add documentation for the Happo MCP server 
