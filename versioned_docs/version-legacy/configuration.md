@@ -186,9 +186,10 @@ module.exports = {
 ### Target `applyPseudoClasses`
 
 When set to `true`, this option allows you to add `data-happo-hover`,
-`data-happo-focus`, and `data-happo-active` attributes to your DOM elements and
-have Happo apply the corresponding `:hover`, `:focus`, or `:active` styles. For
-example, if you have this markup:
+`data-happo-focus`, `data-happo-focus-visible`, and `data-happo-active`
+attributes to your DOM elements and have Happo apply the corresponding `:hover`,
+`:focus`, `:focus-visible`, or `:active` styles. For example, if you have this
+markup:
 
 ```html
 <button>Hover me</button>
@@ -216,6 +217,31 @@ Similarly, you can add focus to elements using `data-happo-focus`:
 ```html
 <input type="text" data-happo-focus />
 ```
+
+`data-happo-focus` focuses the element the same way a mouse click or a
+programmatic `element.focus()` call does, which means `:focus` styles are
+applied but `:focus-visible` styles are **not**.
+
+To capture the focus ring that keyboard users see, use
+`data-happo-focus-visible` instead. It focuses the element as if the user had
+tabbed to it, so both `:focus` and `:focus-visible` styles are applied:
+
+```html
+<button data-happo-focus-visible>Tab to me</button>
+<style>
+  button:focus {
+    background-color: lightblue;
+  }
+  button:focus-visible {
+    outline: 2px solid blue;
+  }
+</style>
+```
+
+Use one or the other on a given snapshot — since only one element can hold focus
+at a time, Happo focuses the first element it finds with `data-happo-focus`,
+then the first element with `data-happo-focus-visible`, so the latter wins if
+both are present.
 
 And add `data-happo-active` to elements to simulate the `:active` state:
 
