@@ -4,6 +4,14 @@ This repo is the home of happo.io documentation, served at docs.happo.io
 
 # Changelog
 
+## 3.60.2
+
+- Document `data-happo-focus-visible` attribute for controlling focus-visible styles
+- Clarify difference between `data-happo-focus` and `data-happo-focus-visible` attributes
+- Explain which attributes `autoApplyPseudoStateAttributes` adds automatically
+- Update React to 19.2.8
+- Update Prettier to 3.9.6
+
 ## 3.60.1
 
 - Improve getting-started configuration example with more complete starter template
