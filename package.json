@@ -31,7 +31,7 @@
     "@docusaurus/faster": "^3.10.1",
     "@docusaurus/plugin-client-redirects": "^3.10.1",
     "@docusaurus/preset-classic": "3.10.1",
-    "@plausible-analytics/tracker": "^0.4.5",
+    "@plausible-analytics/tracker": "^0.4.6",
     "react": "^19.2.8",
     "react-dom": "^19.2.8"
   }
