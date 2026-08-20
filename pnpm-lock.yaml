@@ -34,8 +34,8 @@ importers:
         specifier: ^0.28.0
         version: 0.28.0
       happo:
-        specifier: 6.13.1
-        version: 6.13.1
+        specifier: 6.13.2
+        version: 6.13.2
       prettier:
         specifier: 3.9.6
         version: 3.9.6
@@ -3291,8 +3291,8 @@ packages:
   handle-thing@2.0.1:
     resolution: {integrity: sha512-9Qn4yBxelxoh2Ow62nP+Ka/kMnOXRi8BXnRaUwezLNhqelnN49xKz4F/dPP8OYLxLxq6JDtZb2i9XznUQbNPTg==}
 
-  happo@6.13.1:
-    resolution: {integrity: sha512-gdW83vl4pLHbUhv/MYSHhHHqlMCaysG6IReNq4Na1eWBA5kyBnZjuaJPWJq+nqq1w4BHG/gG1HVruc/0JXaAEg==}
+  happo@6.13.2:
+    resolution: {integrity: sha512-PvCunXmY2PJOPPaF5EtaSBQ4hEvmKDmH1+E3Gd1DfRC1OqoZNDbd1rnFbWewpkCxWx3dQwI1omtYa/Shwq9KFA==}
     engines: {node: ^22.18.0 || ^23.6.0 || >=24.0.0}
     hasBin: true
 
@@ -3648,8 +3648,8 @@ packages:
   joi@17.13.3:
     resolution: {integrity: sha512-otDA4ldcIx+ZXsKHWmp0YizCweVRZG96J10b0FevjfuncLO1oX59THoAmHkNubYJ+9gWsYsp5k8v4ib6oDv1fA==}
 
-  jose@6.2.8:
-    resolution: {integrity: sha512-Bsdjwm3Qsd/P0jR+BHDe3LytDfY7WBq2HmCCLIwuVRHMuEC9ae7/R474GIUdF1NgCyZjzVo/A9DOiOBtXq8ZoQ==}
+  jose@6.2.9:
+    resolution: {integrity: sha512-XrchZOFZUl/T3vTwRe8XK+cJrGtMF4th1ARnDfwbBXFKThGhlsxEE4Zu03AD/bjJSt/9jT/mxrOCkJWOg77aPA==}
 
   js-tokens@4.0.0:
     resolution: {integrity: sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==}
@@ -9839,13 +9839,13 @@ snapshots:
 
   handle-thing@2.0.1: {}
 
-  happo@6.13.1:
+  happo@6.13.2:
     dependencies:
       async-retry: 1.3.3
       base64-stream: 1.0.0
       empathic: 2.0.1
       fflate: 0.8.3
-      jose: 6.2.8
+      jose: 6.2.9
       limit-concur: 4.0.0
       mime-types: 3.0.2
       srcset: 5.0.3
@@ -10247,7 +10247,7 @@ snapshots:
       '@sideway/formula': 3.0.1
       '@sideway/pinpoint': 2.0.0
 
-  jose@6.2.8: {}
+  jose@6.2.9: {}
 
   js-tokens@4.0.0: {}
 
