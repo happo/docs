@@ -4,6 +4,11 @@ This repo is the home of happo.io documentation, served at docs.happo.io
 
 # Changelog
 
+## 3.60.4
+
+- Update Docusaurus to 3.10.2 with latest dependencies
+- Fix Docker container networking by binding Docusaurus serve to 0.0.0.0 instead of localhost
+
 ## 3.60.3
 
 - Update dependencies including happo, @plausible-analytics/tracker, and other packages
