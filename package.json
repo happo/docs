@@ -20,7 +20,7 @@
     "write-translations": "docusaurus write-translations"
   },
   "devDependencies": {
-    "esbuild": "^0.28.0",
+    "esbuild": "^0.28.2",
     "happo": "6.13.2",
     "prettier": "3.9.6",
     "release-with-ease": "^2.4.0"
