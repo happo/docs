@@ -4,6 +4,13 @@ This repo is the home of happo.io documentation, served at docs.happo.io
 
 # Changelog
 
+## 3.60.3
+
+- Update dependencies including happo, @plausible-analytics/tracker, and other packages
+- Improve getting started documentation with clearer first-time setup guidance
+- Add "How Happo works" section explaining key concepts like snapshots, targets, and reports
+- Simplify getting started by removing unnecessary npm script setup step
+
 ## 3.60.2
 
 - Document `data-happo-focus-visible` attribute for controlling focus-visible styles
