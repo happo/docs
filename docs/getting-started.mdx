@@ -6,46 +6,99 @@ sidebar_label: Getting started
 
 ```mdx-code-block
 import Installation from './_partials/installation.mdx';
+import Support from './_partials/support.mdx';
 ```
 
 Happo is a visual regression testing service with support for
 [multiple browsers](browsers.md) and [accessibility testing](accessibility.md).
-It helps you test the appearance of your application by automatically comparing
-the UI with a previous version.
+It renders your UI in real browsers, takes screenshots, and compares them
+against a previous version so you can see exactly what changed before it ships.
 [Set it up to run in CI](continuous-integration.md) and get build statuses
 posted directly to your pull requests.
 
-## Choose an integration
+This page walks you through a first-time setup, from account to first report.
 
-The first thing you want to do is to set up a test suite for Happo. A test suite
-consists of a set of components and variants of those components. There are many
-ways to do this, and it all depends on your existing tech stack, your
-application, experience with other test frameworks, and more.
+## How Happo works
 
-- A [Storybook](storybook.mdx) application can serve as the test suite driver
-  for Happo.
-- By integrating Happo with [Cypress](cypress.mdx) or
-  [Playwright](playwright.mdx), you can turn your end-to-end tests into a Happo
-  test suite.
-- If you want to test an existing (public) website, you can use
-  [the `pages` option](full-page.mdx).
-- If you want to create a custom test suite for React or another JS framework,
-  you can use the [Custom bundle integration](custom.mdx).
-- For native apps and others not running in a browser, use [the API](native.md)
-  directly.
+A few terms show up throughout these docs:
 
-## Basic setup
+- A **snapshot** is one screenshot of one **component** in one **variant** — for
+  example `Button` / `disabled`.
+- A **target** is a browser and screen size (or an
+  [accessibility check](accessibility.md)) to render in. Every snapshot is
+  rendered once per target.
+- A **test suite** is the full set of components and variants Happo renders. You
+  don't write it from scratch — an **integration** turns something you already
+  have (Storybook stories, Cypress or Playwright tests, a list of URLs) into
+  one.
+- A **report** is everything produced by a single run of your test suite.
+- A **comparison** diffs two reports against each other, usually the report for
+  your branch against the **baseline** report from your main branch.
 
-Independently of how you end up integrating Happo in your project, there are
-some steps you always need to take care of.
+A run looks like this: the `happo` CLI builds your test suite and uploads it,
+Happo renders every snapshot in every target on its own infrastructure, and the
+resulting report is compared against a baseline. You then
+[review the diffs](reviewing-diffs.md) and accept or reject them.
+
+Screenshots are taken asynchronously, outside of your test run. That means the
+CLI finishes before the screenshots are done, and prints a URL where you can
+follow along.
+
+## Before you begin
+
+- **A Happo account.** If you don't have one, sign up for a free trial at
+  [happo.io/signup](https://happo.io/signup).
+- **Your API tokens.** `apiKey` and `apiSecret` are available at
+  [happo.io/account](https://happo.io/account).
+- **A project with a `package.json`.** The `happo` CLI is an npm package. For
+  native apps and other environments that don't run in a browser, use
+  [the API](native.md) directly instead.
+
+> **Migrating?** If you're coming from the legacy `happo.io`, `happo-cypress`,
+> or `happo-playwright` packages, follow the
+> [migration guide](migrating-from-legacy-packages.md) instead of this page.
+
+## Step 1: Choose an integration
+
+The integration decides where your test suite comes from. Pick the one that
+matches what your project already has — you generally only need one.
+
+| If your project has…                    | Use                          |
+| --------------------------------------- | ---------------------------- |
+| Storybook                               | [Storybook](storybook.mdx)   |
+| Cypress end-to-end tests                | [Cypress](cypress.mdx)       |
+| Playwright end-to-end tests             | [Playwright](playwright.mdx) |
+| A public website you want to screenshot | [Pages](full-page.mdx)       |
+| None of the above, or a custom setup    | [Custom bundle](custom.mdx)  |
+
+Storybook is the quickest path if you already have stories: every story becomes
+a snapshot without any extra test code. The Cypress and Playwright integrations
+reuse your existing end-to-end tests, and you add screenshot calls at the points
+you care about. The [custom integration](custom.mdx) lets you build the test
+suite yourself with React or any other JS framework.
+
+The rest of this page uses Storybook for its examples, but the setup steps are
+the same for every integration.
+
+## Step 2: Install the CLI
 
 <Installation />
 
-You also need a [configuration](configuration.md) file. Save `happo.config.ts`
-(or `.js`) in the root directory of your project (right next to where the
-`package.json` file is located). Here's a complete example to get you started,
-using a [Storybook](storybook.mdx) integration with desktop and mobile
-screenshot targets plus an [accessibility](accessibility.md) target:
+It's also handy to add a `happo` script to `package.json` so you can run
+`npm run happo`:
+
+```json title="package.json"
+{
+  "scripts": { "happo": "happo" }
+}
+```
+
+## Step 3: Add a configuration file
+
+Save `happo.config.ts` (or `.js`) in the root directory of your project, right
+next to `package.json`. Here's a complete example to get you started, using a
+[Storybook](storybook.mdx) integration with desktop and mobile screenshot
+targets plus an [accessibility](accessibility.md) target:
 
 ```js title="happo.config.ts"
 import { defineConfig } from 'happo';
@@ -54,6 +107,7 @@ export default defineConfig({
   apiKey: process.env.HAPPO_API_KEY,
   apiSecret: process.env.HAPPO_API_SECRET,
 
+  // Optional. Omit it and the default project is used.
   project: 'default',
 
   integration: {
@@ -77,27 +131,94 @@ export default defineConfig({
 });
 ```
 
-> While you can specify `apiKey` and `apiSecret` directly as strings, this isn't
-> something we recommend. Use
-> [environment variables](configuration.md#apikey-and-apisecret) instead.
-
-The API tokens (`apiKey`, `apiSecret`) come from your account at
-[happo.io](https://happo.io/account). If you don't have an account already, you
-can sign up for a free trial at [happo.io/signup](https://happo.io/signup)
-
-> **Note:** If you're migrating from legacy Happo packages, see the
-> [migration guide](migrating-from-legacy-packages.md) for detailed
-> instructions.
+The `integration` option tells Happo where your test suite comes from — swap in
+[Cypress](cypress.mdx), [Playwright](playwright.mdx), or another
+[integration](#step-1-choose-an-integration) as needed. Each integration page
+lists the extra setup it needs, such as the `import 'happo/storybook/register'`
+line Storybook expects in `.storybook/preview.js`.
 
 Each entry under `targets` runs your test suite across a different browser,
-screen size, or check. Adjust these to match the browsers and viewports you care
-about—see [Supported browsers](browsers.md) for a full list of browsers we
-support and [Accessibility testing](accessibility.md) for more on accessibility
-targets. The `integration` option tells Happo where your test suite comes from;
-swap in [Cypress](cypress.mdx), [Playwright](playwright.mdx), or another
-[integration](#choose-an-integration) as needed.
+screen size, or check. Adjust these to match what you care about — see
+[Supported browsers](browsers.md) for the full list of browsers we support and
+[Accessibility testing](accessibility.md) for more on accessibility targets.
 
-## Creating your first report
+Start small. Every target multiplies the number of screenshots taken (and the
+quota used), so it's easier to add targets later than to trim a slow suite.
 
-All integrations have their own way of executing the test suite. Refer to the
-docs for the integration of your choice for an example of how to proceed.
+[Configuration](configuration.md) has the full list of options.
+
+## Step 4: Provide your API tokens
+
+The example above reads the tokens from environment variables. Set them in your
+shell before running Happo locally:
+
+```sh
+export HAPPO_API_KEY=your-api-key
+export HAPPO_API_SECRET=your-api-secret
+```
+
+While you can specify `apiKey` and `apiSecret` directly as strings in the config
+file, this isn't something we recommend — the tokens grant access to your Happo
+account, and config files tend to end up in version control. See
+[`apiKey` and `apiSecret`](configuration.md#apikey-and-apisecret) for details.
+
+If you leave both options out entirely, the CLI opens a browser and
+authenticates you interactively, which is convenient for a first local run.
+Interactive authentication does not work in CI, so you'll need real tokens there
+— see [Continuous Integration](continuous-integration.md).
+
+## Step 5: Create your first report
+
+Every integration has its own way of executing the test suite. For Storybook,
+Pages, and custom integrations, that's the `happo` command:
+
+```sh
+npm run happo
+```
+
+Cypress and Playwright wrap your existing test command instead, for example
+`npm run happo -- playwright test`. Refer to the docs for
+[your integration](#step-1-choose-an-integration) for the exact command.
+
+The CLI prints a couple of URLs when it's done:
+
+```
+[HAPPO] Async report URL: https://happo.io/a/8/async-reports/2387412
+[HAPPO] Async comparison URL: https://happo.io/a/8/jobs/2233741
+```
+
+Open the **async comparison URL** to watch the screenshots come in.
+
+Your first run has nothing to compare against, so there won't be any diffs — it
+establishes the baseline. The interesting part comes on the next run, once
+you've changed something. Make a small visual tweak to one of your components,
+run Happo again, and you should see it show up as a diff you can
+[review](reviewing-diffs.md).
+
+If the first run doesn't look right — missing styles, unexpected diffs, or an
+error from the CLI — head to [Debugging](debugging.md).
+
+## Step 6: Add Happo to CI
+
+Running Happo locally is useful while you iterate, but the real value comes from
+running it on every pull request, where Happo compares your branch against the
+baseline from your main branch and posts a status back to the PR.
+
+Follow the [Continuous Integration guide](continuous-integration.md) — it has
+ready-made examples for GitHub Actions, CircleCI, Travis CI, and Azure DevOps.
+Make sure the job also runs on pushes to your default branch, so PR builds have
+a baseline to compare against.
+
+## Next steps
+
+- [Reviewing diffs](reviewing-diffs.md) — how to accept and reject changes.
+- [Local development](local-development.md) — run a subset of your components
+  from your machine while iterating.
+- [Spurious diffs](spurious-diffs.md) and [Reporting flakes](reporting-flake.md)
+  — what to do about diffs that show up without a code change.
+- [Multiple projects](multi-project.md) — if you want to track more than one
+  test suite in the same Happo account.
+- [MCP server](mcp.md) — let an AI assistant inspect and resolve comparisons for
+  you.
+
+<Support />
