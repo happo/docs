@@ -33,4 +33,4 @@ RUN pnpm build
 
 EXPOSE 3344
 
-CMD ["pnpm", "serve", "--port", "3344"]
+CMD ["pnpm", "serve", "--host", "0.0.0.0", "--port", "3344"]
