@@ -84,15 +84,6 @@ the same for every integration.
 
 <Installation />
 
-It's also handy to add a `happo` script to `package.json` so you can run
-`npm run happo`:
-
-```json title="package.json"
-{
-  "scripts": { "happo": "happo" }
-}
-```
-
 ## Step 3: Add a configuration file
 
 Save `happo.config.ts` (or `.js`) in the root directory of your project, right
@@ -173,11 +164,11 @@ Every integration has its own way of executing the test suite. For Storybook,
 Pages, and custom integrations, that's the `happo` command:
 
 ```sh
-npm run happo
+npx happo
 ```
 
 Cypress and Playwright wrap your existing test command instead, for example
-`npm run happo -- playwright test`. Refer to the docs for
+`npx happo -- playwright test`. Refer to the docs for
 [your integration](#step-1-choose-an-integration) for the exact command.
 
 The CLI prints a couple of URLs when it's done:
