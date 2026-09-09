@@ -187,8 +187,9 @@ arguments when invoking the `happo` command:
 
 Your Happo account can be configured to post build statuses to your PRs/commits.
 Happo currently integrates with [GitHub](https://github.com),
-[Bitbucket](https://bitbucket.org), and [Azure DevOps](https://dev.azure.com/).
-See specific instructions for the different providers below.
+[GitLab](https://gitlab.com), [Bitbucket](https://bitbucket.org), and
+[Azure DevOps](https://dev.azure.com/). See specific instructions for the
+different providers below.
 
 ### GitHub
 
@@ -349,6 +350,46 @@ status) and accept the diffs.
 
 The status over on Azure DevOps will then change to success (green) for the
 PR/commit. If there are no diffs, the status is automatically set to success.
+
+### GitLab
+
+> This integration is experimental. Statuses, baselines, and merge request
+> events are in place; if something looks wrong, please get in touch.
+
+To allow Happo to post build statuses to your GitLab project, generate a
+[project access token](https://docs.gitlab.com/user/project/settings/project_access_tokens/)
+with the `api` scope.
+
+#### Step 1: Generate a project access token
+
+In GitLab, open the project → **Settings → Access tokens**. Create a token with
+the `api` scope. Note the project's numeric ID (shown on the project overview
+page) — Happo uses the ID rather than the path so the connection survives
+renaming or moving the project.
+
+#### Step 2: Fill in the form at Happo
+
+Once you have the token, go to the
+[GitLab integration page on happo.io](https://happo.io/gitlab-integration) and
+fill out the form. Leave **Instance URL** blank for gitlab.com; for a
+self-managed instance, enter the origin it is served from (for example
+`https://gitlab.example.com`).
+
+When the connection is working, Happo posts statuses to your commits and merge
+requests and uses Git history to find the right baseline report.
+
+Projects can override the account-default GitLab project ID from each project's
+edit page.
+
+#### Merge request events (optional)
+
+Without a webhook, Happo still posts statuses and finds baselines. With a
+webhook, Happo can also show who opened a merge request, cancel superseded runs
+when you push, and copy reports across on merge.
+
+In GitLab, go to **Settings → Webhooks**, add a webhook pointing at the URL
+shown on the Happo GitLab integration page with the **Merge request events**
+trigger, and paste the same secret token into the Happo form.
 
 ## Email notifications
 
