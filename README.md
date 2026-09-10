@@ -4,6 +4,13 @@ This repo is the home of happo.io documentation, served at docs.happo.io
 
 # Changelog
 
+## 3.60.5
+
+- Update release-with-ease to 2.6.0 for improved release automation
+- Update happo dependency to 6.14.0
+- Document experimental GitLab CI integration
+- Improve SSO setup guides with Happo's generated entity ID
+
 ## 3.60.4
 
 - Update Docusaurus to 3.10.2 with latest dependencies
