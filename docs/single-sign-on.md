@@ -23,6 +23,18 @@ The SSO settings for Happo are available on
 If you haven't already done so, you need to reach out to Happo to unlock the
 settings for your account.
 
+The SSO form shows two values for you to enter in your IdP. Both are generated
+by Happo, so you can copy them straight from the form:
+
+- **Entity ID** -- `https://happo.io/auth/a/<accountId>/sso/entityID`, where
+  `<accountId>` is your Happo account ID. This identifies Happo to your IdP.
+  IdPs call it "Identifier (Entity ID)", "Audience URI (SP Entity ID)" or just
+  "Entity ID". Happo only accepts sign-ins meant for this entity ID. Since it's
+  unique to your account, a sign-in your IdP issued for another application
+  can't be used to sign in to Happo.
+- **Callback URL** -- `https://happo.io/auth/a/<accountId>/sso/callback`. IdPs
+  call it "ACS URL", "Reply URL" or "Single sign-on URL".
+
 There are 6 fields to fill in:
 
 #### Domain
@@ -38,14 +50,15 @@ save a domain that is already in use elsewhere, the form will reject it. If you
 believe this is in error (e.g. you own the domain but a different account is
 holding it), reach out to support@happo.io and we'll help you reclaim it.
 
-#### Issuer ID
+#### Identity provider issuer
 
-This field is usually provided to you from your IdP when you configure/add Happo
-as an application. But it can also be something you choose yourself. In case the
-IdP doesn't provide one for you, try using
-`https://happo.io/auth/a/<accountId>/sso/entityID` here (where `<accountId>` is
-your Happo account ID -- find it in the location bar when in the account
-dashboard).
+The Entity ID of your IdP, sometimes called "Issuer" or "IdP Entity ID". When
+this is set, Happo rejects sign-ins issued by anyone else. Your IdP shows it
+next to the entry point and certificate, e.g. "Microsoft Entra Identifier" in
+Entra ID, "Issuer" in Okta and Auth0, and "Entity ID" in Google Workspace.
+
+This is not the same value as Happo's entity ID above. Happo's entity ID
+identifies Happo; this one identifies your IdP.
 
 #### Entry point
 
@@ -219,21 +232,22 @@ In the next screen, you'll have a chance to copy some things you will need
 later:
 
 - SSO URL
+- Entity ID
 - Certificate
 
-You can ignore the Entity ID here, we'll provide our own later on.
+This Entity ID is Google's own. Happo's entity ID goes in the next step.
 
 ##### Service provider details
 
 The Service provider here is Happo, so here we'll need some Happo specific
 values.
 
-For `ACS URL`, enter `https://happo.io/auth/a/<accountId>/sso/callback` where
-`<accountId>` is the ID of your Happo account (go to the Happo dashboard and
-copy it from the URL in the location bar).
+For `ACS URL`, enter the Callback URL from the Happo SSO form,
+`https://happo.io/auth/a/<accountId>/sso/callback`, where `<accountId>` is the
+ID of your Happo account.
 
-For `Entity ID`, enter `https://happo.io/auth/a/<accountId>/sso/entityID` where
-again, `accountId` is the ID of your Happo account.
+For `Entity ID`, enter the Entity ID from the Happo SSO form,
+`https://happo.io/auth/a/<accountId>/sso/entityID`.
 
 Leave `Start URL` empty and `Signed response` unchecked. Also leave `Name ID`
 untouched.
@@ -259,9 +273,9 @@ account, enter the following properties in the SSO form:
 - **Domain**: Your own domain, e.g. `example.com`. The domain is used to
   associate an SSO sign-in with a Happo account.
 
-- **Issuer ID**: Enter `https://happo.io/auth/a/<accountId>/sso/entityID`, where
-  `<accountId>` is your Happo account ID. This URL needs to be the same one you
-  configured on the Google side, as the `Entity ID`.
+- **Identity provider issuer**: Copy-paste the Entity ID from the Google
+  Identity Provider details (it looks like
+  `https://accounts.google.com/o/saml2?idpid=...`).
 
 - **Entry point**: Copy-paste the SSO URL from the SAML metadata on the Google
   side.
@@ -286,6 +300,8 @@ use [Auth0 specific instructions](#auth0-by-okta).
 >   on the Okta default; Happo only requires the assertion to be signed.
 > - The **Single sign-on URL** must be
 >   `https://happo.io/auth/a/<accountId>/sso/callback`.
+> - The **Audience URI (SP Entity ID)** must be
+>   `https://happo.io/auth/a/<accountId>/sso/entityID`.
 
 ### Setup on the Okta side
 
@@ -311,23 +327,13 @@ In the "Configure SAML" tab, enter the following values:
   `https://happo.io/auth/a/<accountId>/sso/callback` here, where `<accoundId>`
   is the ID of your Happo account. To find the account ID, go to your Happo
   dashboard and copy the numeric ID from the location bar URL.
-- **Audience URI** -- Enter any URI that will validate the form here, e.g.
-  "http://happo.io". We will come back and change this later.
+- **Audience URI (SP Entity ID)** -- Enter the Entity ID from the Happo SSO
+  form, `https://happo.io/auth/a/<accountId>/sso/entityID`.
 - Under **Attribute Statements**, set Name to `emailaddress` and select
   `user.email` as the Value.
 
 Finish the SAML settings by going through the "Feedback" section and clicking
 "Finish".
-
-#### Transfer issuer URI to Audience URI
-
-In the "Sign On" tab for the Happo application you've just created in Okta,
-click "More details" in the SAML 2.0 box. Copy the value for `Issuer` and go
-back to Configure SAML settings via the "General" tab followed by clicking the
-"Edit" button in the "SAML settings" box. Click "Next" to skip to the "Configure
-SAML" tab.
-
-Paste the `Issuer` value into the `Audience URI` field and save that change.
 
 #### Assign users to Happo application
 
@@ -350,8 +356,9 @@ account, enter the following properties in the SSO form:
 - **Domain**: Your own domain, e.g. `example.com`. The domain is used to
   associate an SSO sign-in with a Happo account.
 
-- **Issuer ID**: Copy-paste the "Issuer" value that you have in the SAML 2.0
-  section on the Okta side.
+- **Identity provider issuer**: Copy-paste the "Issuer" value that you have in
+  the SAML 2.0 section on the Okta side (it looks like
+  `http://www.okta.com/...`).
 
 - **Entry point**: Copy-paste the "Sign on URL" from the SAML 2.0 section on the
   Okta side.
@@ -384,7 +391,8 @@ application type.
 Under "Addons" for the new application you just created, enable "SAML2 Web App".
 Copy the following properties:
 
-- **Issuer** -- We're going to use that on the Happo side as the Issuer ID.
+- **Issuer** -- We're going to use that on the Happo side as the Identity
+  provider issuer.
 - **Identity Provider Login URL** -- This is the Entry point we need for Happo.
 - Download the **Identity Provider Certificate**. We're going to use that on the
   Happo side later.
@@ -395,6 +403,15 @@ In the SAML2 Web App dialog, switch to the "Settings" tab. Under **Application
 Callback URL**, enter `https://happo.io/auth/a/<accountId>/sso/callback`, where
 `<accountId>` is the ID of your Happo account. To find the account ID, go to
 your Happo dashboard and copy the numeric ID from the location bar URL.
+
+In the **Settings** JSON below it, set `audience` to the Entity ID from the
+Happo SSO form:
+
+```json
+{
+  "audience": "https://happo.io/auth/a/<accountId>/sso/entityID"
+}
+```
 
 Scroll down and Save/Enable the SAML2 Web App settings.
 
@@ -433,8 +450,8 @@ account, enter the following properties in the SSO form:
 - **Domain**: Your own domain, e.g. `example.com`. The domain is used to
   associate an SSO sign-in with a Happo account.
 
-- **Issuer ID**: Copy-paste the "Issuer" value that you got from Auth0 in the
-  SAML2 Web App dialog.
+- **Identity provider issuer**: Copy-paste the "Issuer" value that you got from
+  Auth0 in the SAML2 Web App dialog (it looks like `urn:<tenantId>.auth0.com`).
 
 - **Entry point**: Copy-paste the "Identity Provider Login URL" from the SAML2
   Web App dialog on the Auth0 side.
@@ -456,8 +473,9 @@ Here's a guide on how to use EntraID as the IdP.
 
 > **Important toggles for Entra ID**
 >
-> - The **Identifier (Entity ID)** you configure in Entra must equal the
->   **Issuer ID** you save on the Happo side -- they have to match exactly.
+> - The **Identifier (Entity ID)** you configure in Entra must be the Entity ID
+>   shown in the Happo SSO form,
+>   `https://happo.io/auth/a/<accountId>/sso/entityID`.
 > - Happo verifies the **assertion** signature, not the response. By default
 >   Entra signs the response only. In the **SAML Signing Certificate** section,
 >   open **Edit** and change **Signing Option** to **Sign SAML response and
@@ -484,12 +502,11 @@ EntraID.
 1. Inside the newly created application, go to **Single sign-on** → Select
    **SAML**.
 2. Basic SAML Configuration:
-   - **Identifier (Entity ID)**: Set this to a unique identifier for your
-     service, such as `https://happo.io/saml/metadata`.
-   - **Reply URL (Assertion Consumer Service URL)**: Enter
-     `https://happo.io/auth/a/<accountId>/sso/callback` here, where
-     `<accoundId>` is the ID of your Happo account. To find the account ID, go
-     to your Happo dashboard and copy the numeric ID from the location bar URL.
+   - **Identifier (Entity ID)**: Enter the Entity ID from the Happo SSO form,
+     `https://happo.io/auth/a/<accountId>/sso/entityID`, where `<accountId>` is
+     the ID of your Happo account.
+   - **Reply URL (Assertion Consumer Service URL)**: Enter the Callback URL from
+     the Happo SSO form, `https://happo.io/auth/a/<accountId>/sso/callback`.
    - **Sign on URL**: Set it to `https://happo.io/login`.
 
 #### Assign users to Happo application
@@ -526,8 +543,9 @@ account, enter the following properties in the SSO form:
 - **Domain**: Your own domain, e.g. `example.com`. The domain is used to
   associate an SSO sign-in with a Happo account.
 
-- **Issuer ID**: Enter the same value as you did for **Identifier (Entity ID)**
-  over at EntraID (e.g. `https://happo.io/saml/metadata`)
+- **Identity provider issuer**: Copy-paste the value for **Microsoft Entra
+  Identifier** from the same "Set Up" section as the Login URL (it looks like
+  `https://sts.windows.net/<tenantId>/`).
 
 - **Entry point**: Copy-paste the value for **Login URL** that you find in
   EntraID for the SAML application you created, in section "Set Up SAML Login"
