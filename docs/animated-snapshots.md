@@ -59,11 +59,11 @@ use the browser's animation APIs at all (such as Lottie).
 | Kind                                                     | Captured                                                            |
 | -------------------------------------------------------- | ------------------------------------------------------------------- |
 | CSS animations (`@keyframes`)                            | Yes                                                                 |
-| CSS transitions                                          | Yes, when something starts them. See [`trigger`](#trigger)         |
+| CSS transitions                                          | Yes, when something starts them. See [`trigger`](#trigger)          |
 | `element.animate()` (Web Animations API)                 | Yes                                                                 |
 | SVG SMIL animations (`<animate>`, `<animateTransform>`…) | Yes                                                                 |
 | `requestAnimationFrame` loops                            | Yes, with [the virtual clock](#the-virtual-clock)                   |
-| Lottie, canvas engines, anything with its own frame loop | Yes, with a [driver](#animation-drivers)                                      |
+| Lottie, canvas engines, anything with its own frame loop | Yes, with a [driver](#animation-drivers)                            |
 | `<video>`                                                | Yes, with the built-in [`video` driver](#the-built-in-video-driver) |
 | Animated GIFs                                            | No. They're shown on their first frame, as in any Happo snapshot    |
 | Animated WebP and APNG images                            | No. Happo doesn't control them, so replace them with a still image  |
@@ -474,8 +474,8 @@ Things to know:
 - Infinite animations never finish, so they don't start the next stage.
 - Stages can't be combined with the [virtual clock](#the-virtual-clock). With
   `clock: 'virtual'`, only the first stage is captured, with a warning.
-- A [driver](#animation-drivers) can decide how its animations finish a stage, with a
-  `finish()` on its handles.
+- A [driver](#animation-drivers) can decide how its animations finish a stage,
+  with a `finish()` on its handles.
 
 ### `sampling`
 
@@ -559,12 +559,12 @@ animate: {
 }
 ```
 
-| Check           | Meaning                                                                    |
-| --------------- | -------------------------------------------------------------------------- |
-| `minAnimations` | At least this many animations found (SVG SMIL roots count)                 |
-| `minFrames`     | At least this many distinct frames in the APNG                             |
-| `triggered`     | `true` requires the trigger to have matched an element                     |
-| `minStages`     | At least this many [stages](#stages) captured                  |
+| Check           | Meaning                                                                              |
+| --------------- | ------------------------------------------------------------------------------------ |
+| `minAnimations` | At least this many animations found (SVG SMIL roots count)                           |
+| `minFrames`     | At least this many distinct frames in the APNG                                       |
+| `triggered`     | `true` requires the trigger to have matched an element                               |
+| `minStages`     | At least this many [stages](#stages) captured                                        |
 | `drivers`       | At least this many animations per [driver](#animation-drivers), e.g. `{ lottie: 1 }` |
 
 When a check fails, `onExpectationFailure` decides what happens:
@@ -585,8 +585,8 @@ opt out with `expect: null`.
 
 _Available since happo v6.17.0._ Type: `string[] | null`. Default: `null`.
 
-Which [drivers](#animation-drivers) to use. `null` uses every driver you registered.
-Naming one is also how you turn on a built-in driver, like
+Which [drivers](#animation-drivers) to use. `null` uses every driver you
+registered. Naming one is also how you turn on a built-in driver, like
 [`video`](#the-built-in-video-driver).
 
 ### `setup` and `verify`
@@ -684,8 +684,8 @@ Two things to keep in mind:
   counts as something to drive. Static stories still come out as still images,
   but only after being captured frame by frame.
 - A story that only needs seeking can set `clock: 'off'`, for
-  [`stages`](#stages) or to skip the wider capture. The clock stays
-  armed on the page; that story just doesn't use it.
+  [`stages`](#stages) or to skip the wider capture. The clock stays armed on the
+  page; that story just doesn't use it.
 
 ## The motion environment
 
@@ -840,7 +840,7 @@ A handle has:
 | `target`     | Recommended | What the handle drives. `discover` can be called once per frame, and a handle whose `target` was seen before is the same animation found again |
 | `pause()`    | No          | Stop the animation moving on its own                                                                                                           |
 | `release()`  | No          | Hand it back after the capture                                                                                                                 |
-| `finish()`   | No          | How to end it when a [stage](#stages) is done. Without it, it's seeked to its end                                                  |
+| `finish()`   | No          | How to end it when a [stage](#stages) is done. Without it, it's seeked to its end                                                              |
 | `repeats`    | No          | `true` for a loop, which is captured across one iteration                                                                                      |
 | `name`       | No          | Shown in the trace and in expectation failures                                                                                                 |
 | `element`    | No          | The element it renders into; shown in the trace                                                                                                |
@@ -953,8 +953,8 @@ same frames on every run:
   fires `animationend` just as playing it would. A listener that reacted, for
   example by removing a class or swapping content, would change every frame, so
   `animation*` and `transition*` events are kept from the page during a capture.
-  (With [`stages`](#stages), the ones a finished stage missed are
-  delivered when it ends.)
+  (With [`stages`](#stages), the ones a finished stage missed are delivered when
+  it ends.)
 - **Smooth scrolling is off**, so a `scrollTo()` from a trigger lands
   immediately instead of being caught part-way.
 
@@ -984,16 +984,16 @@ asked for.
 
 ## Troubleshooting
 
-| Symptom                                             | Likely cause and fix                                                                                                                                                                                                  |
-| --------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Symptom                                             | Likely cause and fix                                                                                                                                                                                                 |
+| --------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | A still image where you expected an animation       | The page turned its animation off under reduced motion: set `prefersReducedMotion: false` on `animate`. Or a transition needs a [trigger](#trigger). Add `expect: { minAnimations: 1 }` to catch this in the report. |
-| A `requestAnimationFrame` animation comes out still | Arm `clock: 'virtual'` on the target, and turn capture on for the story with a `duration`.                                                                                                                            |
-| Only the first part of a sequence is captured       | Later steps start when earlier ones finish. Use [`stages`](#stages) with `expect: { minStages }`.                                                                                                         |
-| Staggered items are missing                         | They mount after the capture starts. Use [`discovery`](#discovery).                                                                                                                                  |
-| Your own "disable animations" CSS still wins        | Scope it with `html:not([data-happo-animate])`. See [the motion environment](#the-motion-environment).                                                                                                                |
-| Lottie or canvas animations don't move              | They need a [driver](#animation-drivers).                                                                                                                                                                                       |
-| The snapshot is a box describing a failure          | An [expectation](#expect-and-onexpectationfailure) wasn't met. The box lists what was expected and what was found.                                                                                                                       |
-| Too slow or too big                                 | Lower `fps` or `duration` first. See [how to choose values](#how-to-choose-values).                                                                                                                                        |
+| A `requestAnimationFrame` animation comes out still | Arm `clock: 'virtual'` on the target, and turn capture on for the story with a `duration`.                                                                                                                           |
+| Only the first part of a sequence is captured       | Later steps start when earlier ones finish. Use [`stages`](#stages) with `expect: { minStages }`.                                                                                                                    |
+| Staggered items are missing                         | They mount after the capture starts. Use [`discovery`](#discovery).                                                                                                                                                  |
+| Your own "disable animations" CSS still wins        | Scope it with `html:not([data-happo-animate])`. See [the motion environment](#the-motion-environment).                                                                                                               |
+| Lottie or canvas animations don't move              | They need a [driver](#animation-drivers).                                                                                                                                                                            |
+| The snapshot is a box describing a failure          | An [expectation](#expect-and-onexpectationfailure) wasn't met. The box lists what was expected and what was found.                                                                                                   |
+| Too slow or too big                                 | Lower `fps` or `duration` first. See [how to choose values](#how-to-choose-values).                                                                                                                                  |
 
 ## TypeScript
 

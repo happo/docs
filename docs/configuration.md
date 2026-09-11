@@ -119,7 +119,7 @@ To capture how something moves instead of freezing it, see
 
 Capture animations as animated PNGs instead of freezing them. `'auto'` captures
 an animated snapshot only when the page has an animation Happo can drive, and
-takes an ordinary still otherwise, so it's safe to enable for a whole target:
+takes an ordinary still image otherwise, so it's safe to enable for a whole target:
 
 ```js title="happo.config.ts"
 import { defineConfig } from 'happo';
