@@ -29,15 +29,25 @@ export default defineConfig({
     chrome: {
       type: 'chrome',
       viewport: '1024x768',
-      animate: 'auto',
+      animate: {
+        mode: 'auto',
+        prefersReducedMotion: false,
+      },
     },
   },
 });
 ```
 
-`'auto'` captures an animated snapshot only when the page has an animation Happo
-can drive, and takes an ordinary still of everything else. That makes it safe to
-enable for a whole target: static stories cost nothing extra.
+`mode: 'auto'` captures an animated snapshot only when the page has an animation
+Happo can drive, and takes an ordinary still of everything else. That makes it
+safe to enable for a whole target: static stories cost nothing extra.
+
+`prefersReducedMotion: false` is there because targets prefer reduced motion by
+default, and components that respect that preference turn their animations off,
+which would leave nothing to capture. It applies only to animated captures;
+every other snapshot still renders under the target's setting. Leave it out if
+you want to capture the reduced-motion version instead. See
+[reduced motion](#reduced-motion).
 
 Most animations need nothing more. The rest of this page covers the ones that
 do: transitions that need to be triggered, animations that start late or start
@@ -123,40 +133,42 @@ export default defineConfig({
 
 ## Options
 
-| Option                 | Type                                                                    | Default                          | Since   |
-| ---------------------- | ----------------------------------------------------------------------- | -------------------------------- | ------- |
-| `mode`                 | `'off'` \| `'auto'` \| `'always'`                                       | `'off'`                          | v6.15.0 |
-| `duration`             | `number` \| `'auto'`                                                    | `'auto'`                         | v6.15.0 |
-| `maxDuration`          | `number`                                                                | `4000`                           | v6.15.0 |
-| `fps`                  | `number`                                                                | `10`                             | v6.15.0 |
-| `maxFrames`            | `number`                                                                | `24`                             | v6.15.0 |
-| `clock`                | `'off'` \| `'virtual'`                                                  | `'off'`                          | v6.15.0 |
-| `trigger`              | `AnimateTrigger` \| function \| `null`                                  | `null`                           | v6.15.0 |
-| `loop`                 | `number`                                                                | `0`                              | v6.15.0 |
-| `maxBytes`             | `number`                                                                | `4000000`                        | v6.15.0 |
-| `prefersReducedMotion` | `boolean` \| `null`                                                     | `null`                           | v6.16.0 |
-| `discovery`            | `number` \| `{ settleMs, maxFrames }`                                   | `{ settleMs: 0, maxFrames: 90 }` | v6.17.0 |
-| `sampling`             | `'uniform'` \| `{ split, front, tail }` \| `{ times }`                  | `'uniform'`                      | v6.17.0 |
-| `root`                 | `string` \| `null`                                                      | `null`                           | v6.17.0 |
-| `expect`               | `{ minAnimations, minFrames, triggered, minStages, drivers }` \| `null` | `null`                           | v6.17.0 |
-| `onExpectationFailure` | `'image'` \| `'fail'` \| `'warn'`                                       | `'image'`                        | v6.17.0 |
-| `stages`               | `number` \| `{ max, waitMs }`                                           | `{ max: 1, waitMs: 1000 }`       | v6.17.0 |
-| `drivers`              | `string[]` \| `null`                                                    | `null`                           | v6.17.0 |
-| `setup` (story only)   | function                                                                | —                                | v6.17.0 |
-| `verify` (story only)  | function                                                                | —                                | v6.17.0 |
+| Option                               | Type                                                                    | Default                          | Since   |
+| ------------------------------------ | ----------------------------------------------------------------------- | -------------------------------- | ------- |
+| `mode`                               | `'off'` \| `'auto'` \| `'always'`                                       | `'off'`                          | v6.15.0 |
+| `duration`                           | `number` \| `'auto'`                                                    | `'auto'`                         | v6.15.0 |
+| `maxDuration`                        | `number`                                                                | `4000`                           | v6.15.0 |
+| `fps`                                | `number`                                                                | `10`                             | v6.15.0 |
+| `maxFrames`                          | `number`                                                                | `24`                             | v6.15.0 |
+| `clock`                              | `'off'` \| `'virtual'`                                                  | `'off'`                          | v6.15.0 |
+| `trigger`                            | `AnimateTrigger` \| `null`                                              | `null`                           | v6.15.0 |
+| `loop`                               | `number`                                                                | `0`                              | v6.15.0 |
+| `maxBytes`                           | `number`                                                                | `4000000`                        | v6.15.0 |
+| `prefersReducedMotion`               | `boolean` \| `null`                                                     | `null`                           | v6.16.0 |
+| `discovery`                          | `number` \| `{ settleMs, maxFrames }`                                   | `{ settleMs: 0, maxFrames: 90 }` | v6.17.0 |
+| `sampling`                           | `'uniform'` \| `{ split, front, tail }` \| `{ times }`                  | `'uniform'`                      | v6.17.0 |
+| `root`                               | `string` \| `null`                                                      | `null`                           | v6.17.0 |
+| `expect`                             | `{ minAnimations, minFrames, triggered, minStages, drivers }` \| `null` | `null`                           | v6.17.0 |
+| `onExpectationFailure`               | `'image'` \| `'fail'` \| `'warn'`                                       | `'image'`                        | v6.17.0 |
+| `stages`                             | `number` \| `{ max, waitMs }`                                           | `{ max: 1, waitMs: 1000 }`       | v6.17.0 |
+| `drivers`                            | `string[]` \| `null`                                                    | `null`                           | v6.17.0 |
+| `trigger` as a function (story only) | function                                                                | —                                | v6.17.0 |
+| `setup` (story only)                 | function                                                                | —                                | v6.17.0 |
+| `verify` (story only)                | function                                                                | —                                | v6.17.0 |
 
 What each one does:
 
 - **`mode`** — `'off'` takes a still. `'auto'` captures an animation when there
   is one Happo can drive, and a still otherwise. `'always'` captures even when
-  nothing on the page reports how long it runs, using `maxDuration` as the
-  window — needed for `requestAnimationFrame` loops and SMIL.
+  nothing on the page reports how long it runs. SMIL animations and stories on
+  the [virtual clock](#the-virtual-clock) are captured under `'auto'` too, even
+  though neither can report a length.
 - **`duration`** — the capture window in milliseconds, or `'auto'` to take it
   from the animations on the page (the longest one wins).
-- **`maxDuration`** — the ceiling for a derived duration, and the window used by
-  `mode: 'always'`.
-- **`fps`** — samples per _second_ of animation. 500 ms at `fps: 6` is 3 frames,
-  not 6.
+- **`maxDuration`** — the ceiling for every capture window, whether you set
+  `duration` or not. It's also the window used when `duration` is `'auto'` but
+  nothing reports a length: SMIL, the virtual clock, and `mode: 'always'`.
+- **`fps`** — samples per second of animation.
 - **`maxFrames`** — a hard cap on the number of frames. Wins over
   `fps × duration`. Between 2 and 120.
 - **`clock`** — `'virtual'` replaces the page's clock so `requestAnimationFrame`
@@ -201,8 +213,9 @@ little more than a single still.
 - **`fps`** — use the lowest rate that still reads as motion. For most UI
   animation (a toast sliding in, a spinner, a progress bar) 8–12 is plenty.
 - **`duration`** — leave it at `'auto'`; a hand-set duration goes stale when the
-  CSS changes. Set it for SMIL, `requestAnimationFrame` loops, and long videos,
-  which can't report a useful one.
+  CSS changes. Set it for SMIL and `requestAnimationFrame` loops, which can't
+  report their length (so the window would otherwise be `maxDuration`), and for
+  long videos.
 - **`maxDuration`** — a safety net for long or infinite animations, not a
   target. Lowering it below an animation's real length captures the opening and
   stops.
@@ -305,13 +318,33 @@ export const Filling = {
 };
 ```
 
-- Use `mode: 'always'` with it: a `requestAnimationFrame` loop never reports a
-  duration of its own, so `'auto'` would find nothing to capture.
+- A `requestAnimationFrame` loop can't report its length, so the window is
+  `duration` if you set it and `maxDuration` otherwise. Set `duration`.
 - A story asking for `clock: 'virtual'` on a target that didn't arm it gets a
   warning in the run log, and the capture falls back to seeking.
 - The virtual clock costs a little more than seeking, which is why it's opt-in.
 - It has no effect for plain HTML/CSS snapshots, which don't run scripts.
 - It can't be combined with [`stages`](#chained-animations).
+
+### Mixing clock-driven and CSS animations
+
+One target can serve both. While the clock steps a story's
+`requestAnimationFrame` loop, its CSS animations, transitions and
+`element.animate()` animations are still seeked to each frame's time. So a story
+with both kinds is captured in step, and a story with only CSS animations works
+too: it just goes through the clock's capture path, which captures the whole
+page and crops afterwards.
+
+Two things to keep in mind:
+
+- Arm the clock with capture off on the target (`animate: { clock: 'virtual' }`,
+  as above) and turn capture on per story. If the target also sets
+  `mode: 'auto'`, every story gets a window of `maxDuration`, because the clock
+  counts as something to drive. Static stories still come out as stills, but
+  only after being captured frame by frame.
+- A story that only needs seeking can set `clock: 'off'` — for
+  [`stages`](#chained-animations), or to skip the wider capture. The clock stays
+  armed on the page; that story just doesn't use it.
 
 ## Animations that start late
 
@@ -824,7 +857,7 @@ for.
 | Symptom                                             | Likely cause and fix                                                                                                                                                                                                   |
 | --------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | A still where you expected an animation             | The page turned its animation off under reduced motion — set `prefersReducedMotion: false` on `animate`. Or a transition needs a [trigger](#triggers). Add `expect: { minAnimations: 1 }` to catch this in the report. |
-| A `requestAnimationFrame` animation comes out still | Arm `clock: 'virtual'` on the target and use `mode: 'always'` on the story.                                                                                                                                            |
+| A `requestAnimationFrame` animation comes out still | Arm `clock: 'virtual'` on the target, and turn capture on for the story with a `duration`.                                                                                                                             |
 | Only the first part of a sequence is captured       | Later steps start when earlier ones finish — use [`stages`](#chained-animations) with `expect: { minStages }`.                                                                                                         |
 | Staggered items are missing                         | They mount after the capture starts — use [`discovery`](#animations-that-start-late).                                                                                                                                  |
 | Your own "disable animations" CSS still wins        | Scope it with `html:not([data-happo-animate])` — see [the motion environment](#the-motion-environment).                                                                                                                |
@@ -844,9 +877,11 @@ import type {
   AnimateTrace,
   AnimationDriver,
   AnimationDriverHandle,
+  StoryAnimateConfig,
   StoryAnimateOptions,
 } from 'happo';
 ```
 
-`StoryAnimateOptions` is `AnimateOptions` plus the story-only hooks, and is what
-`parameters.happo.animate` accepts.
+`parameters.happo.animate` accepts a `StoryAnimateConfig`: either a
+`StoryAnimateOptions` object (`AnimateOptions` plus the story-only hooks) or one
+of the [shorthands](#shorthands). Targets and pages take an `AnimateConfig`.
