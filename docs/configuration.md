@@ -448,7 +448,7 @@ When `true` (default behavior), media queries that use
 
 To override this for [animated snapshots](animated-snapshots.md) only, set
 `prefersReducedMotion` inside `animate` instead. See
-[reduced motion](animated-snapshots.md#reduced-motion).
+[reduced motion](animated-snapshots.md#prefersreducedmotion).
 
 ### Target `allowPointerEvents`
 
