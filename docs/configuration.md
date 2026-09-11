@@ -110,6 +110,35 @@ export default defineConfig({
 });
 ```
 
+To capture how something moves instead of freezing it, see
+[`animate`](#target-animate).
+
+### Target `animate`
+
+*Available since happo v6.15.0.*
+
+Capture animations as animated PNGs instead of freezing them. `'auto'` captures
+an animated snapshot only when the page has an animation Happo can drive, and
+takes an ordinary still otherwise, so it's safe to enable for a whole target:
+
+```js title="happo.config.ts"
+import { defineConfig } from 'happo';
+
+export default defineConfig({
+  targets: {
+    chrome: {
+      type: 'chrome',
+      viewport: '1024x768',
+      animate: 'auto',
+    },
+  },
+});
+```
+
+`animate` can also be set on individual Storybook stories and pages, and takes
+an object with options for frame rate, duration, triggers, and more. See
+[Animated snapshots](animated-snapshots.md) for the full list of options.
+
 ### Target `chunks`
 
 *Available since happo v6.0.0. Automatic chunk sizing available since happo v6.4.1.*
@@ -416,6 +445,10 @@ When `true` (default behavior), media queries that use
   }
 }
 ```
+
+To override this for [animated snapshots](animated-snapshots.md) only, set
+`prefersReducedMotion` inside `animate` instead. See
+[reduced motion](animated-snapshots.md#reduced-motion).
 
 ### Target `allowPointerEvents`
 
