@@ -46,6 +46,15 @@ If a component depends on external data (e.g. via an API), consider splitting
 out the data fetching from the visual component and test the visual component
 without data fetching, injecting the data needed to render it.
 
+### External requests
+
+Anything your snapshots load from a third party — fonts, scripts, images —
+changes when that third party changes, and fails when it is down. The
+[`allowedHostnames` target option](configuration.md#target-allowedhostnames)
+lets you see and control what your snapshots reach for. Every run logs the
+external hostnames it requested, so you can start by reading that list and
+working out which entries you'd rather serve yourself.
+
 ### CI merge commits and mixed baselines
 
 You can sometimes see diffs where the "after" image includes changes from a
