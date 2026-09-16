@@ -4,6 +4,13 @@ This repo is the home of happo.io documentation, served at docs.happo.io
 
 # Changelog
 
+## 3.60.7
+
+- Update dependencies to address vulnerabilities
+- Document allowedHostnames configuration option
+- Document previewOnly configuration option
+- Document navigatePerStory configuration option
+
 ## 3.60.6
 
 - Document animated snapshots feature
