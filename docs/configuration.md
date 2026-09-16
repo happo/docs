@@ -519,6 +519,96 @@ export default defineConfig({
 });
 ```
 
+### Target `allowedHostnames`
+
+*Available since happo v6.19.0.*
+
+Restrict which hostnames the browser is allowed to make HTTP(S) requests to
+while rendering. Anything not covered by the list is refused before it leaves
+the browser.
+
+A snapshot that loads a font, a script, or an image from somewhere else changes
+when that somewhere else does, and fails when it is down. The fewer hostnames a
+target needs, the more reproducible its snapshots are.
+
+```js title="happo.config.ts"
+import { defineConfig } from 'happo';
+
+export default defineConfig({
+  targets: {
+    chrome: {
+      type: 'chrome',
+      viewport: '1024x768',
+      allowedHostnames: ['fonts.gstatic.com', '*.mycdn.example.com'],
+    },
+  },
+});
+```
+
+Entries are hostnames, matched exactly. Prefix one with `*.` to cover
+subdomains: `*.example.com` covers `cdn.example.com` but not `example.com`
+itself, so list both if you need both. Ports and paths are ignored, so
+`https://example.com/assets` and `example.com` mean the same thing.
+
+Requests to the Happo worker's own server — the page being rendered and
+everything in your uploaded package — are always allowed and don't belong in the
+list. Neither do `data:` and `blob:` URLs, which never hit the network.
+
+Leaving the option unset is not the same as setting it to an empty array:
+
+- **Unset** (the default) blocks nothing.
+- **`allowedHostnames: []`** blocks every external request. This is a good goal
+  for a self-contained test suite, and a good way to find out what your
+  snapshots depend on.
+
+You don't have to guess what to put in the list. Every run logs the external
+hostnames its pages reached for, whether or not a list is set, so you can run
+once without one and read them off the snap-request's logs in happo.io:
+
+```
+External requests: 12 to 2 hostnames: fonts.gstatic.com (x11), cdn.example.com
+```
+
+Once a list is in force, the same line splits into what was allowed and what was
+blocked. That's the line to read when a snapshot comes back missing something.
+
+**Important:** With the [pages integration](#pages-integration-options), the
+pages you screenshot are loaded over the network like any other external
+request. If you set `allowedHostnames`, you **must** include the hostnames of
+your page URLs, or those pages will no longer load and their snapshots will
+fail.
+
+```js title="happo.config.ts"
+import { defineConfig } from 'happo';
+
+export default defineConfig({
+  targets: {
+    chrome: {
+      type: 'chrome',
+      viewport: '1024x768',
+      // 'example.com' is here because the pages below are served from it
+      allowedHostnames: ['example.com', 'fonts.gstatic.com'],
+    },
+  },
+
+  integration: {
+    type: 'pages',
+    pages: [
+      { url: 'https://example.com/home', title: 'Home Page' },
+      { url: 'https://example.com/about', title: 'About Page' },
+    ],
+  },
+});
+```
+
+**Note:** This option is experimental. Its shape may change in a future release.
+
+**Note:** This option only applies to desktop browsers (Chrome, Firefox, Edge,
+Safari, and accessibility). It is not supported on `ios-safari` or
+`ipad-safari`, where the browser can't be pointed at the proxy that does the
+blocking. Those targets log that the option had no effect rather than leaving
+you to assume that it did.
+
 ## `project`
 
 *Available since happo v6.0.0.*
@@ -702,6 +792,67 @@ export default defineConfig({
 });
 ```
 
+#### `integration.previewOnly`
+
+*Available since happo v6.17.0.*
+
+Build the Storybook preview without the manager UI (Storybook's
+`--preview-only`), which typically makes the uploaded package several times
+smaller. Defaults to `true`.
+
+Happo only ever loads `iframe.html`, so the manager is dead weight as far as
+rendering goes. Set this option to `false` if you download built packages and
+open them locally to debug: without the manager, a package is no longer a
+browsable Storybook, and reaching a story means visiting
+`iframe.html?id=<storyId>&viewMode=story` by hand.
+
+```js title="happo.config.ts"
+import { defineConfig } from 'happo';
+
+export default defineConfig({
+  integration: {
+    type: 'storybook',
+    previewOnly: false,
+  },
+
+  // ... rest of config
+});
+```
+
+**Note:** This option is ignored on Storybook v8, which has no `--preview-only`
+flag. If you set `previewOnly: true` explicitly on v8, Happo logs that it was
+ignored and builds the package as usual.
+
+#### `integration.navigatePerStory`
+
+*Available since happo v6.15.0.*
+
+When set to `true`, each story is rendered by navigating directly to
+`iframe.html?id=<storyId>` instead of loading `iframe.html` once and paging
+through stories client-side. Defaults to `false`.
+
+This is slower, since it means one navigation per story, but it gives every
+story a fresh page load. That can help with Storybooks where state leaks between
+stories, e.g. through global CSS, singletons, or other side effects that the
+default in-page navigation doesn't reset.
+
+```js title="happo.config.ts"
+import { defineConfig } from 'happo';
+
+export default defineConfig({
+  integration: {
+    type: 'storybook',
+    navigatePerStory: true,
+  },
+
+  // ... rest of config
+});
+```
+
+**Note:** This option requires an `index.json` or `stories.json` file in the
+built Storybook package. If that file is missing, Happo falls back to the
+default navigation strategy.
+
 #### `integration.skip`
 
 *Available since happo v6.0.0.*
@@ -855,6 +1006,12 @@ behavior.
 
 **Note:** The URLs to the website need to be publicly available, otherwise Happo
 workers won't be able to access the pages.
+
+**Note:** If you use the
+[`allowedHostnames` target option](#target-allowedhostnames), the hostnames of
+these page URLs need to be in that list. They are loaded over the network like
+any other external request, so a list that leaves them out will stop these pages
+from loading.
 
 ```js title="happo.config.ts"
 import { defineConfig } from 'happo';

@@ -81,6 +81,14 @@ These options are available to the `integration` field in `happo.config.ts`:
 - `usePrebuiltPackage` set to `true` to skip building storybook and instead use
   an already built package. It's important that the `outputDir` matches the
   place where the prebuilt package is located. Default is `false`.
+- [`previewOnly`](configuration.md#integrationpreviewonly) build the preview
+  without the Storybook manager UI, which makes the uploaded package much
+  smaller. Default is `true`. Set it to `false` if you download built packages
+  and browse them locally.
+- [`navigatePerStory`](configuration.md#integrationnavigateperstory) set to
+  `true` to give every story a fresh page load instead of paging through stories
+  client-side. Slower, but helps when state leaks between stories. Default is
+  `false`.
 
 These options are mostly the same ones used for the `build-storybook` CLI
 command. See
@@ -693,3 +701,11 @@ renderIter();
   fonts to load before taking the screenshot, but it assumes that fonts it has
   already seen are already available. Make sure the `@font-face` declaration is
   declared globally and not part of the stories themselves.
+- Seeing a warning that your Storybook was built with
+  `features.developmentModeForBuild`? That flag makes Storybook define
+  `process.env.NODE_ENV` as `"development"` in a production build, so the built
+  package ships the development build of your framework. For React that is
+  roughly twice the bundle, and considerably more than twice the render cost.
+  Happo renders every story, so the cost lands on every snapshot in the report:
+  expect slower jobs and a higher chance of timeouts. Remove the flag from your
+  `.storybook/main` config to build in production mode.
