@@ -602,11 +602,16 @@ Start with `animate: 'auto'` and change nothing else. The defaults work for
 typical UI animations like toasts, menus and spinners, and most animations don't
 need tuning.
 
-**Frame count drives the cost.** Every frame is a full screenshot, so a 24-frame
-snapshot takes roughly 24 times as long to capture as a still screenshot. Run
-time and the time reviewers wait for a report both grow with it. Frame count
-also widens the diff surface: any frame that renders a pixel differently makes
-the whole snapshot a diff.
+**What it costs against your quota.** An animated snapshot counts as three
+snapshots, however many frames it ends up holding. A story that comes out as a
+still image (nothing animated, or `mode: 'auto'` found nothing to drive) counts
+as one, the same as any other snapshot.
+
+**Frame count drives the run time.** Every frame is a full screenshot, so a
+24-frame snapshot takes roughly 24 times as long to capture as a still
+screenshot. Run time and the time reviewers wait for a report both grow with it.
+Frame count also widens the diff surface: any frame that renders a pixel
+differently makes the whole snapshot a diff.
 
 File size tends to stay small, because only the part of each frame that changed
 is stored. In one measurement, twelve frames of an element moving across a
