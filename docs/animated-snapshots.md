@@ -480,7 +480,7 @@ Things to know:
 ### `sampling`
 
 _Available since happo v6.17.0._ Type:
-`'uniform' | { split, front, tail } | { times }`. Default: `'uniform'`.
+`'uniform' | Array<{ stop, frames }> | { times }`. Default: `'uniform'`.
 
 By default frames are spread evenly across the window at `fps`. That wastes
 frames on springs and overshoots, which do all their moving early and then hold
@@ -488,20 +488,47 @@ still. Two alternatives:
 
 ```js
 // 7 frames across the first half of the window, 3 across the rest
-animate: { sampling: { split: 0.5, front: 7, tail: 3 } }
+animate: {
+  sampling: [
+    { stop: 0.5, frames: 7 },
+    { stop: 1, frames: 3 },
+  ],
+}
 
 // exactly these times, in milliseconds
 animate: { sampling: { times: [0, 80, 160, 240, 400, 800] } }
 ```
 
-| Form                     | Meaning                                                                                                                 |
-| ------------------------ | ----------------------------------------------------------------------------------------------------------------------- |
-| `'uniform'`              | Evenly, at `fps`                                                                                                        |
-| `{ split, front, tail }` | `front` frames across the first `split` (0.05–0.95) of the window, `tail` across the rest. Always ends on the end state |
-| `{ times }`              | Exactly these times. The end state is included only if you list it                                                      |
+| Form                      | Meaning                                                                                                                     |
+| ------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| `'uniform'`               | Evenly, at `fps`                                                                                                            |
+| `Array<{ stop, frames }>` | `frames` frames across the stretch of the window ending at `stop`, a fraction of it. The last stop is the end of the window |
+| `{ times }`               | Exactly these times, in milliseconds. The end state is included only if you list it                                         |
 
-Both alternatives ignore `fps`. `maxFrames` still applies: a split asking for
-more is scaled down, and extra `times` are dropped.
+A list of stops works like the colour stops of a `linear-gradient`. Each entry
+spends its `frames` on the stretch ending at its `stop`, so the example above
+puts seven frames in the first 500 ms of a one-second window and three in the
+last 500 ms. Stops have to climb, `frames` defaults to 1, and the last stop is
+treated as the end of the window however you write it, so a capture always
+finishes on the end state.
+
+Use as many stops as the animation has interesting stretches. A card that flies
+in, pauses, and then settles wants three:
+
+```js
+animate: {
+  duration: 1200,
+  sampling: [
+    { stop: 0.3, frames: 8 }, // the flight in: 8 frames over 360 ms
+    { stop: 0.6, frames: 1 }, // the pause: one frame is enough
+    { stop: 1, frames: 6 }, // the settle: 6 frames over the last 480 ms
+  ],
+}
+```
+
+Both alternatives ignore `fps`. `maxFrames` still applies: stops asking for more
+frames between them are scaled down in proportion, stops past the frame budget
+are dropped, and extra `times` are dropped.
 
 However the frames are spread, the APNG plays at the animation's real speed:
 each frame stays on screen until the time of the next sample. Uneven sampling
