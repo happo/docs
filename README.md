@@ -4,6 +4,12 @@ This repo is the home of happo.io documentation, served at docs.happo.io
 
 # Changelog
 
+## 3.60.6
+
+- Document animated snapshots feature
+- Update happo dependency to 6.16.0
+- Update React dependencies
+
 ## 3.60.5
 
 - Update release-with-ease to 2.6.0 for improved release automation
