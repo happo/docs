@@ -3,7 +3,7 @@ id: animated-snapshots
 title: Animated snapshots
 ---
 
-_Available since happo v6.15.0. Options marked below as v6.17.0 need that
+_Available since happo v6.15.0. Options marked below as v6.18.0 need that
 version or later._
 
 Happo normally freezes animations and takes a single screenshot. With `animate`,
@@ -312,7 +312,7 @@ The selector is matched through shadow roots.
 
 #### Trigger functions
 
-_Available since happo v6.17.0. Storybook stories only._
+_Available since happo v6.18.0. Storybook stories only._
 
 In a story, `trigger` can also be a function. It runs on the page with the
 story's root element:
@@ -369,12 +369,12 @@ still renders under the target's own setting. It also works the other way:
 that has it turned off. `null` uses the target's setting.
 
 For a story that sets it, the override is applied _before the story renders_
-(since v6.17.0), so components that check the preference when they mount (e.g.
+(since v6.18.0), so components that check the preference when they mount (e.g.
 with `matchMedia`) see it too.
 
 ### `discovery`
 
-_Available since happo v6.17.0._ Type: `number | { settleMs, maxFrames }`.
+_Available since happo v6.18.0._ Type: `number | { settleMs, maxFrames }`.
 Default: `{ settleMs: 0, maxFrames: 90 }`.
 
 Happo pauses every animation it finds when the capture starts. Anything that
@@ -419,7 +419,7 @@ keyframe.
 
 ### `stages`
 
-_Available since happo v6.17.0._ Type: `number | { max, waitMs }`. Default:
+_Available since happo v6.18.0._ Type: `number | { max, waitMs }`. Default:
 `{ max: 1, waitMs: 1000 }`.
 
 Some animations are a sequence where each step starts the next: a panel slides
@@ -479,7 +479,7 @@ Things to know:
 
 ### `sampling`
 
-_Available since happo v6.17.0._ Type:
+_Available since happo v6.18.0._ Type:
 `'uniform' | Array<{ stop, frames }> | { times }`. Default: `'uniform'`.
 
 By default frames are spread evenly across the window at `fps`. That wastes
@@ -537,7 +537,7 @@ or slower.
 
 ### `root`
 
-_Available since happo v6.17.0._ Type: `string | null`. Default: `null`.
+_Available since happo v6.18.0._ Type: `string | null`. Default: `null`.
 
 A CSS selector (matched through shadow roots) that limits which animations are
 captured. Only the animations inside it are captured, and only they decide the
@@ -569,7 +569,7 @@ captured and you get a still image.
 
 ### `expect` and `onExpectationFailure`
 
-_Available since happo v6.17.0._ `expect`: an object, or `null` (the default).
+_Available since happo v6.18.0._ `expect`: an object, or `null` (the default).
 `onExpectationFailure`: `'image' | 'fail' | 'warn'`, default `'image'`.
 
 A capture that finds nothing falls back to a still image. That's what makes
@@ -610,7 +610,7 @@ opt out with `expect: null`.
 
 ### `drivers`
 
-_Available since happo v6.17.0._ Type: `string[] | null`. Default: `null`.
+_Available since happo v6.18.0._ Type: `string[] | null`. Default: `null`.
 
 Which [drivers](#animation-drivers) to use. `null` uses every driver you
 registered. Naming one is also how you turn on a built-in driver, like
@@ -618,7 +618,7 @@ registered. Naming one is also how you turn on a built-in driver, like
 
 ### `setup` and `verify`
 
-_Available since happo v6.17.0. Storybook stories only._
+_Available since happo v6.18.0. Storybook stories only._
 
 Functions that run on the page: `setup` before the story renders, `verify` after
 the capture. See [hooks](#hooks).
@@ -721,7 +721,7 @@ Two things to keep in mind:
 
 ## The motion environment
 
-_Available since happo v6.17.0. Storybook stories only._
+_Available since happo v6.18.0. Storybook stories only._
 
 Some things are decided before a story has finished rendering, which is too late
 for anything done afterwards:
@@ -759,7 +759,7 @@ change how stories render.
 
 ## Hooks
 
-_Available since happo v6.17.0. Storybook stories only._
+_Available since happo v6.18.0. Storybook stories only._
 
 A story's `animate` can include functions. They run on the page, next to your
 story, and Happo calls into them during the capture:
@@ -824,7 +824,7 @@ to Happo's browsers as plain data, which functions can't be part of.
 
 ## Animation drivers
 
-_Available since happo v6.17.0._
+_Available since happo v6.18.0._
 
 Some animations never go through the browser's animation APIs. Anything that
 runs its own frame loop, like Lottie or a canvas-based engine, is invisible to
