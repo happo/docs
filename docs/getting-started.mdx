@@ -124,9 +124,9 @@ export default defineConfig({
 
 The `integration` option tells Happo where your test suite comes from — swap in
 [Cypress](cypress.mdx), [Playwright](playwright.mdx), or another
-[integration](#step-1-choose-an-integration) as needed. Each integration page
-lists the extra setup it needs, such as the `import 'happo/storybook/register'`
-line Storybook expects in `.storybook/preview.js`.
+[integration](#step-1-choose-an-integration) as needed. Storybook needs nothing
+else; the other integrations each have a little setup of their own, listed on
+their page.
 
 Each entry under `targets` runs your test suite across a different browser,
 screen size, or check. Adjust these to match what you care about — see
