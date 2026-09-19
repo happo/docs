@@ -32,12 +32,20 @@ export default defineConfig({
 });
 ```
 
-Add this to `.storybook/preview.js` (or `.storybook/config.js` if you're using
-Storybook < v5):
+That is the whole setup. The `happo` CLI puts its client runtime into the
+Storybook package it builds, so there is nothing to register by hand.
+
+You can also import the runtime yourself:
 
 ```js title=".storybook/preview.js"
 import 'happo/storybook/register';
 ```
+
+This is optional — it is how you reach
+[`setThemeSwitcher`](#dark-mode-and-themes),
+[`forceHappoScreenshot`](#using-forcehapposcreenshot) and the other helpers
+below, and it is required on older versions of the `happo` package, which did
+not ship the runtime inside the package.
 
 Add a `happo` script to `package.json`:
 
@@ -49,9 +57,8 @@ Add a `happo` script to `package.json`:
 
 ### The Happo addons panel
 
-If you're using React, you can add a Happo panel to your Storybook UI. This is
-optional but makes it easier to test hooks and see Happo parameters for your
-stories.
+You can add a Happo panel to your Storybook UI. This is optional, but it makes
+it easier to test hooks and see Happo parameters for your stories.
 
 Add this to `.storybook/main.js`:
 
@@ -695,8 +702,12 @@ renderIter();
 
 ## Troubleshooting
 
-- Getting a `Failed on worker` error? Make sure you are making a call to
-  `import 'happo/storybook/register'` in your `.storybook/preview.js` file.
+- Getting `Timed out while waiting for window.happo`? The error names the most
+  likely cause; see
+  [the debugging docs](debugging.md#timed-out-while-waiting-for-windowhappo) for
+  what each one means. On older versions of the `happo` package, the usual fix
+  is adding `import 'happo/storybook/register'` to your `.storybook/preview.js`
+  file.
 - Getting spurious diffs from fonts not loading? Happo workers will wait for
   fonts to load before taking the screenshot, but it assumes that fonts it has
   already seen are already available. Make sure the `@font-face` declaration is

@@ -100,8 +100,6 @@ Set the options in `.storybook/preview.js` so they are defined before any story
 is rendered:
 
 ```js title=".storybook/preview.js"
-import 'happo/storybook/register';
-
 window.happoAxeOptions = {
   rules: {
     'color-contrast': { enabled: false },
