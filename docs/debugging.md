@@ -164,6 +164,34 @@ Common sources of Detached Nodes and how to fix them:
 - **DOM references**: Avoid storing references to DOM elements in component
   state or refs that persist after unmount
 
+## Missing fonts, images, or other external assets
+
+If a snapshot renders without a webfont, an image, or anything else it loads
+from another host, the request may have been refused before it left the browser.
+That happens when the target sets
+[`allowedHostnames`](configuration.md#target-allowedhostnames) and the host
+isn't on the list.
+
+Open the report's logs page in happo.io to find out. It opens with a summary of
+what the run reached for on the network, split into what was allowed and what
+was blocked, and naming each hostname:
+
+```
+External requests: 2 allowed, 3 blocked. Allowed: example.com (x2). Blocked: fonts.gstatic.com (x2), cdn.example.com
+```
+
+Add the hostnames you need to the target's `allowedHostnames` and run again.
+Anything still missing after that came from somewhere else — start with
+[View source](#view-source) to see what the page actually rendered.
+
+Two things worth knowing:
+
+- Requests to the worker's own server (the page being rendered, and everything
+  in your uploaded package) are always allowed and never appear in the list.
+  Neither do `data:` and `blob:` URLs, which never hit the network.
+- `allowedHostnames` has no effect on `ios-safari` and `ipad-safari`. A target
+  that sets it there says so in its log rather than silently ignoring it.
+
 ## Failed on worker
 
 In some cases, your happo runs will fail with a `Failed on worker` message. In

@@ -570,7 +570,11 @@ External requests: 12 to 2 hostnames: fonts.gstatic.com (x11), cdn.example.com
 ```
 
 Once a list is in force, the same line splits into what was allowed and what was
-blocked. That's the line to read when a snapshot comes back missing something.
+blocked. That's the line to read when a snapshot comes back missing something,
+and the report's logs page in happo.io opens with it rather than making you
+search for it. See
+[Missing fonts, images, or other external assets](debugging.md#missing-fonts-images-or-other-external-assets)
+for how to work through one.
 
 **Important:** With the [pages integration](#pages-integration-options), the
 pages you screenshot are loaded over the network like any other external

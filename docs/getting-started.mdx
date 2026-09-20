@@ -136,6 +136,46 @@ screen size, or check. Adjust these to match what you care about — see
 Start small. Every target multiplies the number of screenshots taken (and the
 quota used), so it's easier to add targets later than to trim a slow suite.
 
+### Network access
+
+While Happo renders your test suite, the browser fetches whatever your pages ask
+for: webfonts from a CDN, images from an asset host, a third-party script. Those
+requests are one of the most common sources of
+[spurious diffs](spurious-diffs.md). A snapshot that loads a font from somewhere
+else changes when that somewhere else does, and fails when it is down.
+
+The [`allowedHostnames` target option](configuration.md#target-allowedhostnames)
+decides what a target is allowed to reach. Leave it unset and nothing is
+blocked. Set it to an empty array and every external request is refused, which
+is the most reproducible setup and a good thing to work towards:
+
+```js title="happo.config.ts"
+import { defineConfig } from 'happo';
+
+export default defineConfig({
+  integration: {
+    type: 'storybook',
+  },
+
+  targets: {
+    'chrome-desktop': {
+      type: 'chrome',
+      viewport: '1024x768',
+      allowedHostnames: [],
+    },
+  },
+});
+```
+
+You don't have to decide now, and you don't have to guess what belongs in the
+list. Every run records the external hostnames its pages reached for, whether or
+not a list is set, and the report's logs page in happo.io shows them. Run once,
+read the list, and allow the hostnames you actually need.
+
+If you do set a list, note that it applies to desktop browsers only, and that
+with the [pages integration](full-page.mdx) the pages you screenshot are
+themselves loaded over the network, so their hostnames have to be in it.
+
 [Configuration](configuration.md) has the full list of options.
 
 ## Step 4: Provide your API tokens
@@ -186,8 +226,10 @@ you've changed something. Make a small visual tweak to one of your components,
 run Happo again, and you should see it show up as a diff you can
 [review](reviewing-diffs.md).
 
-If the first run doesn't look right — missing styles, unexpected diffs, or an
-error from the CLI — head to [Debugging](debugging.md).
+If the first run doesn't look right — missing styles or webfonts, unexpected
+diffs, or an error from the CLI — head to [Debugging](debugging.md). The
+report's logs page is a good first stop: it opens with what the run loaded over
+the network, and what (if anything) was blocked.
 
 ## Step 6: Add Happo to CI
 

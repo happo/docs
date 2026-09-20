@@ -52,8 +52,10 @@ Anything your snapshots load from a third party — fonts, scripts, images —
 changes when that third party changes, and fails when it is down. The
 [`allowedHostnames` target option](configuration.md#target-allowedhostnames)
 lets you see and control what your snapshots reach for. Every run logs the
-external hostnames it requested, so you can start by reading that list and
-working out which entries you'd rather serve yourself.
+external hostnames it requested, and the report's logs page opens with that
+list, so you can start by reading it and working out which entries you'd rather
+serve yourself. If a snapshot is missing something after you set a list, see
+[Missing fonts, images, or other external assets](debugging.md#missing-fonts-images-or-other-external-assets).
 
 ### CI merge commits and mixed baselines
 
