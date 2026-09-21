@@ -189,9 +189,9 @@ The most common one, and the one most new Storybook setups hit. Either add
 import 'happo/storybook/register';
 ```
 
-or upgrade the `happo` package: recent versions put the client runtime into the
-built package for you, which makes the import optional. (It still does something
-— it is also how you reach `setThemeSwitcher`, `forceHappoScreenshot` and the
+or upgrade to `happo` v6.19.1 or later, which puts the client runtime into the
+built package for you and makes the import optional. (It still does something —
+it is also how you reach `setThemeSwitcher`, `forceHappoScreenshot` and the
 other helpers documented in [the Storybook docs](storybook.mdx).)
 
 **"Happo's own runtime script is in the package but did not define
@@ -213,8 +213,8 @@ rather than uploaded as a raw `storybook build` output. On
 [the custom integration](custom.mdx), check that your own bundle defines
 `window.happo` with `init` and `nextExample` functions.
 
-Recent versions of the CLI also check the built package before uploading it, so
-a Storybook that has nowhere to put the runtime, or that contains no stories at
+From v6.19.1 the CLI also checks the built package before uploading it, so a
+Storybook that has nowhere to put the runtime, or that contains no stories at
 all, fails on your own terminal instead of several minutes later on a worker.
 
 ### `Stuck in loop processing examples`
