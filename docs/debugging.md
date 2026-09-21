@@ -174,23 +174,62 @@ click on the one that has a failure icon.
 
 ### `Timed out while waiting for window.happo`
 
-A common error when using [the Storybook integration](storybook.mdx) is
-`Timed out while waiting for window.happo`. This is often caused by missing to
-register the `happo-plugin-storybook` plugin. See how to get rid of this in
-[the Storybook docs](storybook.mdx#troubleshooting).
+Happo drives your test suite through a `window.happo` object that lives in the
+page. This error means the page loaded but that object never appeared, so there
+was nothing for the worker to render.
+
+The error itself names the most likely cause — the worker looks around the page
+before giving up, and what it finds narrows things down a lot. The cases it
+distinguishes:
+
+**"Your Storybook loaded, but the Happo client runtime was never registered."**
+The most common one, and the one most new Storybook setups hit. Either add
+
+```js title=".storybook/preview.js"
+import 'happo/storybook/register';
+```
+
+or upgrade to `happo` v6.19.1 or later, which puts the client runtime into the
+built package for you and makes the import optional. (It still does something —
+it is also how you reach `setThemeSwitcher`, `forceHappoScreenshot` and the
+other helpers documented in [the Storybook docs](storybook.mdx).)
+
+**"Happo's own runtime script is in the package but did not define
+`window.happo`."** The runtime shipped, and the browser refused to run it.
+Nearly always a Content-Security-Policy meta tag or header in your Storybook
+that blocks same-origin scripts.
+
+**"Your Storybook package looks right, but its preview runtime never finished
+loading."** The package is one we built, but the Storybook preview itself never
+came up. [Download the static package](#static-package-downloads) and open
+`iframe.html` locally — the browser console will usually name the module that
+failed. It is also worth checking that your stories render in a plain
+`storybook build` output and not only under `storybook dev`.
+
+**"Nothing in the page identifies it as a prepared Happo package."** On the
+Storybook integration, check that `integration.configDir` points at the right
+Storybook config directory, and that the package was built by the `happo` CLI
+rather than uploaded as a raw `storybook build` output. On
+[the custom integration](custom.mdx), check that your own bundle defines
+`window.happo` with `init` and `nextExample` functions.
+
+From v6.19.1 the CLI also checks the built package before uploading it, so a
+Storybook that has nowhere to put the runtime, or that contains no stories at
+all, fails on your own terminal instead of several minutes later on a worker.
 
 ### `Stuck in loop processing examples`
 
 If your happo run fails with an error like
 
-> Stuck in loop processing examples. Last processed before looping: Button,
-> primary
+> Stuck in loop processing examples: encountered "Button, primary" a second time
+> after processing 12 unique examples (last one before the repeat: "Badge,
+> default").
 
 it means Happo encountered the same `component` + `variant` pair twice while
-iterating through your examples. The component and variant after "Last processed
-before looping" tell you the last example that was successfully processed
-_before_ Happo saw the duplicate — the duplicate itself is the next example
-after that one.
+iterating through your examples. The pair in quotes first is the duplicate. The
+one after "last one before the repeat" is the last example that was successfully
+processed before Happo saw it, which is usually the better place to start
+looking.
 
 The most common cause is **two examples sharing the same component and variant
 name**. Each example needs a unique `component` + `variant` combination, since
