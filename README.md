@@ -4,6 +4,13 @@ This repo is the home of happo.io documentation, served at docs.happo.io
 
 # Changelog
 
+## 3.60.8
+
+- Refresh Storybook setup documentation with updated guidance
+- Improve window.happo troubleshooting documentation
+- Update happo dependency to 6.19.0
+- Update release-with-ease dependency to 2.7.2
+
 ## 3.60.7
 
 - Update dependencies to address vulnerabilities
