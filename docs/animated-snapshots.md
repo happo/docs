@@ -997,10 +997,18 @@ An animated snapshot is stored as a `.apng` file and carries two extra fields,
 which is one frame longer than the window it sampled because the last frame is
 held too: a 1-second animation at `fps: 10` plays for 1111 ms.
 
-Runs of identical frames are merged, so an animation that settles early costs
-one frame rather than ten, and a page that never actually moved produces a plain
-still image. Which one you get is decided by what was captured, not by what was
-asked for.
+Every sample becomes a frame, even one that looks exactly like the frame before
+it, so `frameCount` depends on your settings and not on what the page rendered.
+A baseline and a new capture always line up frame by frame: a frame that has
+settled in one run and is still a pixel away in the next shows up as a
+difference in that one frame, not as an animation of a different length. A
+repeated frame is stored as a single pixel, so an animation that settles early
+costs next to nothing extra. The one exception is [`maxBytes`](#maxbytes), which
+drops frames from a capture that comes out too big.
+
+Whether you get an animated snapshot or a still image is decided by what the
+page has, not by what the frames look like. With `mode: 'auto'`, a page with
+nothing Happo can drive gives a still image, even when you set a `duration`.
 
 ## Browser and integration support
 
