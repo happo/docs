@@ -988,11 +988,11 @@ same frames on every run:
   (With [`stages`](#stages), the ones a finished stage missed are delivered when
   it ends.)
 - **`finished` promises stay pending.** A captured animation is paused, and a
-  paused animation doesn't finish even when it's seeked to its end. So code
-  that waits on `animation.finished` or `onfinish`, like a tooltip that
-  unmounts once it has faded out, doesn't run during a capture. With
-  [`stages`](#stages), Happo finishes each stage's animations on purpose, so
-  that the next stage can start.
+  paused animation doesn't finish even when it's seeked to its end. So code that
+  waits on `animation.finished` or `onfinish`, like a tooltip that unmounts once
+  it has faded out, doesn't run during a capture. With [`stages`](#stages),
+  Happo finishes each stage's animations on purpose, so that the next stage can
+  start.
 - **Smooth scrolling is off**, so a `scrollTo()` from a trigger lands
   immediately instead of being caught part-way.
 
