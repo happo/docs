@@ -421,10 +421,36 @@ An animation found late keeps its place in time: it starts in the capture at the
 moment it appeared, so a stagger stays a stagger. Until then it shows its first
 keyframe.
 
-> **Note:** Anything that waits for timers depends on when they fire. Happo
-> rounds start times to whole frames so small timing differences don't change
-> the result, but an animation that starts a frame late on a slow run, or right
-> at the end of the window, can come out differently.
+That moment is measured, so it depends on when the page's timers fired. A
+`setTimeout` of 100 ms can fire at 101 ms on one run and 118 ms on the next.
+Happo rounds start times to whole frames, but a start that lands near a frame
+boundary still rounds one way on one run and the other way on the next. From
+then on every frame shows the element a step apart, which can add up to a diff
+even though nothing changed.
+
+To avoid that, declare when each animation starts with `data-happo-start-ms`, in
+milliseconds from the start of the capture (or of its [stage](#stages)). Put it
+on the animating element or on any ancestor, and Happo uses it instead of
+measuring:
+
+```jsx title="SearchResults.jsx"
+{
+  results.map((result, index) => (
+    <li key={result.id} data-happo-start-ms={index * 150}>
+      <ResultCard result={result} />
+    </li>
+  ));
+}
+```
+
+Better still, if you can, stagger with CSS `animation-delay` or
+`transition-delay` on elements that are all mounted at once. Happo finds those
+animations as soon as the capture starts, and the delays are part of their
+timing, so you don't need `discovery` at all.
+
+Start times that Happo had to measure are marked `measured: true` in the
+[trace](#hooks), and called out in the run log, so you can tell which ones to
+declare.
 
 ### `stages`
 
@@ -819,17 +845,17 @@ get the environment it asked for.
 
 The trace `verify` receives:
 
-| Field            | Meaning                                                                              |
-| ---------------- | ------------------------------------------------------------------------------------ |
-| `animationCount` | Animations found, including those found by drivers                                   |
-| `svgCount`       | SVG roots with SMIL animations                                                       |
-| `driverCounts`   | Animations found per driver, e.g. `{ lottie: 2 }`                                    |
-| `animations`     | Up to 20 of them, each `{ kind, name, target, startMs, endMs }`                      |
-| `durationMs`     | The capture window, in ms                                                            |
-| `frameTimes`     | The times sampled, in ms                                                             |
-| `frameCount`     | Distinct frames in the APNG                                                          |
-| `stageCount`     | Stages captured                                                                      |
-| `stages`         | An array with one entry per stage, each `{ animationCount, durationMs, animations }` |
+| Field            | Meaning                                                                                                            |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------ |
+| `animationCount` | Animations found, including those found by drivers                                                                 |
+| `svgCount`       | SVG roots with SMIL animations                                                                                     |
+| `driverCounts`   | Animations found per driver, e.g. `{ lottie: 2 }`                                                                  |
+| `animations`     | Up to 20 of them, each `{ kind, name, target, startMs, endMs }`, plus `measured: true` when the start was measured |
+| `durationMs`     | The capture window, in ms                                                                                          |
+| `frameTimes`     | The times sampled, in ms                                                                                           |
+| `frameCount`     | Distinct frames in the APNG                                                                                        |
+| `stageCount`     | Stages captured                                                                                                    |
+| `stages`         | An array with one entry per stage, each `{ animationCount, durationMs, animations }`                               |
 
 Hooks are only available on stories. Target, example and page options are sent
 to Happo's browsers as plain data, which functions can't be part of.
@@ -881,6 +907,7 @@ A handle has:
 | ------------ | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
 | `seek(ms)`   | Yes         | Render the animation at `ms` milliseconds. May return a promise, which Happo waits for                                                         |
 | `durationMs` | Yes         | How long the animation runs, in ms. Counts toward the capture window like any other animation                                                  |
+| `startMs`    | No          | When the animation starts, in ms into the capture. Without it, a handle found during [`discovery`](#discovery) starts when it was first seen   |
 | `target`     | Recommended | What the handle drives. `discover` can be called once per frame, and a handle whose `target` was seen before is the same animation found again |
 | `pause()`    | No          | Stop the animation moving on its own                                                                                                           |
 | `release()`  | No          | Hand it back after the capture                                                                                                                 |
@@ -999,6 +1026,12 @@ same frames on every run:
   `animation*` and `transition*` events are kept from the page during a capture.
   (With [`stages`](#stages), the ones a finished stage missed are delivered when
   it ends.)
+- **`finished` promises stay pending.** A captured animation is paused, and a
+  paused animation doesn't finish even when it's seeked to its end. So code that
+  waits on `animation.finished` or `onfinish`, like a tooltip that unmounts once
+  it has faded out, doesn't run during a capture. With [`stages`](#stages),
+  Happo finishes each stage's animations on purpose, so that the next stage can
+  start.
 - **Smooth scrolling is off**, so a `scrollTo()` from a trigger lands
   immediately instead of being caught part-way.
 
@@ -1009,10 +1042,18 @@ An animated snapshot is stored as a `.apng` file and carries two extra fields,
 which is one frame longer than the window it sampled because the last frame is
 held too: a 1-second animation at `fps: 10` plays for 1111 ms.
 
-Runs of identical frames are merged, so an animation that settles early costs
-one frame rather than ten, and a page that never actually moved produces a plain
-still image. Which one you get is decided by what was captured, not by what was
-asked for.
+Every sample becomes a frame, even one that looks exactly like the frame before
+it, so `frameCount` depends on your settings and not on what the page rendered.
+A baseline and a new capture always line up frame by frame: a frame that has
+settled in one run and is still a pixel away in the next shows up as a
+difference in that one frame, not as an animation of a different length. A
+repeated frame is stored as a single pixel, so an animation that settles early
+costs next to nothing extra. The one exception is [`maxBytes`](#maxbytes), which
+drops frames from a capture that comes out too big.
+
+Whether you get an animated snapshot or a still image is decided by what the
+page has, not by what the frames look like. With `mode: 'auto'`, a page with
+nothing Happo can drive gives a still image, even when you set a `duration`.
 
 ## Browser and integration support
 
