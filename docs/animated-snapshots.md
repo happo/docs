@@ -1048,8 +1048,9 @@ A baseline and a new capture always line up frame by frame: a frame that has
 settled in one run and is still a pixel away in the next shows up as a
 difference in that one frame, not as an animation of a different length. A
 repeated frame is stored as a single pixel, so an animation that settles early
-costs next to nothing extra. The one exception is [`maxBytes`](#maxbytes), which
-drops frames from a capture that comes out too big.
+costs next to nothing extra. The one exception is a capture over
+[`maxBytes`](#maxbytes) with `onExpectationFailure: 'warn'`, which has frames
+dropped until it fits.
 
 Whether you get an animated snapshot or a still image is decided by what the
 page has, not by what the frames look like. With `mode: 'auto'`, a page with
