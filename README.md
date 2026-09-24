@@ -4,6 +4,13 @@ This repo is the home of happo.io documentation, served at docs.happo.io
 
 # Changelog
 
+## 3.60.10
+
+- Document that exceeding maxBytes is reported as a failure rather than fixed by dropping frames
+- Clarify that finished promises remain pending during capture operations
+- Document declared start times for late-starting animations
+- Explain that animated snapshots retain one frame per sample for deterministic output
+
 ## 3.60.9
 
 - Fix Cypress configuration example in documentation
