@@ -52,17 +52,6 @@ npm install --save-dev happo
 The new `happo` package replaces all of these legacy packages. All functionality
 is now included in the single unified package.
 
-Make sure your `package.json` has a `happo` script, so that `npm run happo`
-works:
-
-```json title="package.json"
-{
-  "scripts": {
-    "happo": "happo"
-  }
-}
-```
-
 ### Configuration File Format
 
 The legacy `.happo.js` file is no longer read. The new package looks for a
@@ -834,8 +823,7 @@ These environment variables are still supported:
 1. **Remove legacy packages**: Uninstall all legacy Happo packages (`happo.io`,
    `happo-cypress`, `happo-playwright`, `happo-e2e`, `happo-plugin-storybook`,
    `happo-static`)
-1. **Install new package**: Install the unified `happo` package and add a
-   `"happo": "happo"` script to `package.json`
+1. **Install new package**: Install the unified `happo` package
 1. **Update configuration file**: Convert your `.happo.js` to a
    `happo.config.{js,ts,...}` file:
    - Remove `RemoteBrowserTarget` imports/usage
