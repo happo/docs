@@ -4,6 +4,14 @@ This repo is the home of happo.io documentation, served at docs.happo.io
 
 # Changelog
 
+## 3.60.9
+
+- Fix Cypress configuration example in documentation
+- Correct broken CI documentation anchors
+- Document allowedHostnames configuration in getting started guide
+- Enhance legacy package migration guide with additional details
+- Update happo dependency to 6.19.2
+
 ## 3.60.8
 
 - Refresh Storybook setup documentation with updated guidance
