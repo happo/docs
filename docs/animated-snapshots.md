@@ -264,9 +264,18 @@ How many times the APNG plays when viewed. `0` loops forever.
 
 _Available since happo v6.15.0._ Type: `number`. Default: `4000000`.
 
-The size budget for the encoded file, in bytes. When a capture comes out bigger,
-frames are dropped (every other one, repeatedly) until it fits, rather than the
-snapshot being dropped.
+The size budget for the encoded file, in bytes. A capture that comes out bigger
+is handled like a failed [expectation](#expect-and-onexpectationfailure): by
+default the snapshot becomes an image saying how big the capture was, and
+`onExpectationFailure` can make it fail the job instead. This applies even when
+you haven't set `expect`.
+
+Happo doesn't drop frames to make it fit, unless you set
+`onExpectationFailure: 'warn'`. The file size depends on the pixels, so a
+capture close to the budget can fit on one run and not the next, and dropping
+frames only on some runs would make every frame a diff. If a capture goes over,
+lower `fps`, shorten `duration` or set a [`root`](#root), so it ends up well
+below the budget.
 
 ### `clock`
 
@@ -594,7 +603,8 @@ animate: {
 | `minStages`     | At least this many [stages](#stages) captured                                        |
 | `drivers`       | At least this many animations per [driver](#animation-drivers), e.g. `{ lottie: 1 }` |
 
-When a check fails, `onExpectationFailure` decides what happens:
+When a check fails, or a capture is over [`maxBytes`](#maxbytes),
+`onExpectationFailure` decides what happens:
 
 - **`'image'`** (default): the snapshot is replaced with an image describing the
   failure, listing what was expected and every animation that was found. It
@@ -603,6 +613,8 @@ When a check fails, `onExpectationFailure` decides what happens:
   [failure on the worker](debugging.md#failed-on-worker). You'll find the
   message in your Happo dashboard under "Snap-requests".
 - **`'warn'`**: Happo logs a warning with the description and keeps the capture.
+  A capture over `maxBytes` has every other frame dropped, repeatedly, until it
+  fits.
 
 `expect` merges one field at a time like the rest of `animate`. A common pattern
 is to set checks on the target and let the occasional deliberately-still story
