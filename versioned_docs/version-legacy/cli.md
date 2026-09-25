@@ -37,7 +37,7 @@ You'll also need to add a script to `package.json`:
 - `npm run happo compare <sha1> <sha2>` - compare reports for two different
   shas. If a `--link <url>` is provided, Happo will try to post a status back to
   the commit (see
-  [Posting statuses back to PRs/commits](continuous-integration.md#posting-statuses-back-to-prscommits)
+  [Posting statuses back to PRs/commits](continuous-integration.md#posting-build-statuses)
   for more details) being installed). If an `--author <email>` is provided, any
   comment made on a diff will notify the author. Also supports
   `--message <message>`, which is used together with `--link <url>` to further

@@ -255,8 +255,8 @@ export default () => {
 </Tabs>
 ````
 
-The strings in the array need to match `id`s of [`stylesheets`](#stylesheets)
-defined in `.happo.js` config.
+The strings in the array need to match `id`s of
+[`stylesheets`](configuration.md#stylesheets) defined in `.happo.js` config.
 
 ## Limiting targets
 
@@ -461,7 +461,7 @@ Happo works best when CSS code is co-located with the components. In some cases,
 you'll get away with zero configuration to get this working. But in other cases,
 you'll have to add a little webpack config to the mix. Happo uses webpack under
 the hood when generating browser-executable JavaScript. The
-[`customizeWebpackConfig` config option](configuration.md#customizeWebpackConfig)
+[`customizeWebpackConfig` config option](configuration.md#customizewebpackconfig)
 will let you inject things like webpack loaders to the happo run. E.g.
 
 ```js

@@ -10,11 +10,12 @@ export default {
 
   favicon: 'img/favicon.ico',
   customFields: {},
-  onBrokenLinks: 'log',
+  onBrokenLinks: 'throw',
+  onBrokenAnchors: 'throw',
 
   markdown: {
     hooks: {
-      onBrokenMarkdownLinks: 'log',
+      onBrokenMarkdownLinks: 'throw',
     },
   },
 
