@@ -15,7 +15,7 @@ after image…" options:
 
 <video
   src="/video/happo-view-source.webm"
-  aria-label='Opening the "…" menu on a snapshot and choosing "View source for after image…"'
+  aria-label='Opening the "…" menu on a snapshot and pointing at "View source for after image…"'
   autoPlay
   loop
   muted
