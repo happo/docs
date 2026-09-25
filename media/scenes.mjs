@@ -455,6 +455,12 @@ function githubChecks(id, branch, { heading, wholeMergeBox = false }) {
 
 // The "View source for after image…" item in a snapshot's open "…" menu. Each
 // snapshot has its own (hidden) menu, so only look at the visible one.
+// A real Happo worker-update alert, on the report for happo/docs#278, made
+// right after Happo updated its browsers. Only a real alert is used, so its
+// text matches what Happo actually says.
+const BROWSER_UPDATE_ALERT_REPORT =
+  'https://happo.io/a/1520/p/2452/compare/d23e6756d814888b92b45de97f66cc725d313913/806f86eac8a414e6a196cf836de37c2833e57452';
+
 const viewSourceMenuItem = page =>
   page.getByText(/View source for after image/).filter({ visible: true });
 
@@ -471,7 +477,61 @@ export const scenes = [
   reviewPanel('happo-review-panel-accepted', showcasePRs.accepted),
   reviewPanel('happo-review-panel-rejected', showcasePRs.rejected),
 
+  // docs/reviewing-diffs.md and docs/browser-updates.md
+  {
+    id: 'happo-worker-update-alert',
+    output: 'static/img/happo-worker-update-alert.png',
+    async url() {
+      if (!(await hasComparison(BROWSER_UPDATE_ALERT_REPORT))) {
+        throw new SceneSkipped(
+          `The report at ${BROWSER_UPDATE_ALERT_REPORT} no longer exists. ` +
+            'Find another report made after a Happo browser update (its ' +
+            'comparison data has systemMessages) and use that.',
+        );
+      }
+      return BROWSER_UPDATE_ALERT_REPORT;
+    },
+    target: page => page.locator('[class*="Alert-module"][class*="__root"]'),
+    padding: 8,
+  },
+
   // docs/reporting-flake.md
+  //
+  // Report flake is only shown to logged-in users who can review. The video
+  // points at it (as the icon button, then in the "…" menu) but never clicks
+  // it, and every other write is refused too.
+  {
+    id: 'happo-report-flake',
+    output: 'static/video/happo-report-flake.webm',
+    url: showcaseReport(showcasePRs.needsReview),
+    auth: 'happo',
+    viewport: { width: 1280, height: 720 },
+    setup: blockWrites,
+    prepare: waitForSnapshots,
+    async record(page, { click, hover }) {
+      await hover(
+        page.getByRole('button', { name: 'Report flake' }).first(),
+        2000,
+      );
+      await click(
+        page.locator('button:has([class*="moreOptionsButton"])').first(),
+        { before: 900, after: 900 },
+      );
+      // Each snapshot also has a "Report flake" tooltip, so look inside the
+      // open menu (the only place "View history…" is visible).
+      const menu = page
+        .getByText('View history…')
+        .filter({ visible: true })
+        .locator(
+          'xpath=ancestor::*[.//*[normalize-space(text())="Report flake"]][1]',
+        );
+      // Point at the whole menu row, so the pointer can rest past the label.
+      await hover(
+        menu.getByText('Report flake', { exact: true }).locator('..'),
+        2500,
+      );
+    },
+  },
   {
     id: 'happo-ignored-diffs',
     output: 'static/img/happo-ignored-diffs.png',
@@ -625,6 +685,20 @@ export const scenes = [
 
   // docs/debugging.md
   //
+  // The "View logs" link at the bottom of the report sidebar.
+  {
+    id: 'happo-view-logs-link',
+    output: 'static/img/happo-view-logs-link.png',
+    url: showcaseReport(showcasePRs.needsReview),
+    target: page =>
+      page
+        .locator(
+          '[class*="ComparisonPanel-module"][class*="filterItemTextOnly"]',
+        )
+        .filter({ has: page.getByRole('link', { name: 'View logs' }) }),
+    padding: 12,
+  },
+  //
   // "View source" is only in the overflow menu for logged-in users.
   {
     id: 'happo-view-source',
@@ -733,6 +807,24 @@ export const scenes = [
     target: firstSnapshot,
     // The headings above and below the snapshot are close to it.
     padding: { top: 0, right: 16, bottom: 0, left: 16 },
+  },
+
+  // docs/user-roles.md
+  //
+  // Who can view and review reports, and the users with access. Emails are
+  // replaced with a placeholder.
+  {
+    id: 'happo-user-access',
+    output: 'static/img/happo-user-access.png',
+    url: `${SHOWCASE_ACCOUNT}/user-access`,
+    auth: 'happo',
+    setup: blockWrites,
+    prepare: hideEmails,
+    target: page => [
+      page.getByRole('heading', { name: 'Permissions' }),
+      page.getByRole('heading', { name: 'Users' }).locator('..'),
+    ],
+    padding: 16,
   },
 
   // docs/webhooks.md
