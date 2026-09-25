@@ -342,6 +342,37 @@ export const scenes = [
     padding: 8,
   },
 
+  // docs/performance.md
+  //
+  // Timings are in the "…" menu of each snapshot. The showcase components
+  // render in under a millisecond, which reads like a bug, so the numbers are
+  // swapped for the ones in the docs.
+  {
+    id: 'happo-snapshot-timings',
+    output: 'static/img/happo-snapshot-timings.png',
+    url: showcaseReport(showcasePRs.needsReview),
+    viewport: { width: 1600, height: 800 },
+    async setup(page) {
+      await editReportData(page, data => {
+        for (const snapshot of data.diffs[0]) {
+          Object.assign(snapshot, {
+            renderTime: 44,
+            waitTime: 53,
+            screenshotTime: 106,
+          });
+        }
+      });
+    },
+    async prepare(page) {
+      await firstSnapshot(page)
+        .locator('button:has([class*="moreOptionsButton"])')
+        .click();
+      await page.getByText(/^Render\s44ms/).waitFor();
+    },
+    target: page => page.locator('ul[class*="Dropdown-module"]'),
+    padding: 6,
+  },
+
   // docs/debugging.md
   //
   // "View source" is only in the overflow menu for logged-in users.
