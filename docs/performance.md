@@ -32,12 +32,17 @@ it takes to produce a screenshot on a Happo worker is 200 ms.
 
 ## Component performance
 
-Timing information is displayed below each screenshot in a Happo comparison. It
-looks like this:
+Timing information for each screenshot in a Happo comparison is at the bottom of
+its "…" menu. It looks like this:
 
-```
-Render 44ms • Wait 53ms • Snapshot 106ms
-```
+<img
+  src="/img/happo-snapshot-timings.png"
+  alt="A snapshot's … menu, ending with Render 44ms • Wait 53ms • Snapshot 106ms"
+  width="260"
+/>
+
+When rendering takes longer than 2 seconds, the timings are also shown below the
+screenshot.
 
 ### Render performance
 

@@ -165,6 +165,33 @@ function firstSnapshot(page) {
   return page.locator('[class*="SnapItem-module"][class*="target"]').first();
 }
 
+// The first accessibility snapshot in a Happo report, which has Violations and
+// Snapshot tabs instead of the image diff views.
+function firstAccessibilitySnapshot(page) {
+  return page
+    .locator('[class*="SnapItem-module"][class*="target"]')
+    .filter({
+      has: page.getByRole('button', { name: 'Violations', exact: true }),
+    })
+    .first();
+}
+
+// Lets a scene change the report data a Happo report page loads, e.g. to show
+// numbers that match the docs. Only changes what this browser sees.
+async function editReportData(page, edit) {
+  await page.route('**/api/**/compare-results*', async route => {
+    const response = await route.fetch();
+    const body = await response.text();
+    if (!body) {
+      await route.fulfill({ response });
+      return;
+    }
+    const json = JSON.parse(body);
+    edit(json);
+    await route.fulfill({ response, json });
+  });
+}
+
 // The Reject/Accept control in the report sidebar of a showcase PR.
 function reviewPanel(id, branch) {
   return {
@@ -219,6 +246,35 @@ export const scenes = [
       await page.getByText('Active filter:').waitFor();
     },
   },
+  {
+    id: 'accessibility-violations',
+    output: 'static/img/accessibility-violations.png',
+    url: showcaseReport(showcasePRs.accessibilityViolations),
+    viewport: { width: 1200, height: 800 },
+    async prepare(page) {
+      await firstAccessibilitySnapshot(page)
+        .getByRole('button', { name: 'Show details' })
+        .first()
+        .click();
+    },
+    target: firstAccessibilitySnapshot,
+    padding: 4,
+  },
+  {
+    id: 'aria-snapshot',
+    output: 'static/img/aria-snapshot.png',
+    url: showcaseReport(showcasePRs.accessibilityViolations),
+    viewport: { width: 1200, height: 800 },
+    async prepare(page) {
+      const snapshot = firstAccessibilitySnapshot(page);
+      await snapshot
+        .getByRole('button', { name: 'Snapshot', exact: true })
+        .click();
+      await snapshot.getByText('- document:').first().waitFor();
+    },
+    target: firstAccessibilitySnapshot,
+    padding: 2,
+  },
 
   // docs/animated-snapshots.md
   {
@@ -258,6 +314,63 @@ export const scenes = [
     },
     target: firstSnapshot,
     padding: 4,
+  },
+
+  // docs/storybook.mdx
+  //
+  // The showcase reports aren't partial runs, so the numbers are swapped for
+  // the ones in the docs. With fewer quota used than snapshots, "quota used"
+  // becomes a link, like it does after a partial run.
+  {
+    id: 'happo-partial-run-stats',
+    output: 'static/img/happo-partial-run-stats.png',
+    url: showcaseReport(showcasePRs.needsReview),
+    async setup(page) {
+      await editReportData(page, data => {
+        data.stats = {
+          ...data.stats,
+          snapshotsCount: 6809,
+          snapshotsUsage: 2233,
+          componentsCount: 113,
+        };
+      });
+    },
+    async prepare(page) {
+      await page.getByRole('link', { name: '2,233 quota used' }).waitFor();
+    },
+    target: page => page.locator('[class*="statsDescription"]'),
+    padding: 8,
+  },
+
+  // docs/performance.md
+  //
+  // Timings are in the "…" menu of each snapshot. The showcase components
+  // render in under a millisecond, which reads like a bug, so the numbers are
+  // swapped for the ones in the docs.
+  {
+    id: 'happo-snapshot-timings',
+    output: 'static/img/happo-snapshot-timings.png',
+    url: showcaseReport(showcasePRs.needsReview),
+    viewport: { width: 1600, height: 800 },
+    async setup(page) {
+      await editReportData(page, data => {
+        for (const snapshot of data.diffs[0]) {
+          Object.assign(snapshot, {
+            renderTime: 44,
+            waitTime: 53,
+            screenshotTime: 106,
+          });
+        }
+      });
+    },
+    async prepare(page) {
+      await firstSnapshot(page)
+        .locator('button:has([class*="moreOptionsButton"])')
+        .click();
+      await page.getByText(/^Render\s44ms/).waitFor();
+    },
+    target: page => page.locator('ul[class*="Dropdown-module"]'),
+    padding: 6,
   },
 
   // docs/debugging.md
