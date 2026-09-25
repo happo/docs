@@ -48,7 +48,8 @@ After capturing, it lists media more than a year old on the same pages
 above a new screenshot. Update those too, so a page doesn't mix old and new UI.
 It also lists any `<img>` tag, on current or legacy pages, whose `width` and
 `height` no longer fit the new screenshot's shape, with the numbers to use
-instead.
+instead. `pnpm media status` checks this for every image, and
+`pnpm media optimize --check` (which CI runs on changed images) fails on it.
 
 Open a PR with the updated files. Happo runs on this repo, so the report on the
 PR shows every page where an image changed. Use it to review the new media in

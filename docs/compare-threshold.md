@@ -67,7 +67,7 @@ its color to the largest possible difference for the current threshold value.
   src="/img/ignore_threshold.png"
   alt="The ignore threshold option"
   width="732"
-  height="324"
+  height="340"
 />
 
 In certain cases, a small amount of pixels can cause a diff despite the majority

@@ -85,7 +85,7 @@ function sceneKind(scene) {
   return 'screenshot';
 }
 
-function status() {
+async function status() {
   const references = findMediaReferences();
   const sceneByOutput = new Map(scenes.map(scene => [scene.output, scene]));
   const allPaths = new Set([...references.keys(), ...sceneByOutput.keys()]);
@@ -116,6 +116,10 @@ function status() {
       `${unused} scene output(s) are not referenced by any docs page.`,
     );
   }
+  await printSizeMismatches(
+    [...references.keys()],
+    'These pages show an image at a size that distorts it:',
+  );
 }
 
 async function login(profileName) {
@@ -491,7 +495,10 @@ async function capture(ids, { all, headed }) {
   await browser.close();
 
   if (captured.length) {
-    await printSizeMismatches(captured);
+    await printSizeMismatches(
+      captured,
+      'These pages show a new screenshot at a size that distorts it:',
+    );
     printOlderMediaNearby(captured);
   }
   if (skipped.length) {
@@ -507,12 +514,16 @@ async function capture(ids, { all, headed }) {
 // height. When a screenshot is recaptured with a different shape, those
 // numbers squash or stretch it, on every page that uses it (including legacy
 // pages). This lists those tags with the numbers that fit the new image.
-async function printSizeMismatches(captured) {
-  const lines = [];
-  for (const media of captured.filter(file => /\.png$/i.test(file))) {
-    const { width, height } = await sharp(path.join(ROOT, media)).metadata();
-    const url = media.replace(/^static/, '');
-    for (const page of findMediaReferences().get(media) ?? []) {
+// Returns a description of each such tag for the given PNGs, e.g. "legacy/
+// webhooks.md: /img/foo.png is shown at 421x319. Use …".
+async function findSizeMismatches(media) {
+  const references = findMediaReferences();
+  const mismatches = [];
+  for (const file of media.filter(file => /\.png$/i.test(file))) {
+    if (!fs.existsSync(path.join(ROOT, file))) continue;
+    const { width, height } = await sharp(path.join(ROOT, file)).metadata();
+    const url = file.replace(/^static/, '');
+    for (const page of references.get(file) ?? []) {
       const content = fs.readFileSync(path.join(ROOT, page), 'utf-8');
       for (const [tag] of content.matchAll(/<img\b[^>]*>/g)) {
         if (!tag.includes(`"${url}"`)) continue;
@@ -521,21 +532,29 @@ async function printSizeMismatches(captured) {
         if (!shownWidth || !shownHeight) continue;
         const fittingHeight = Math.round((shownWidth * height) / width);
         if (Math.abs(fittingHeight - shownHeight) > 2) {
-          lines.push(
-            `  ${pageName(page)}: ${url} is shown at ${shownWidth}x${shownHeight}. ` +
+          mismatches.push({
+            page,
+            message:
+              `${pageName(page)}: ${url} is shown at ${shownWidth}x${shownHeight}. ` +
               `Use width="${Math.round(width / 2)}" height="${Math.round(height / 2)}" ` +
               `(its size at 1x) or height="${fittingHeight}".`,
-          );
+          });
         }
       }
     }
   }
-  if (lines.length) {
+  return mismatches;
+}
+
+async function printSizeMismatches(media, heading) {
+  const mismatches = await findSizeMismatches(media);
+  if (mismatches.length) {
     console.log(
-      '\nThese pages show a new screenshot at a size that distorts it:\n' +
-        lines.join('\n'),
+      `\n${heading}\n` +
+        mismatches.map(({ message }) => `  ${message}`).join('\n'),
     );
   }
+  return mismatches;
 }
 
 // Media older than this on the same page as something just captured gets
@@ -653,6 +672,29 @@ async function optimize(files, { check, 'drop-audio': dropAudio }) {
   }
 
   if (converted.length) printConvertedReferences(converted);
+
+  // A changed image can leave pages showing it at its old shape. Checked here
+  // as well as after capturing, so images made by hand are covered too.
+  const sizeMismatches = await findSizeMismatches(
+    files.map(file => path.relative(ROOT, path.resolve(file))),
+  );
+  if (check && sizeMismatches.length) {
+    console.error(
+      '\nThese pages show an image at a size that distorts it. Update their ' +
+        '<img> width and height:',
+    );
+    for (const { page, message } of sizeMismatches) {
+      console.error(`  ${message}`);
+      annotate('error', page, message);
+    }
+    process.exitCode = 1;
+  } else if (sizeMismatches.length) {
+    console.log(
+      '\nThese pages show an image at a size that distorts it:\n' +
+        sizeMismatches.map(({ message }) => `  ${message}`).join('\n'),
+    );
+  }
+
   if (failed.length || needsDropAudio.length) {
     const commands = [
       failed.length &&
@@ -698,7 +740,7 @@ const [command, ...rest] = positionals;
 if (values.help || !command) {
   console.log(USAGE);
 } else if (command === 'status') {
-  status();
+  await status();
 } else if (command === 'capture') {
   await capture(rest, values);
 } else if (command === 'optimize') {
