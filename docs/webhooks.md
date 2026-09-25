@@ -15,8 +15,8 @@ account to use this feature.
 <img
   src="/img/webhooks-new.png"
   alt="Adding a new webhook"
-  width="421"
-  height="319"
+  width="732"
+  height="623"
 />
 
 Enter a URL where your server is listening and a secret to use when signing
