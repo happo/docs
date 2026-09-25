@@ -103,7 +103,7 @@ jobs:
 
             # Use a here-string rather than a pipe: grep -q exits on the first
             # match, and under pipefail the writer's SIGPIPE fails the check.
-            if grep -Fqi 'Getting started' <<< "$content"; then
+            if grep -Fqi 'Getting started' \<<< "$content"; then
               echo "✅ 'Getting started' text found on the page"
             else
               echo "Error: Expected text 'Getting started' not found on the page"
