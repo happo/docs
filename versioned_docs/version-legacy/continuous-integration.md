@@ -239,9 +239,18 @@ Here's what it looks like when Happo posts a status on a pull request:
 
 If there is a diff, the status will be set to failure. To manually flip this to
 a success status, just go to the Happo comparison page (linked to by the
-"Details" link next to the Happo status) and click the Accept button at the top.
+"Details" link next to the Happo status) and click the Accept button in the
+Reject/Accept pair in the left sidebar.
 
-![Accepting diffs](/img/happo-status-accept.gif)
+<video
+  src="/video/happo-status-accept.webm"
+  aria-label="Accepting diffs in a Happo report"
+  autoPlay
+  loop
+  muted
+  playsInline
+  width="100%"
+/>
 
 The status over on github.com will then change to success (green) for the
 PR/commit.
@@ -333,7 +342,15 @@ If there is a diff, the status will be set to failure. To manually flip this to
 a success status, just go to the Happo comparison page (linked to from the
 status) and accept the diffs.
 
-![Accepting diffs](/img/happo-status-accept.gif)
+<video
+  src="/video/happo-status-accept.webm"
+  aria-label="Accepting diffs in a Happo report"
+  autoPlay
+  loop
+  muted
+  playsInline
+  width="100%"
+/>
 
 The status over on bitbucket.org will then change to success (green) for the
 PR/commit. If there are no diffs, the status is automatically set to success.
@@ -369,7 +386,15 @@ If there is a diff, the status will be set to failure. To manually flip this to
 a success status, just go to the Happo comparison page (linked to from the
 status) and accept the diffs.
 
-![Accepting diffs](/img/happo-status-accept.gif)
+<video
+  src="/video/happo-status-accept.webm"
+  aria-label="Accepting diffs in a Happo report"
+  autoPlay
+  loop
+  muted
+  playsInline
+  width="100%"
+/>
 
 The status over on Azure DevOps will then change to success (green) for the
 PR/commit. If there are no diffs, the status is automatically set to success.

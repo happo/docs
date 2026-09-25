@@ -8,6 +8,7 @@ import path from 'node:path';
 import readline from 'node:readline/promises';
 import { parseArgs } from 'node:util';
 import { chromium } from 'playwright';
+import sharp from 'sharp';
 
 import {
   checkResult,
@@ -17,7 +18,7 @@ import {
   writeOptimizedImage,
   writeOptimizedVideo,
 } from './optimize.mjs';
-import { authProfiles, scenes, siteStyles } from './scenes.mjs';
+import { authProfiles, scenes, SceneSkipped, siteStyles } from './scenes.mjs';
 
 const ROOT = path.resolve(import.meta.dirname, '..');
 const AUTH_DIR = path.join(import.meta.dirname, '.auth');
@@ -84,7 +85,7 @@ function sceneKind(scene) {
   return 'screenshot';
 }
 
-function status() {
+async function status() {
   const references = findMediaReferences();
   const sceneByOutput = new Map(scenes.map(scene => [scene.output, scene]));
   const allPaths = new Set([...references.keys(), ...sceneByOutput.keys()]);
@@ -115,6 +116,10 @@ function status() {
       `${unused} scene output(s) are not referenced by any docs page.`,
     );
   }
+  await printSizeMismatches(
+    [...references.keys()],
+    'These pages show an image at a size that distorts it:',
+  );
 }
 
 async function login(profileName) {
@@ -487,6 +492,13 @@ async function capture(ids, { all, headed }) {
       console.log(result);
       captured.push(scene.output);
     } catch (error) {
+      // A scene throws SceneSkipped when something it needs doesn't exist,
+      // e.g. data that has to be set up by hand first.
+      if (error instanceof SceneSkipped) {
+        console.log(`skipping\n  ${error.message}`);
+        skipped.push(scene.id);
+        continue;
+      }
       console.log('failed');
       console.error(`  ${error.message.split('\n')[0]}`);
       failures.push(scene.id);
@@ -494,14 +506,67 @@ async function capture(ids, { all, headed }) {
   }
   await browser.close();
 
-  if (captured.length) printOlderMediaNearby(captured);
+  if (captured.length) {
+    await printSizeMismatches(
+      captured,
+      'These pages show a new screenshot at a size that distorts it:',
+    );
+    printOlderMediaNearby(captured);
+  }
   if (skipped.length) {
-    console.log(`\nSkipped (not logged in): ${skipped.join(', ')}`);
+    console.log(`\nSkipped: ${skipped.join(', ')}`);
   }
   if (failures.length) {
     console.error(`\nFailed: ${failures.join(', ')}`);
     process.exitCode = 1;
   }
+}
+
+// Docs pages often show screenshots with an <img> tag that sets width and
+// height. When a screenshot is recaptured with a different shape, those
+// numbers squash or stretch it, on every page that uses it (including legacy
+// pages). This lists those tags with the numbers that fit the new image.
+// Returns a description of each such tag for the given PNGs, e.g. "legacy/
+// webhooks.md: /img/foo.png is shown at 421x319. Use …".
+async function findSizeMismatches(media) {
+  const references = findMediaReferences();
+  const mismatches = [];
+  for (const file of media.filter(file => /\.png$/i.test(file))) {
+    if (!fs.existsSync(path.join(ROOT, file))) continue;
+    const { width, height } = await sharp(path.join(ROOT, file)).metadata();
+    const url = file.replace(/^static/, '');
+    for (const page of references.get(file) ?? []) {
+      const content = fs.readFileSync(path.join(ROOT, page), 'utf-8');
+      for (const [tag] of content.matchAll(/<img\b[^>]*>/g)) {
+        if (!tag.includes(`"${url}"`)) continue;
+        const shownWidth = Number(tag.match(/\bwidth="(\d+)"/)?.[1]);
+        const shownHeight = Number(tag.match(/\bheight="(\d+)"/)?.[1]);
+        if (!shownWidth || !shownHeight) continue;
+        const fittingHeight = Math.round((shownWidth * height) / width);
+        if (Math.abs(fittingHeight - shownHeight) > 2) {
+          mismatches.push({
+            page,
+            message:
+              `${pageName(page)}: ${url} is shown at ${shownWidth}x${shownHeight}. ` +
+              `Use width="${Math.round(width / 2)}" height="${Math.round(height / 2)}" ` +
+              `(its size at 1x) or height="${fittingHeight}".`,
+          });
+        }
+      }
+    }
+  }
+  return mismatches;
+}
+
+async function printSizeMismatches(media, heading) {
+  const mismatches = await findSizeMismatches(media);
+  if (mismatches.length) {
+    console.log(
+      `\n${heading}\n` +
+        mismatches.map(({ message }) => `  ${message}`).join('\n'),
+    );
+  }
+  return mismatches;
 }
 
 // Media older than this on the same page as something just captured gets
@@ -619,6 +684,29 @@ async function optimize(files, { check, 'drop-audio': dropAudio }) {
   }
 
   if (converted.length) printConvertedReferences(converted);
+
+  // A changed image can leave pages showing it at its old shape. Checked here
+  // as well as after capturing, so images made by hand are covered too.
+  const sizeMismatches = await findSizeMismatches(
+    files.map(file => path.relative(ROOT, path.resolve(file))),
+  );
+  if (check && sizeMismatches.length) {
+    console.error(
+      '\nThese pages show an image at a size that distorts it. Update their ' +
+        '<img> width and height:',
+    );
+    for (const { page, message } of sizeMismatches) {
+      console.error(`  ${message}`);
+      annotate('error', page, message);
+    }
+    process.exitCode = 1;
+  } else if (sizeMismatches.length) {
+    console.log(
+      '\nThese pages show an image at a size that distorts it:\n' +
+        sizeMismatches.map(({ message }) => `  ${message}`).join('\n'),
+    );
+  }
+
   if (failed.length || needsDropAudio.length) {
     const commands = [
       failed.length &&
@@ -664,7 +752,7 @@ const [command, ...rest] = positionals;
 if (values.help || !command) {
   console.log(USAGE);
 } else if (command === 'status') {
-  status();
+  await status();
 } else if (command === 'capture') {
   await capture(rest, values);
 } else if (command === 'optimize') {

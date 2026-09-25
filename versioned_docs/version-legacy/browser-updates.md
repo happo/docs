@@ -10,8 +10,8 @@ even though you didn't introduce any changes in your application.
 <img
   src="/img/happo-browser-update-diff.png"
   alt="Happo status on a GitHub pull request"
-  width="1290"
-  height="494"
+  width="894"
+  height="418"
 /> _Example of a diff caused by an updated Safari worker. The newer version of
 Safari rendered the font slightly different from the previous version causing a
 diff to appear on the component's label._

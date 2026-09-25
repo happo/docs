@@ -46,6 +46,10 @@ pnpm media capture happo-report happo-review-panel
 After capturing, it lists media more than a year old on the same pages
 (including legacy pages) as anything it just updated, such as an old GIF right
 above a new screenshot. Update those too, so a page doesn't mix old and new UI.
+It also lists any `<img>` tag, on current or legacy pages, whose `width` and
+`height` no longer fit the new screenshot's shape, with the numbers to use
+instead. `pnpm media status` checks this for every image, and
+`pnpm media optimize --check` (which CI runs on changed images) fails on it.
 
 Open a PR with the updated files. Happo runs on this repo, so the report on the
 PR shows every page where an image changed. Use it to review the new media in
@@ -184,6 +188,10 @@ workflow in happo-showcase and try again.
 - Some media can't be scripted safely, such as installing a GitHub app or
   creating an access token. Add those as `manual` scenes with instructions, so
   they still show up in `pnpm media status`.
+- If a scene needs data that has to be set up by hand first (like a webhook that
+  has sent deliveries), throw `SceneSkipped` with instructions when it's
+  missing. `pnpm media capture` then reports the scene as skipped instead of
+  failed.
 
 Embed videos with a `<video>` tag instead of Markdown image syntax. Docs pages
 are MDX, so use the JSX spellings (`autoPlay`, `playsInline`). Browsers only

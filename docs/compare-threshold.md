@@ -52,8 +52,8 @@ results depending on your screenshots.
 <img
   src="/img/compare_threshold.png"
   alt="The compare threshold option"
-  width="239"
-  height="242"
+  width="732"
+  height="317"
 />
 
 This option controls how different two pixels are allowed to be. Use the slider
@@ -66,8 +66,8 @@ its color to the largest possible difference for the current threshold value.
 <img
   src="/img/ignore_threshold.png"
   alt="The ignore threshold option"
-  width="238"
-  height="239"
+  width="732"
+  height="340"
 />
 
 In certain cases, a small amount of pixels can cause a diff despite the majority
@@ -80,9 +80,9 @@ difference.
 
 <img
   src="/img/apply_blur.png"
-  alt="The apply blur option"
-  width="243"
-  height="228"
+  alt="The blur images option"
+  width="732"
+  height="114"
 />
 
 If your screenshots are high in contrast, you can blur the images slightly
