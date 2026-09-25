@@ -25,7 +25,10 @@ RUN groupadd --gid ${gid} ${group} \
 USER ${user}
 
 COPY --chown=${user}:${group} package.json pnpm-lock.yaml pnpm-workspace.yaml /app/
-RUN pnpm install --frozen-lockfile
+# ffmpeg is only used by the docs media tooling (see media/README.md), so drop
+# its ~45 MB binary in the same layer it's installed in.
+RUN pnpm install --frozen-lockfile \
+    && rm -f node_modules/ffmpeg-static/ffmpeg
 
 COPY --chown=${user}:${group} . /app/
 
