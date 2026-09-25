@@ -31,15 +31,13 @@ The Source page has some details about what was used to produce the screenshot,
 and there are a few buttons here that can be useful. Depending on the type of
 integration you are using, you'll see one or more of these buttons:
 
-- A "View recorded HTML" button (for [Happo Examples](examples.md) and
-  [Cypress setups](cypress.mdx)) that allow you to see the rendered HTML
-  directly in the browser, along with the CSS used.
+- A "View recorded HTML" button (for [Cypress setups](cypress.mdx)) that allow
+  you to see the rendered HTML directly in the browser, along with the CSS used.
 - A "Download assets" button, where you can grab the images, fonts, etc, that
   were used when taking the screenshot.
 - A "Download static package" button that let's you fetch the statically built
   package used to render the example. This will e.g. show up if you're using
-  [Storybook](storybook.mdx), or if you're using [Happo Examples](examples.md)
-  with the `prerender: false` option.
+  [Storybook](storybook.mdx) or the [custom integration](custom.mdx).
 - A "Re-generate snapshot" button, that will let you retry taking the
   screenshot. Continue reading for more on this option!
 
@@ -289,11 +287,11 @@ Things to check:
   name (in the same or different files) will collide. Search your stories for
   the component and variant from the error message and remove or rename the
   duplicate.
-- **Programmatically generated examples.** If you're using
-  [Happo Examples](examples.md) or the [custom integration](custom.mdx) and
-  generating examples in a loop (e.g. mapping over an array of fixtures), make
-  sure each iteration produces a unique `variant`. Duplicate keys in your source
-  data, or a missing index/suffix in the variant name, will produce duplicates.
+- **Programmatically generated examples.** If you're using the
+  [custom integration](custom.mdx) and generating examples in a loop (e.g.
+  mapping over an array of fixtures), make sure each iteration produces a unique
+  `variant`. Duplicate keys in your source data, or a missing index/suffix in
+  the variant name, will produce duplicates.
 - **Custom `nextExample` implementations.** If you've implemented your own
   `window.happo.nextExample()`, confirm that it advances its internal cursor on
   every call and returns `undefined` (not the same example again) once all

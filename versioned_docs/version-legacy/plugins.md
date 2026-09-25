@@ -84,7 +84,7 @@ module.exports {
 
 The Happo "scrape" plugin will make it possible to grab Happo examples from an
 existing website. See https://github.com/happo/happo-plugin-scrape. Make sure to
-also check out the built-in [full-page support](#full-page-support).
+also check out the built-in [full-page support](full-page.md).
 
 ## Gatsby
 

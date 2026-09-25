@@ -379,8 +379,8 @@ different naming scheme, such as `**/*-examples.js`.
 If you rely on external stylesheets, list their URLs or absolute file paths in
 this config option, such as `['/path/to/file.css', 'http://cdn/style.css']`. If
 you're using
-[conditionally applied stylesheets](#conditionally-applied-stylesheets), use
-objects instead of paths:
+[conditionally applied stylesheets](examples.mdx#conditionally-applied-stylesheets),
+use objects instead of paths:
 
 ```js
 module.exports = {
