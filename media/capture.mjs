@@ -297,7 +297,9 @@ async function captureScene(browser, scene, { headed }) {
     // when the scene runs.
     const url = typeof scene.url === 'function' ? await scene.url() : scene.url;
     if (scene.setup) await scene.setup(page);
-    await page.goto(url, { waitUntil: 'networkidle' });
+    // Some sites (e.g. GitHub) keep connections open for live updates, so
+    // they never go network-idle. Those scenes wait for `load` instead.
+    await page.goto(url, { waitUntil: scene.waitUntil ?? 'networkidle' });
 
     if (scene.prepare) await scene.prepare(page);
 

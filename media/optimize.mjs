@@ -169,7 +169,7 @@ async function encodeVp9(ffmpeg, inputFile) {
 
 // Re-encodes a video or GIF as a VP9 .webm. Docs videos autoplay muted, so
 // any audio is removed, but only when `dropAudio` says that's intended.
-async function optimizeVideo(file, input, { dropAudio }) {
+async function optimizeVideo(file, input, { dropAudio = false } = {}) {
   const ffmpeg = await findFfmpeg();
   const { codec, width, fps, hasAudio } = await probeVideo(ffmpeg, file);
   const resized = width > MAX_WIDTH;
