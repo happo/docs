@@ -4,6 +4,13 @@ This repo is the home of happo.io documentation, served at docs.happo.io
 
 # Changelog
 
+## 3.61.0
+
+- Refresh documentation screenshots and media across multiple UI sections
+- Optimize Docker image size with multi-stage build
+- Update documentation labels to match current Happo UI
+- Bump prettier dependency to 3.9.9
+
 ## 3.60.10
 
 - Document that exceeding maxBytes is reported as a failure rather than fixed by dropping frames
