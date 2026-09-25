@@ -152,7 +152,7 @@ workflow in happo-showcase and try again.
   mask: page => [page.locator('.avatar')],
 
   // Videos: define record() instead of target. Output a .webm file.
-  async record(page, { click, moveTo, pause }) {},
+  async record(page, { click, hover, moveTo, pause }) {},
 }
 ```
 
@@ -166,8 +166,16 @@ workflow in happo-showcase and try again.
   when more than 15% of a screenshot on any side is empty background (beyond the
   scene's padding).
 - A target taller than the viewport is still captured in full.
-- Videos show a mouse pointer. Use the `click` and `moveTo` helpers so the
-  pointer glides to each element instead of jumping.
+- Videos show a mouse pointer. Use the `click`, `hover` and `moveTo` helpers so
+  the pointer glides to each element instead of jumping.
+- Pace videos for someone seeing the UI for the first time. The helpers do most
+  of this: a video starts with a still moment, the pointer eases between
+  elements, `click` rests on an element before clicking it, and `hover` rests on
+  one without clicking. Give anything new that appears (like an open menu) a
+  second or two before moving on.
+- End a video on the thing the docs are about. If the next step leaves the page
+  (e.g. choosing a menu item that navigates), point at it with `hover` instead
+  of clicking. A screenshot can show where it leads.
 - Scenes must not change real data. Don't click anything that saves (Accept,
   Reject, Create token, …). If you need a page in a certain state, use one
   that's already in that state.

@@ -264,6 +264,11 @@ function installCursor() {
 }
 
 // Helpers passed to a scene's record() function.
+//
+// Videos are paced for someone seeing the UI for the first time: the pointer
+// eases between elements at about the speed a person moves a mouse, rests on
+// each element before clicking it, and gives the page a moment to react
+// afterwards.
 function recordingHelpers(page) {
   const viewport = page.viewportSize();
   let position = { x: viewport.width / 2, y: viewport.height / 2 };
@@ -271,21 +276,46 @@ function recordingHelpers(page) {
   async function moveTo(locator) {
     await locator.scrollIntoViewIfNeeded();
     const box = await locator.boundingBox();
-    const target = { x: box.x + box.width / 2, y: box.y + box.height / 2 };
+    // The pointer is drawn below and to the right of where it points, so
+    // pointing at the middle of a wide element (e.g. a menu item) covers its
+    // label. Point near the right end instead, which is usually empty.
+    const target = {
+      x: box.width > 120 ? box.x + box.width - 32 : box.x + box.width / 2,
+      y: box.y + box.height / 2,
+    };
     const distance = Math.hypot(target.x - position.x, target.y - position.y);
-    await page.mouse.move(target.x, target.y, {
-      steps: Math.max(10, Math.round(distance / 12)),
-    });
+    // One mouse event per frame, eased in and out. mouse.move()'s own `steps`
+    // fire without any delay, so the pointer would jump.
+    const duration = Math.min(1000, Math.max(400, distance * 1.5));
+    const frames = Math.round(duration / 16);
+    const start = position;
+    for (let frame = 1; frame <= frames; frame++) {
+      const t = frame / frames;
+      const eased = t < 0.5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2;
+      await page.mouse.move(
+        start.x + (target.x - start.x) * eased,
+        start.y + (target.y - start.y) * eased,
+      );
+      await page.waitForTimeout(16);
+    }
     position = target;
   }
 
   return {
     moveTo,
-    // Glides the pointer to the element, then clicks it.
-    async click(locator) {
+    // Glides the pointer to the element and rests there, e.g. to point out a
+    // menu item without choosing it.
+    async hover(locator, ms = 1500) {
       await moveTo(locator);
-      await page.waitForTimeout(250);
+      await page.waitForTimeout(ms);
+    },
+    // Glides the pointer to the element, rests so viewers can see what's about
+    // to be clicked, clicks, then gives the page a moment to respond.
+    async click(locator, { before = 700, after = 800 } = {}) {
+      await moveTo(locator);
+      await page.waitForTimeout(before);
       await page.mouse.click(position.x, position.y);
+      await page.waitForTimeout(after);
     },
     pause: (ms = 1000) => page.waitForTimeout(ms),
   };
@@ -302,7 +332,8 @@ async function recordScene(page, scene, outputPath) {
     await page.mouse.move(viewport.width / 2, viewport.height / 2);
     await page.screencast.start({ path: recordingPath, size: viewport });
     try {
-      await page.waitForTimeout(500);
+      // Let viewers take in the page before anything moves.
+      await page.waitForTimeout(1200);
       await scene.record(page, recordingHelpers(page));
       // Hold the final frame for a moment so the loop doesn't jump straight
       // back to the start.

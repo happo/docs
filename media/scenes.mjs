@@ -402,14 +402,14 @@ export const scenes = [
     auth: 'happo',
     viewport: { width: 1280, height: 720 },
     prepare: waitForSnapshots,
-    async record(page, { click, pause }) {
+    // Ends pointing at the menu item. Clicking it would go to the Source
+    // page, which the screenshot below the video shows.
+    async record(page, { click, hover }) {
       await click(
         page.locator('button:has([class*="moreOptionsButton"])').first(),
+        { before: 1200, after: 900 },
       );
-      await pause(800);
-      await click(viewSourceMenuItem(page));
-      await page.waitForLoadState('networkidle');
-      await pause(1500);
+      await hover(viewSourceMenuItem(page), 2500);
     },
   },
   {
