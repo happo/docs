@@ -6,6 +6,13 @@ title: Roles and permissions
 The [user-access](https://happo.io/user-access) page for your Happo account
 controls who has access to your account, and what priveleges those users have.
 
+<img
+  src="/img/happo-user-access.png"
+  alt="Permissions and users on the Access control page"
+  width="732"
+  height="582"
+/>
+
 By default, these people will be have regular user access to your account:
 
 - If you have a domain configured, any signed in user belonging to that domain

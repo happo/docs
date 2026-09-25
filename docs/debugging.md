@@ -181,9 +181,18 @@ That happens when the target sets
 [`allowedHostnames`](configuration.md#target-allowedhostnames) and the host
 isn't on the list.
 
-Open the report's logs page in happo.io to find out. It opens with a summary of
-what the run reached for on the network, split into what was allowed and what
-was blocked, and naming each hostname:
+Open the report's logs page in happo.io to find out, with the **View logs** link
+at the bottom of the report's sidebar:
+
+<img
+  src="/img/happo-view-logs-link.png"
+  alt="The View logs link in a Happo report's sidebar"
+  width="274"
+  height="141"
+/>
+
+The logs page opens with a summary of what the run reached for on the network,
+split into what was allowed and what was blocked, and naming each hostname:
 
 ```
 External requests: 2 allowed, 3 blocked. Allowed: example.com (x2). Blocked: fonts.gstatic.com (x2), cdn.example.com

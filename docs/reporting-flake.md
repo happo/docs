@@ -5,8 +5,19 @@ title: Reporting Flake
 
 A powerful feature in the Happo review process is the ability to report a diff
 as flaky. To use this feature, choose "Report flake" from the "…" overflow menu
-next to any diff. Once reported, the option changes to "Not flake" so you can
-undo it.
+next to any diff, or click the "Report flake" button (an exclamation mark in a
+circle) right next to that menu. Once reported, the menu option changes to "Not
+flake" so you can undo it.
+
+<video
+  src="/video/happo-report-flake.webm"
+  aria-label='Pointing at the "Report flake" button next to a diff, then at "Report flake" in its "…" menu'
+  autoPlay
+  loop
+  muted
+  playsInline
+  width="100%"
+/>
 
 Reporting a diff as flaky will instruct Happo to ignore that specific diff now
 and in the future. It should be used with a little bit of caution as it might

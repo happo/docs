@@ -38,3 +38,5 @@ to internal infrastructure that might affect the screenshots and cause diffs.
 These could be e.g. browser updates, internal bug fixes, etc. You'll only be
 alerted about changes that were made in the timespan between when the "before"
 report and the "after" report were created.
+
+![An alert about a Happo browser update at the top of a report](/img/happo-worker-update-alert.png)
