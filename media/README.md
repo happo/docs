@@ -27,9 +27,11 @@ set `FFMPEG_BIN` to its path. It needs to be built with `libvpx-vp9`.
 pnpm media status
 ```
 
-This lists every image and video the docs use, which scene produces it, and when
-it was last updated. Media without a scene have to be updated by hand (or get a
-scene written for them).
+This lists every image and video the docs use, which scene produces it, which
+pages use it, and when it was last updated. Legacy pages are listed as
+`legacy/…`: they share many images with the current docs, so updating an image
+updates those pages too. Media without a scene have to be updated by hand (or
+get a scene written for them).
 
 ```bash
 pnpm media capture --all
@@ -40,6 +42,10 @@ This recaptures every automated scene. To recapture only some scenes, name them:
 ```bash
 pnpm media capture happo-report happo-review-panel
 ```
+
+After capturing, it lists media more than a year old on the same pages
+(including legacy pages) as anything it just updated, such as an old GIF right
+above a new screenshot. Update those too, so a page doesn't mix old and new UI.
 
 Open a PR with the updated files. Happo runs on this repo, so the report on the
 PR shows every page where an image changed. Use it to review the new media in
@@ -141,8 +147,8 @@ workflow in happo-showcase and try again.
   async prepare(page) {},                // runs after the page loads, e.g. wait for images
 
   // Screenshots: omit `target` for the whole viewport.
-  target: page => page.locator('.panel'),
-  padding: 16,
+  target: page => page.locator('.panel'), // or an array of locators
+  padding: 16,                           // or { top, right, bottom, left }
   mask: page => [page.locator('.avatar')],
 
   // Videos: define record() instead of target. Output a .webm file.
@@ -152,6 +158,14 @@ workflow in happo-showcase and try again.
 
 - Screenshots are taken at 2x pixel density so they're sharp on high-DPI
   screens, then optimized (see above).
+- Crop tightly. Most app pages are much wider than their content, so a
+  whole-viewport screenshot has wide empty margins. Set `target` to the part of
+  the page the docs talk about. When a target returns several locators, the
+  screenshot covers every visible, non-empty element they match, which helps
+  when part of a panel only appears in some states. `pnpm media capture` warns
+  when more than 15% of a screenshot on any side is empty background (beyond the
+  scene's padding).
+- A target taller than the viewport is still captured in full.
 - Videos show a mouse pointer. Use the `click` and `moveTo` helpers so the
   pointer glides to each element instead of jumping.
 - Scenes must not change real data. Don't click anything that saves (Accept,

@@ -207,7 +207,17 @@ function reviewPanel(id, branch) {
       [class*="leaveReviewSection"] { border-top: none !important; }
       img[src*="avatars.githubusercontent.com"] { visibility: hidden; }
     `,
-    target: page => page.locator('[class*="leaveReviewSection"]'),
+    // The buttons, and the "Reviewed by" note under them once there is one.
+    // The section itself has padding and room for the note even when it's
+    // empty, which leaves wide empty margins.
+    target: page => [
+      page.locator(
+        '[class*="ReviewVerdictControl-module"][class*="__container"]',
+      ),
+      page.locator(
+        '[class*="leaveReviewSection"] [class*="Comparison-module"][class*="__note"]',
+      ),
+    ],
     padding: 16,
   };
 }
@@ -415,6 +425,11 @@ export const scenes = [
       await viewSourceMenuItem(page).click();
       await page.waitForLoadState('networkidle');
     },
+    // The page's content column. The page itself is much wider than the
+    // content, which leaves wide empty margins.
+    target: page => page.locator('[class*="snapshotSourcePage"]'),
+    // The navbar is right above the content, so keep the top padding small.
+    padding: { top: 8, right: 24, bottom: 24, left: 24 },
   },
 
   // docs/continuous-integration.md
