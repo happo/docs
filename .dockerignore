@@ -1,6 +1,9 @@
 *.log
-*/node_modules
+node_modules
 .DS_Store
 .circleci
+.claude
+.docusaurus
 .git
 .github
+build

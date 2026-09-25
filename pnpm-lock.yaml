@@ -45,6 +45,9 @@ importers:
       release-with-ease:
         specifier: ^2.7.2
         version: 2.7.2
+      serve-handler:
+        specifier: 6.1.7
+        version: 6.1.7
       sharp:
         specifier: 0.35.4
         version: 0.35.4(@types/node@26.4.1)
