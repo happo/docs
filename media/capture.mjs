@@ -1,0 +1,385 @@
+#!/usr/bin/env node
+// Regenerates the screenshots and videos used in the docs. See media/README.md.
+
+import { execFileSync } from 'node:child_process';
+import fs from 'node:fs';
+import path from 'node:path';
+import readline from 'node:readline/promises';
+import { parseArgs } from 'node:util';
+import { chromium } from 'playwright';
+
+import { optimizeImage } from './optimize.mjs';
+import { authProfiles, scenes, siteStyles } from './scenes.mjs';
+
+const ROOT = path.resolve(import.meta.dirname, '..');
+const AUTH_DIR = path.join(import.meta.dirname, '.auth');
+const MEDIA_EXTENSIONS = /\.(png|jpe?g|gif|webp|mp4|webm)$/i;
+
+function authStatePath(profile) {
+  return path.join(AUTH_DIR, `${profile}.json`);
+}
+
+// Returns a map of media path (e.g. static/img/foo.png) to the docs pages that
+// reference it.
+function findMediaReferences() {
+  const references = new Map();
+  for (const file of fs.globSync('docs/**/*.{md,mdx}', { cwd: ROOT })) {
+    const content = fs
+      .readFileSync(path.join(ROOT, file), 'utf-8')
+      // Code blocks contain example URLs that aren't real media.
+      .replace(/```[\s\S]*?```/g, '');
+    for (const [, url] of content.matchAll(
+      /["(](\/(?:img|video)\/[^")\s]+)/g,
+    )) {
+      if (!MEDIA_EXTENSIONS.test(url)) continue;
+      const mediaPath = `static${url}`;
+      if (!references.has(mediaPath)) references.set(mediaPath, new Set());
+      references.get(mediaPath).add(file);
+    }
+  }
+  return references;
+}
+
+function lastUpdated(file) {
+  const date = execFileSync(
+    'git',
+    ['log', '-1', '--format=%ad', '--date=short', '--', file],
+    { cwd: ROOT, encoding: 'utf-8' },
+  ).trim();
+  return date || 'uncommitted';
+}
+
+function sceneKind(scene) {
+  if (scene.manual) return 'manual';
+  if (scene.record) return 'video';
+  return 'screenshot';
+}
+
+function status() {
+  const references = findMediaReferences();
+  const sceneByOutput = new Map(scenes.map(scene => [scene.output, scene]));
+  const allPaths = new Set([...references.keys(), ...sceneByOutput.keys()]);
+
+  const rows = [...allPaths].sort().map(mediaPath => {
+    const scene = sceneByOutput.get(mediaPath);
+    const usedIn = references.get(mediaPath);
+    const exists = fs.existsSync(path.join(ROOT, mediaPath));
+    return {
+      media: mediaPath.replace(/^static\//, ''),
+      updated: exists ? lastUpdated(mediaPath) : 'missing',
+      size: exists
+        ? `${Math.round(fs.statSync(path.join(ROOT, mediaPath)).size / 1024)} KB`
+        : '-',
+      scene: scene ? `${scene.id} (${sceneKind(scene)})` : '-',
+      'used in': usedIn
+        ? [...usedIn].map(f => f.replace(/^docs\//, '')).join(', ')
+        : 'unused',
+    };
+  });
+  console.table(rows);
+
+  const missingScenes = rows.filter(row => row.scene === '-').length;
+  const unused = rows.filter(row => row['used in'] === 'unused').length;
+  if (missingScenes) {
+    console.log(`${missingScenes} media file(s) have no scene yet.`);
+  }
+  if (unused) {
+    console.log(
+      `${unused} scene output(s) are not referenced by any docs page.`,
+    );
+  }
+}
+
+async function login(profileName) {
+  const profile = authProfiles[profileName];
+  if (!profile) {
+    throw new Error(
+      `Unknown auth profile "${profileName}". Available: ${Object.keys(authProfiles).join(', ')}`,
+    );
+  }
+
+  const browser = await chromium.launch({ headless: false });
+  const context = await browser.newContext();
+  const page = await context.newPage();
+  await page.goto(profile.loginUrl);
+
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout,
+  });
+  await rl.question(
+    `Log in to ${profile.name} in the browser window, then press Enter here. ` +
+      `Use the ${profile.account} account. `,
+  );
+  rl.close();
+
+  fs.mkdirSync(AUTH_DIR, { recursive: true });
+  await context.storageState({ path: authStatePath(profileName) });
+  await browser.close();
+  console.log(`Saved ${profileName} session to ${authStatePath(profileName)}`);
+}
+
+// Screenshot of the scene's target element (plus padding), or of the whole
+// viewport when the scene has no target.
+async function screenshotScene(page, scene, outputPath) {
+  const options = { path: outputPath, animations: 'disabled', caret: 'hide' };
+
+  if (scene.target) {
+    const target = scene.target(page);
+    await target.scrollIntoViewIfNeeded();
+    const box = await target.boundingBox();
+    if (!box) throw new Error('Target element is not visible');
+
+    const padding = scene.padding ?? 0;
+    const viewport = page.viewportSize();
+    const x = Math.max(0, box.x - padding);
+    const y = Math.max(0, box.y - padding);
+    options.clip = {
+      x,
+      y,
+      width: Math.min(viewport.width, box.x + box.width + padding) - x,
+      height: Math.min(viewport.height, box.y + box.height + padding) - y,
+    };
+  }
+
+  if (scene.mask) {
+    options.mask = scene.mask(page);
+  }
+
+  await page.screenshot(options);
+}
+
+// Draws a mouse pointer that follows mouse events, since headless browsers
+// don't render one. Runs in the page on every navigation.
+function installCursor() {
+  const cursor = document.createElement('div');
+  cursor.innerHTML =
+    '<svg width="24" height="24" viewBox="0 0 24 24"><path d="M4 2l16 11-7 1.2-3.8 6.3z" fill="#000" stroke="#fff" stroke-width="1.5" stroke-linejoin="round"/></svg>';
+  Object.assign(cursor.style, {
+    position: 'fixed',
+    top: '0',
+    left: '0',
+    zIndex: '2147483647',
+    pointerEvents: 'none',
+    transform: 'translate(-100px, -100px)',
+  });
+  document.addEventListener(
+    'mousemove',
+    event => {
+      cursor.style.transform = `translate(${event.clientX - 4}px, ${event.clientY - 2}px)`;
+    },
+    true,
+  );
+  document.addEventListener('DOMContentLoaded', () =>
+    document.body.append(cursor),
+  );
+}
+
+// Helpers passed to a scene's record() function.
+function recordingHelpers(page) {
+  const viewport = page.viewportSize();
+  let position = { x: viewport.width / 2, y: viewport.height / 2 };
+
+  async function moveTo(locator) {
+    await locator.scrollIntoViewIfNeeded();
+    const box = await locator.boundingBox();
+    const target = { x: box.x + box.width / 2, y: box.y + box.height / 2 };
+    const distance = Math.hypot(target.x - position.x, target.y - position.y);
+    await page.mouse.move(target.x, target.y, {
+      steps: Math.max(10, Math.round(distance / 12)),
+    });
+    position = target;
+  }
+
+  return {
+    moveTo,
+    // Glides the pointer to the element, then clicks it.
+    async click(locator) {
+      await moveTo(locator);
+      await page.waitForTimeout(250);
+      await page.mouse.click(position.x, position.y);
+    },
+    pause: (ms = 1000) => page.waitForTimeout(ms),
+  };
+}
+
+async function recordScene(page, scene, outputPath) {
+  const viewport = page.viewportSize();
+  await page.mouse.move(viewport.width / 2, viewport.height / 2);
+  await page.screencast.start({ path: outputPath, size: viewport });
+  try {
+    await page.waitForTimeout(500);
+    await scene.record(page, recordingHelpers(page));
+    // Hold the final frame for a moment so the loop doesn't jump straight
+    // back to the start.
+    await page.waitForTimeout(scene.holdLastFrame ?? 1500);
+  } finally {
+    await page.screencast.stop();
+  }
+}
+
+async function captureScene(browser, scene, { headed }) {
+  const contextOptions = {
+    viewport: scene.viewport ?? { width: 1400, height: 900 },
+    // Capture at 2x so screenshots stay sharp on high-DPI screens.
+    deviceScaleFactor: scene.record ? 1 : 2,
+    colorScheme: scene.colorScheme ?? 'light',
+    locale: 'en-US',
+    timezoneId: 'America/Los_Angeles',
+    reducedMotion: scene.record ? 'no-preference' : 'reduce',
+  };
+
+  if (scene.auth) {
+    const statePath = authStatePath(scene.auth);
+    if (!fs.existsSync(statePath)) {
+      throw new Error(
+        `Needs a logged-in ${scene.auth} session. Run: pnpm media login ${scene.auth}`,
+      );
+    }
+    contextOptions.storageState = statePath;
+  }
+
+  const context = await browser.newContext(contextOptions);
+
+  // Added as an init script, rather than once, so it survives navigations
+  // during a video.
+  await context.addInitScript(
+    ({ siteStyles, sceneCss }) => {
+      const css = [siteStyles[location.hostname], sceneCss].filter(Boolean);
+      if (!css.length) return;
+      const style = document.createElement('style');
+      style.textContent = css.join('\n');
+      document.addEventListener('DOMContentLoaded', () =>
+        document.head.append(style),
+      );
+    },
+    { siteStyles, sceneCss: scene.css },
+  );
+  if (scene.record) await context.addInitScript(installCursor);
+
+  const page = await context.newPage();
+  if (headed) page.setDefaultTimeout(0);
+
+  try {
+    // A scene's url can be a function, for pages that have to be looked up
+    // when the scene runs.
+    const url = typeof scene.url === 'function' ? await scene.url() : scene.url;
+    if (scene.setup) await scene.setup(page, { url });
+    await page.goto(url, { waitUntil: 'networkidle' });
+
+    if (scene.prepare) await scene.prepare(page);
+
+    const outputPath = path.join(ROOT, scene.output);
+    fs.mkdirSync(path.dirname(outputPath), { recursive: true });
+
+    if (scene.record) {
+      await recordScene(page, scene, outputPath);
+      return `${Math.round(fs.statSync(outputPath).size / 1024)} KB`;
+    }
+    await screenshotScene(page, scene, outputPath);
+    return await optimizeImage(outputPath);
+  } finally {
+    await context.close();
+  }
+}
+
+async function capture(ids, { all, headed }) {
+  let selected;
+  if (all) {
+    selected = scenes.filter(scene => !scene.manual);
+  } else {
+    const unknown = ids.filter(id => !scenes.some(scene => scene.id === id));
+    if (unknown.length) {
+      throw new Error(`Unknown scene(s): ${unknown.join(', ')}`);
+    }
+    selected = scenes.filter(scene => ids.includes(scene.id));
+  }
+
+  if (!selected.length) {
+    console.log('Nothing to capture. Pass scene ids or --all.');
+    return;
+  }
+
+  const browser = await chromium.launch({ headless: !headed });
+  const failures = [];
+  const skipped = [];
+  for (const scene of selected) {
+    if (scene.manual) {
+      console.log(`- ${scene.id}: manual scene, skipping.\n  ${scene.manual}`);
+      continue;
+    }
+
+    if (scene.auth && !fs.existsSync(authStatePath(scene.auth))) {
+      console.log(
+        `- ${scene.id}: skipping, needs a ${scene.auth} login. Run: pnpm media login ${scene.auth}`,
+      );
+      skipped.push(scene.id);
+      continue;
+    }
+
+    process.stdout.write(`- ${scene.id} → ${scene.output} ... `);
+    try {
+      const result = await captureScene(browser, scene, { headed });
+      console.log(result);
+    } catch (error) {
+      console.log('failed');
+      console.error(`  ${error.message.split('\n')[0]}`);
+      failures.push(scene.id);
+    }
+  }
+  await browser.close();
+
+  if (skipped.length) {
+    console.log(`\nSkipped (not logged in): ${skipped.join(', ')}`);
+  }
+  if (failures.length) {
+    console.error(`\nFailed: ${failures.join(', ')}`);
+    process.exitCode = 1;
+  }
+}
+
+async function optimize(files) {
+  if (!files.length) {
+    console.log('Pass the image files to optimize.');
+    return;
+  }
+  for (const file of files) {
+    console.log(`- ${file}: ${await optimizeImage(file)}`);
+  }
+}
+
+const USAGE = `Usage:
+  pnpm media status                 List docs media, their scenes, and when they were last updated
+  pnpm media capture <id...>        Capture specific scenes
+  pnpm media capture --all          Capture every automated scene
+  pnpm media optimize <file...>     Shrink PNGs made by hand before committing them
+  pnpm media login <profile>        Save a logged-in session for scenes that need one (${Object.keys(authProfiles).join(', ')})
+
+Options:
+  --headed                          Show the browser while capturing (handy when writing a scene)`;
+
+const { positionals, values } = parseArgs({
+  allowPositionals: true,
+  options: {
+    all: { type: 'boolean', default: false },
+    headed: { type: 'boolean', default: false },
+    help: { type: 'boolean', short: 'h', default: false },
+  },
+});
+
+const [command, ...rest] = positionals;
+
+if (values.help || !command) {
+  console.log(USAGE);
+} else if (command === 'status') {
+  status();
+} else if (command === 'capture') {
+  await capture(rest, values);
+} else if (command === 'optimize') {
+  await optimize(rest);
+} else if (command === 'login') {
+  await login(rest[0]);
+} else {
+  console.error(`Unknown command "${command}"\n\n${USAGE}`);
+  process.exitCode = 1;
+}

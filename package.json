@@ -10,6 +10,7 @@
     "docusaurus": "docusaurus",
     "examples": "docusaurus-examples",
     "lint": "prettier --check .",
+    "media": "node media/capture.mjs",
     "prettier-fix": "prettier --write .",
     "publish-gh-pages": "docusaurus publish",
     "release": "set -a && source .env && set +a && release-with-ease",
@@ -22,8 +23,10 @@
   "devDependencies": {
     "esbuild": "^0.28.2",
     "happo": "6.19.2",
+    "playwright": "1.63.0",
     "prettier": "3.9.6",
-    "release-with-ease": "^2.7.2"
+    "release-with-ease": "^2.7.2",
+    "sharp": "0.35.4"
   },
   "version": "3.60.10",
   "dependencies": {

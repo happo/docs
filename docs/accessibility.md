@@ -153,12 +153,15 @@ Cypress.on('window:before:load', win => {
 
 Below is an example of how violations appear in a Happo report. When you make
 changes to remove violations, the comparison report page will show you the
-before and after violation count. Click the violation types to filter the report
-to only show the accessibility snapshots containing that particular violation.
-Each violation has a section that explains why the violation was found and gives
-you pointers on how to fix it.
+before and after violation count. Each violation has a section that explains why
+the violation was found and gives you pointers on how to fix it.
 
 ![Removed Accessibility Violations](/img/accessibility-violations.png)
+
+Click a violation type in the sidebar to filter the report to only show the
+accessibility snapshots containing that particular violation.
+
+![A Happo report filtered to one violation type](/img/accessibility-violation-filter.png)
 
 ## ARIA Snapshots
 

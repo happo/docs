@@ -17,6 +17,8 @@ image, so anything that doesn't understand APNG sees the first frame and treats
 it like any other snapshot. In the Happo report you can scrub through the frames
 of a diff, with the frames that changed the most highlighted.
 
+![An animated diff in a Happo report, paused on one frame](/img/happo-animated-diff.png)
+
 ## Quick start
 
 Turn it on for a target:
