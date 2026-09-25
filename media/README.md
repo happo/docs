@@ -7,6 +7,15 @@ Each image or video is a **scene** in [`scenes.mjs`](./scenes.mjs). A scene
 opens a page in Playwright, gets it into the right state, and saves a screenshot
 or a video to `static/`.
 
+## Setup
+
+Playwright's browser is downloaded separately from its npm package. After
+`pnpm install`, install it once:
+
+```bash
+pnpm exec playwright install chromium
+```
+
 ## Refreshing media after a product update
 
 ```bash
@@ -41,7 +50,8 @@ it's written:
 - PNGs are reduced to a 256-color palette, which usually halves their size with
   no visible difference for UI screenshots. If that would change the image too
   much (common with photos and gradients), the PNG stays lossless instead.
-- An existing file is only replaced by a smaller one.
+- `pnpm media optimize` only replaces a file with a smaller one, so it's safe to
+  run on images that are already optimized.
 
 Screenshots from `pnpm media capture` are optimized automatically. Run
 screenshots you take by hand through the same step before committing them:

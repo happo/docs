@@ -8,12 +8,26 @@ import readline from 'node:readline/promises';
 import { parseArgs } from 'node:util';
 import { chromium } from 'playwright';
 
-import { optimizeImage } from './optimize.mjs';
+import { optimizeImage, writeOptimizedImage } from './optimize.mjs';
 import { authProfiles, scenes, siteStyles } from './scenes.mjs';
 
 const ROOT = path.resolve(import.meta.dirname, '..');
 const AUTH_DIR = path.join(import.meta.dirname, '.auth');
 const MEDIA_EXTENSIONS = /\.(png|jpe?g|gif|webp|mp4|webm)$/i;
+
+// Playwright's browsers are downloaded separately from its npm package.
+async function launchBrowser(options) {
+  try {
+    return await chromium.launch(options);
+  } catch (error) {
+    if (error.message.includes("Executable doesn't exist")) {
+      throw new Error(
+        "Playwright's Chromium isn't installed. Run: pnpm exec playwright install chromium",
+      );
+    }
+    throw error;
+  }
+}
 
 function authStatePath(profile) {
   return path.join(AUTH_DIR, `${profile}.json`);
@@ -98,7 +112,7 @@ async function login(profileName) {
     );
   }
 
-  const browser = await chromium.launch({ headless: false });
+  const browser = await launchBrowser({ headless: false });
   const context = await browser.newContext();
   const page = await context.newPage();
   await page.goto(profile.loginUrl);
@@ -120,9 +134,10 @@ async function login(profileName) {
 }
 
 // Screenshot of the scene's target element (plus padding), or of the whole
-// viewport when the scene has no target.
-async function screenshotScene(page, scene, outputPath) {
-  const options = { path: outputPath, animations: 'disabled', caret: 'hide' };
+// viewport when the scene has no target. Returned as a buffer, so a failed
+// capture never leaves a half-written file behind.
+async function screenshotScene(page, scene) {
+  const options = { animations: 'disabled', caret: 'hide' };
 
   if (scene.target) {
     const target = scene.target(page);
@@ -146,7 +161,7 @@ async function screenshotScene(page, scene, outputPath) {
     options.mask = scene.mask(page);
   }
 
-  await page.screenshot(options);
+  return page.screenshot(options);
 }
 
 // Draws a mouse pointer that follows mouse events, since headless browsers
@@ -276,8 +291,10 @@ async function captureScene(browser, scene, { headed }) {
       await recordScene(page, scene, outputPath);
       return `${Math.round(fs.statSync(outputPath).size / 1024)} KB`;
     }
-    await screenshotScene(page, scene, outputPath);
-    return await optimizeImage(outputPath);
+    return await writeOptimizedImage(
+      outputPath,
+      await screenshotScene(page, scene),
+    );
   } finally {
     await context.close();
   }
@@ -300,7 +317,7 @@ async function capture(ids, { all, headed }) {
     return;
   }
 
-  const browser = await chromium.launch({ headless: !headed });
+  const browser = await launchBrowser({ headless: !headed });
   const failures = [];
   const skipped = [];
   for (const scene of selected) {

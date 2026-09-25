@@ -26,13 +26,7 @@ function rawPixels(buffer) {
   return sharp(buffer).ensureAlpha().raw().toBuffer();
 }
 
-// Returns a description of what was done, e.g. "412 KB → 194 KB (palette)".
-export async function optimizeImage(file) {
-  const input = fs.readFileSync(file);
-  if (!/\.png$/i.test(file)) {
-    throw new Error(`Only .png files can be optimized: ${file}`);
-  }
-
+async function optimizePng(input) {
   const { width, isPalette } = await sharp(input).metadata();
   const resized = width > MAX_WIDTH;
   const source = await sharp(input)
@@ -59,16 +53,39 @@ export async function optimizeImage(file) {
     palette.length < lossless.length;
   const output = usePalette ? palette : lossless;
 
-  // Don't replace a file that is already smaller, e.g. one that was optimized
-  // with a better tool.
-  if (!resized && output.length >= input.length) {
-    return `${formatBytes(input.length)}, already optimized`;
-  }
-
-  fs.writeFileSync(file, output);
   const notes = [usePalette ? 'palette' : 'lossless'];
   if (resized) notes.push(`resized to ${MAX_WIDTH}px wide`);
-  return `${formatBytes(input.length)} → ${formatBytes(output.length)} (${notes.join(', ')})`;
+  return {
+    output,
+    // A file that doesn't need resizing and is already smaller is best left
+    // as it is, e.g. one that was optimized with a better tool.
+    keepInput: !resized && output.length >= input.length,
+    description: `${formatBytes(input.length)} → ${formatBytes(output.length)} (${notes.join(', ')})`,
+  };
+}
+
+// Optimizes an image file in place, unless it's already smaller than what
+// optimizing would produce. Returns a description of what was done, e.g.
+// "412 KB → 194 KB (palette)".
+export async function optimizeImage(file) {
+  if (!/\.png$/i.test(file)) {
+    throw new Error(`Only .png files can be optimized: ${file}`);
+  }
+  const input = fs.readFileSync(file);
+  const { output, keepInput, description } = await optimizePng(input);
+  if (keepInput) return `${formatBytes(input.length)}, already optimized`;
+  fs.writeFileSync(file, output);
+  return description;
+}
+
+// Writes a new PNG to `file`, optimized. Unlike optimizeImage, this replaces
+// the existing file whatever its size, since it has new content.
+export async function writeOptimizedImage(file, input) {
+  const { output, keepInput, description } = await optimizePng(input);
+  fs.writeFileSync(file, keepInput ? input : output);
+  return keepInput
+    ? `${formatBytes(input.length)}, already optimized`
+    : description;
 }
 
 function formatBytes(bytes) {
