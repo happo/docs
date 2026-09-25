@@ -22,3 +22,27 @@ jobs:
 
       - name: Build
         run: pnpm build
+
+  # A CircleCI config that fails to compile creates no workflows, so it
+  # reports no checks and silently skips the release deploy.
+  validate-circleci:
+    runs-on: ubuntu-latest
+
+    env:
+      CIRCLECI_CLI_VERSION: 1.0.51242
+      CIRCLECI_CLI_SHA256: b14ae88819a50c03c74bf67c81baadb635ee5508dadfaeb167bd8e52995522c0
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+
+      - name: Install CircleCI CLI
+        run: |
+          tarball="circleci-cli_${CIRCLECI_CLI_VERSION}_linux_amd64.tar.gz"
+          curl -fsSLO "https://github.com/CircleCI-Public/circleci-cli/releases/download/v${CIRCLECI_CLI_VERSION}/${tarball}"
+          echo "${CIRCLECI_CLI_SHA256}  ${tarball}" | sha256sum --check
+          tar -xzf "$tarball" circleci
+          sudo mv circleci /usr/local/bin/
+
+      - name: Validate CircleCI config
+        run: circleci config validate --skip-update-check .circleci/config.yml
