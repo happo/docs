@@ -101,10 +101,9 @@ jobs:
             # Get HTML reliably, follow redirects and decompress
             content="$(curl -fsSL --compressed http://${CONTAINER_IP}:3344/docs/getting-started)"
 
-            # Normalize and search as text
-            if printf '%s' "$content" \
-              | tr -d '\r' \
-              | grep -Fqi 'Getting started'; then
+            # Use a here-string rather than a pipe: grep -q exits on the first
+            # match, and under pipefail the writer's SIGPIPE fails the check.
+            if grep -Fqi 'Getting started' <<< "$content"; then
               echo "✅ 'Getting started' text found on the page"
             else
               echo "Error: Expected text 'Getting started' not found on the page"
