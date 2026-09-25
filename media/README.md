@@ -46,6 +46,9 @@ pnpm media capture happo-report happo-review-panel
 After capturing, it lists media more than a year old on the same pages
 (including legacy pages) as anything it just updated, such as an old GIF right
 above a new screenshot. Update those too, so a page doesn't mix old and new UI.
+It also lists any `<img>` tag, on current or legacy pages, whose `width` and
+`height` no longer fit the new screenshot's shape, with the numbers to use
+instead.
 
 Open a PR with the updated files. Happo runs on this repo, so the report on the
 PR shows every page where an image changed. Use it to review the new media in

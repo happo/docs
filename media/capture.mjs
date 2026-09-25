@@ -8,6 +8,7 @@ import path from 'node:path';
 import readline from 'node:readline/promises';
 import { parseArgs } from 'node:util';
 import { chromium } from 'playwright';
+import sharp from 'sharp';
 
 import {
   checkResult,
@@ -489,13 +490,51 @@ async function capture(ids, { all, headed }) {
   }
   await browser.close();
 
-  if (captured.length) printOlderMediaNearby(captured);
+  if (captured.length) {
+    await printSizeMismatches(captured);
+    printOlderMediaNearby(captured);
+  }
   if (skipped.length) {
     console.log(`\nSkipped: ${skipped.join(', ')}`);
   }
   if (failures.length) {
     console.error(`\nFailed: ${failures.join(', ')}`);
     process.exitCode = 1;
+  }
+}
+
+// Docs pages often show screenshots with an <img> tag that sets width and
+// height. When a screenshot is recaptured with a different shape, those
+// numbers squash or stretch it, on every page that uses it (including legacy
+// pages). This lists those tags with the numbers that fit the new image.
+async function printSizeMismatches(captured) {
+  const lines = [];
+  for (const media of captured.filter(file => /\.png$/i.test(file))) {
+    const { width, height } = await sharp(path.join(ROOT, media)).metadata();
+    const url = media.replace(/^static/, '');
+    for (const page of findMediaReferences().get(media) ?? []) {
+      const content = fs.readFileSync(path.join(ROOT, page), 'utf-8');
+      for (const [tag] of content.matchAll(/<img\b[^>]*>/g)) {
+        if (!tag.includes(`"${url}"`)) continue;
+        const shownWidth = Number(tag.match(/\bwidth="(\d+)"/)?.[1]);
+        const shownHeight = Number(tag.match(/\bheight="(\d+)"/)?.[1]);
+        if (!shownWidth || !shownHeight) continue;
+        const fittingHeight = Math.round((shownWidth * height) / width);
+        if (Math.abs(fittingHeight - shownHeight) > 2) {
+          lines.push(
+            `  ${pageName(page)}: ${url} is shown at ${shownWidth}x${shownHeight}. ` +
+              `Use width="${Math.round(width / 2)}" height="${Math.round(height / 2)}" ` +
+              `(its size at 1x) or height="${fittingHeight}".`,
+          );
+        }
+      }
+    }
+  }
+  if (lines.length) {
+    console.log(
+      '\nThese pages show a new screenshot at a size that distorts it:\n' +
+        lines.join('\n'),
+    );
   }
 }
 
