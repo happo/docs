@@ -176,6 +176,22 @@ function firstAccessibilitySnapshot(page) {
     .first();
 }
 
+// Lets a scene change the report data a Happo report page loads, e.g. to show
+// numbers that match the docs. Only changes what this browser sees.
+async function editReportData(page, edit) {
+  await page.route('**/api/**/compare-results*', async route => {
+    const response = await route.fetch();
+    const body = await response.text();
+    if (!body) {
+      await route.fulfill({ response });
+      return;
+    }
+    const json = JSON.parse(body);
+    edit(json);
+    await route.fulfill({ response, json });
+  });
+}
+
 // The Reject/Accept control in the report sidebar of a showcase PR.
 function reviewPanel(id, branch) {
   return {
@@ -298,6 +314,32 @@ export const scenes = [
     },
     target: firstSnapshot,
     padding: 4,
+  },
+
+  // docs/storybook.mdx
+  //
+  // The showcase reports aren't partial runs, so the numbers are swapped for
+  // the ones in the docs. With fewer quota used than snapshots, "quota used"
+  // becomes a link, like it does after a partial run.
+  {
+    id: 'happo-partial-run-stats',
+    output: 'static/img/happo-partial-run-stats.png',
+    url: showcaseReport(showcasePRs.needsReview),
+    async setup(page) {
+      await editReportData(page, data => {
+        data.stats = {
+          ...data.stats,
+          snapshotsCount: 6809,
+          snapshotsUsage: 2233,
+          componentsCount: 113,
+        };
+      });
+    },
+    async prepare(page) {
+      await page.getByRole('link', { name: '2,233 quota used' }).waitFor();
+    },
+    target: page => page.locator('[class*="statsDescription"]'),
+    padding: 8,
   },
 
   // docs/debugging.md
