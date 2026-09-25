@@ -169,7 +169,7 @@ async function encodeVp9(ffmpeg, inputFile) {
 
 // Re-encodes a video or GIF as a VP9 .webm. Docs videos autoplay muted, so
 // any audio is removed, but only when `dropAudio` says that's intended.
-async function optimizeVideo(file, input, { dropAudio }) {
+async function optimizeVideo(file, input, { dropAudio = false } = {}) {
   const ffmpeg = await findFfmpeg();
   const { codec, width, fps, hasAudio } = await probeVideo(ffmpeg, file);
   const resized = width > MAX_WIDTH;
@@ -315,6 +315,58 @@ export function checkResult({
     };
   }
   return undefined;
+}
+
+// How much of a screenshot's width or height can be plain background before
+// emptyMargins() complains.
+const MAX_EMPTY_MARGIN = 0.15;
+
+// Describes the plain, single-color margins of a screenshot when they take up
+// too much of it (e.g. "left 21% and right 21% are empty"), or returns
+// undefined. Wide margins usually mean a scene captured the whole page when it
+// should have targeted the part that matters. `allowed` is how many pixels of
+// margin on each side were asked for (a scene's padding), which never count as
+// too much.
+export async function emptyMargins(
+  input,
+  allowed = { top: 0, right: 0, bottom: 0, left: 0 },
+) {
+  const { data, info } = await sharp(input)
+    .removeAlpha()
+    .raw()
+    .toBuffer({ resolveWithObject: true });
+  const { width, height, channels } = info;
+  const background = [...data.subarray(0, channels)];
+  const isBackground = (x, y) => {
+    const i = (y * width + x) * channels;
+    return background.every((value, c) => Math.abs(data[i + c] - value) <= 8);
+  };
+  const emptyColumn = x =>
+    [...Array(height).keys()].every(y => isBackground(x, y));
+  const emptyRow = y => [...Array(width).keys()].every(x => isBackground(x, y));
+  const count = (length, empty, fromEnd) => {
+    let n = 0;
+    while (n < length && empty(fromEnd ? length - 1 - n : n)) n++;
+    return n;
+  };
+
+  const margins = {
+    left: count(width, emptyColumn, false) / width,
+    right: count(width, emptyColumn, true) / width,
+    top: count(height, emptyRow, false) / height,
+    bottom: count(height, emptyRow, true) / height,
+  };
+  const size = { left: width, right: width, top: height, bottom: height };
+  const wide = Object.entries(margins).filter(
+    ([side, fraction]) =>
+      fraction > MAX_EMPTY_MARGIN && fraction * size[side] > allowed[side],
+  );
+  if (!wide.length) return undefined;
+  return (
+    wide
+      .map(([side, fraction]) => `${side} ${Math.round(fraction * 100)}%`)
+      .join(' and ') + ' of the screenshot is empty'
+  );
 }
 
 // Writes a new PNG to `file`, optimized. Unlike optimizeFile, this replaces

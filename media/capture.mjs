@@ -12,6 +12,7 @@ import { chromium } from 'playwright';
 import {
   checkResult,
   CHECKED,
+  emptyMargins,
   optimizeFile,
   writeOptimizedImage,
   writeOptimizedVideo,
@@ -41,8 +42,9 @@ function authStatePath(profile) {
 }
 
 // Returns a map of media path (e.g. static/img/foo.png) to the docs pages that
-// reference it.
-function findMediaReferences(pages = 'docs/**/*.{md,mdx}') {
+// reference it. Includes the legacy docs, which share many images with the
+// current docs.
+function findMediaReferences(pages = '{docs,versioned_docs}/**/*.{md,mdx}') {
   const references = new Map();
   for (const file of fs.globSync(pages, { cwd: ROOT })) {
     const content = fs
@@ -70,6 +72,12 @@ function lastUpdated(file) {
   return date || 'uncommitted';
 }
 
+// A docs page as it's shown in this tool's output, e.g. "debugging.md" or
+// "legacy/debugging.md".
+function pageName(file) {
+  return file.replace(/^docs\//, '').replace(/^versioned_docs\/version-/, '');
+}
+
 function sceneKind(scene) {
   if (scene.manual) return 'manual';
   if (scene.record) return 'video';
@@ -92,9 +100,7 @@ function status() {
         ? `${Math.round(fs.statSync(path.join(ROOT, mediaPath)).size / 1024)} KB`
         : '-',
       scene: scene ? `${scene.id} (${sceneKind(scene)})` : '-',
-      'used in': usedIn
-        ? [...usedIn].map(f => f.replace(/^docs\//, '')).join(', ')
-        : 'unused',
+      'used in': usedIn ? [...usedIn].map(pageName).join(', ') : 'unused',
     };
   });
   console.table(rows);
@@ -147,20 +153,75 @@ async function screenshotScene(page, scene) {
   const options = { animations: 'disabled', caret: 'hide' };
 
   if (scene.target) {
-    const target = scene.target(page);
-    await target.scrollIntoViewIfNeeded();
-    const box = await target.boundingBox();
-    if (!box) throw new Error('Target element is not visible');
+    // A target can be one locator or several. The screenshot covers every
+    // visible element they match that has something to show. Any of them may
+    // match nothing (e.g. a part that only appears in some states).
+    const locators = [scene.target(page)].flat();
+    await Promise.any(
+      locators.map(locator => locator.first().waitFor({ state: 'attached' })),
+    ).catch(() => {
+      throw new Error('Target element is not visible');
+    });
+    const elements = [];
+    for (const locator of locators) {
+      for (const element of await locator.all()) {
+        const hasContent = await element.evaluate(el => {
+          // Elements like these show something even without any text.
+          const media = 'img, svg, canvas, video, input, select, textarea';
+          return (
+            el.matches(media) ||
+            el.textContent.trim() !== '' ||
+            el.querySelector(media) !== null
+          );
+        });
+        if (hasContent) elements.push(element);
+      }
+    }
+    if (elements.length) await elements[0].scrollIntoViewIfNeeded();
+    const boxes = [];
+    for (const element of elements) {
+      const elementBox = await element.boundingBox();
+      if (elementBox?.width && elementBox.height) boxes.push(elementBox);
+    }
+    if (!boxes.length) throw new Error('Target element is not visible');
+    const left = Math.min(...boxes.map(b => b.x));
+    const top = Math.min(...boxes.map(b => b.y));
+    const box = {
+      x: left,
+      y: top,
+      width: Math.max(...boxes.map(b => b.x + b.width)) - left,
+      height: Math.max(...boxes.map(b => b.y + b.height)) - top,
+    };
 
-    const padding = scene.padding ?? 0;
-    const viewport = page.viewportSize();
-    const x = Math.max(0, box.x - padding);
-    const y = Math.max(0, box.y - padding);
+    // Measured in page coordinates and captured from the full page, so a
+    // target taller than the viewport isn't cut off.
+    const { scrollX, scrollY, pageWidth, pageHeight } = await page.evaluate(
+      () => ({
+        scrollX: window.scrollX,
+        scrollY: window.scrollY,
+        pageWidth: document.documentElement.scrollWidth,
+        pageHeight: document.documentElement.scrollHeight,
+      }),
+    );
+    const padding =
+      typeof scene.padding === 'object'
+        ? { top: 0, right: 0, bottom: 0, left: 0, ...scene.padding }
+        : {
+            top: scene.padding ?? 0,
+            right: scene.padding ?? 0,
+            bottom: scene.padding ?? 0,
+            left: scene.padding ?? 0,
+          };
+    const x = Math.max(0, box.x + scrollX - padding.left);
+    const y = Math.max(0, box.y + scrollY - padding.top);
+    options.fullPage = true;
     options.clip = {
       x,
       y,
-      width: Math.min(viewport.width, box.x + box.width + padding) - x,
-      height: Math.min(viewport.height, box.y + box.height + padding) - y,
+      width:
+        Math.min(pageWidth, box.x + scrollX + box.width + padding.right) - x,
+      height:
+        Math.min(pageHeight, box.y + scrollY + box.height + padding.bottom) - y,
     };
   }
 
@@ -169,6 +230,23 @@ async function screenshotScene(page, scene) {
   }
 
   return page.screenshot(options);
+}
+
+// The empty margin, in screenshot pixels, that a scene's padding asks for on
+// each side. The page's own spacing inside the target also looks empty, so a
+// little more than the padding is allowed.
+function allowedMargins(scene, scale) {
+  const slack = 24;
+  const sides = ['top', 'right', 'bottom', 'left'];
+  return Object.fromEntries(
+    sides.map(side => {
+      const padding =
+        typeof scene.padding === 'object'
+          ? (scene.padding[side] ?? 0)
+          : (scene.padding ?? 0);
+      return [side, (padding + slack) * scale];
+    }),
+  );
 }
 
 // Draws a mouse pointer that follows mouse events, since headless browsers
@@ -198,6 +276,11 @@ function installCursor() {
 }
 
 // Helpers passed to a scene's record() function.
+//
+// Videos are paced for someone seeing the UI for the first time: the pointer
+// eases between elements at about the speed a person moves a mouse, rests on
+// each element before clicking it, and gives the page a moment to react
+// afterwards.
 function recordingHelpers(page) {
   const viewport = page.viewportSize();
   let position = { x: viewport.width / 2, y: viewport.height / 2 };
@@ -205,21 +288,56 @@ function recordingHelpers(page) {
   async function moveTo(locator) {
     await locator.scrollIntoViewIfNeeded();
     const box = await locator.boundingBox();
-    const target = { x: box.x + box.width / 2, y: box.y + box.height / 2 };
-    const distance = Math.hypot(target.x - position.x, target.y - position.y);
-    await page.mouse.move(target.x, target.y, {
-      steps: Math.max(10, Math.round(distance / 12)),
+    // The pointer is drawn below and to the right of where it points, so
+    // pointing at the middle of an element covers its label. Point just past
+    // the right end of the label instead (still inside the element), which
+    // works for left-aligned menu items and centered button labels alike.
+    // Elements without text, like icon buttons, get the middle.
+    const textRight = await locator.evaluate(element => {
+      const range = document.createRange();
+      range.selectNodeContents(element);
+      const rect = range.getBoundingClientRect();
+      return element.textContent.trim() && rect.width ? rect.right : null;
     });
+    const target = {
+      x: textRight
+        ? Math.min(textRight + 10, box.x + box.width - 6)
+        : box.x + box.width / 2,
+      y: box.y + box.height / 2,
+    };
+    const distance = Math.hypot(target.x - position.x, target.y - position.y);
+    // One mouse event per frame, eased in and out. mouse.move()'s own `steps`
+    // fire without any delay, so the pointer would jump.
+    const duration = Math.min(1000, Math.max(400, distance * 1.5));
+    const frames = Math.round(duration / 16);
+    const start = position;
+    for (let frame = 1; frame <= frames; frame++) {
+      const t = frame / frames;
+      const eased = t < 0.5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2;
+      await page.mouse.move(
+        start.x + (target.x - start.x) * eased,
+        start.y + (target.y - start.y) * eased,
+      );
+      await page.waitForTimeout(16);
+    }
     position = target;
   }
 
   return {
     moveTo,
-    // Glides the pointer to the element, then clicks it.
-    async click(locator) {
+    // Glides the pointer to the element and rests there, e.g. to point out a
+    // menu item without choosing it.
+    async hover(locator, ms = 1500) {
       await moveTo(locator);
-      await page.waitForTimeout(250);
+      await page.waitForTimeout(ms);
+    },
+    // Glides the pointer to the element, rests so viewers can see what's about
+    // to be clicked, clicks, then gives the page a moment to respond.
+    async click(locator, { before = 700, after = 800 } = {}) {
+      await moveTo(locator);
+      await page.waitForTimeout(before);
       await page.mouse.click(position.x, position.y);
+      await page.waitForTimeout(after);
     },
     pause: (ms = 1000) => page.waitForTimeout(ms),
   };
@@ -236,7 +354,8 @@ async function recordScene(page, scene, outputPath) {
     await page.mouse.move(viewport.width / 2, viewport.height / 2);
     await page.screencast.start({ path: recordingPath, size: viewport });
     try {
-      await page.waitForTimeout(500);
+      // Let viewers take in the page before anything moves.
+      await page.waitForTimeout(1200);
       await scene.record(page, recordingHelpers(page));
       // Hold the final frame for a moment so the loop doesn't jump straight
       // back to the start.
@@ -297,7 +416,9 @@ async function captureScene(browser, scene, { headed }) {
     // when the scene runs.
     const url = typeof scene.url === 'function' ? await scene.url() : scene.url;
     if (scene.setup) await scene.setup(page);
-    await page.goto(url, { waitUntil: 'networkidle' });
+    // Some sites (e.g. GitHub) keep connections open for live updates, so
+    // they never go network-idle. Those scenes wait for `load` instead.
+    await page.goto(url, { waitUntil: scene.waitUntil ?? 'networkidle' });
 
     if (scene.prepare) await scene.prepare(page);
 
@@ -307,10 +428,19 @@ async function captureScene(browser, scene, { headed }) {
     if (scene.record) {
       return await recordScene(page, scene, outputPath);
     }
-    return await writeOptimizedImage(
-      outputPath,
-      await screenshotScene(page, scene),
+    const screenshot = await screenshotScene(page, scene);
+    const result = await writeOptimizedImage(outputPath, screenshot);
+    const margins = await emptyMargins(
+      screenshot,
+      allowedMargins(scene, contextOptions.deviceScaleFactor),
     );
+    if (margins) {
+      return (
+        `${result}\n  warning: ${margins}. Give the scene a tighter \`target\` ` +
+        '(see media/README.md).'
+      );
+    }
+    return result;
   } finally {
     await context.close();
   }
@@ -336,6 +466,7 @@ async function capture(ids, { all, headed }) {
   const browser = await launchBrowser({ headless: !headed });
   const failures = [];
   const skipped = [];
+  const captured = [];
   for (const scene of selected) {
     if (scene.manual) {
       console.log(`- ${scene.id}: manual scene, skipping.\n  ${scene.manual}`);
@@ -354,6 +485,7 @@ async function capture(ids, { all, headed }) {
     try {
       const result = await captureScene(browser, scene, { headed });
       console.log(result);
+      captured.push(scene.output);
     } catch (error) {
       console.log('failed');
       console.error(`  ${error.message.split('\n')[0]}`);
@@ -362,12 +494,53 @@ async function capture(ids, { all, headed }) {
   }
   await browser.close();
 
+  if (captured.length) printOlderMediaNearby(captured);
   if (skipped.length) {
     console.log(`\nSkipped (not logged in): ${skipped.join(', ')}`);
   }
   if (failures.length) {
     console.error(`\nFailed: ${failures.join(', ')}`);
     process.exitCode = 1;
+  }
+}
+
+// Media older than this on the same page as something just captured gets
+// pointed out, since the page will look inconsistent.
+const OLD_MEDIA_DAYS = 365;
+
+// Lists older images and videos on the docs pages (current and legacy) that use
+// the media that was just captured, e.g. an old GIF right above a new
+// screenshot.
+function printOlderMediaNearby(captured) {
+  const references = findMediaReferences();
+  const pagesToMedia = new Map();
+  for (const [media, pages] of references) {
+    for (const page of pages) {
+      if (!pagesToMedia.has(page)) pagesToMedia.set(page, []);
+      pagesToMedia.get(page).push(media);
+    }
+  }
+
+  const cutoff = Date.now() - OLD_MEDIA_DAYS * 24 * 60 * 60 * 1000;
+  const lines = [];
+  for (const page of new Set(
+    captured.flatMap(c => [...(references.get(c) ?? [])]),
+  )) {
+    const older = pagesToMedia
+      .get(page)
+      .filter(media => !captured.includes(media))
+      .map(media => ({ media, updated: lastUpdated(media) }))
+      .filter(({ updated }) => Date.parse(updated) < cutoff);
+    for (const { media, updated } of older) {
+      lines.push(`  ${pageName(page)}: ${media} (last updated ${updated})`);
+    }
+  }
+  if (lines.length) {
+    console.log(
+      '\nThese pages also show media that is more than a year old. ' +
+        'Consider updating them too:\n' +
+        lines.join('\n'),
+    );
   }
 }
 

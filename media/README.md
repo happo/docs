@@ -27,9 +27,11 @@ set `FFMPEG_BIN` to its path. It needs to be built with `libvpx-vp9`.
 pnpm media status
 ```
 
-This lists every image and video the docs use, which scene produces it, and when
-it was last updated. Media without a scene have to be updated by hand (or get a
-scene written for them).
+This lists every image and video the docs use, which scene produces it, which
+pages use it, and when it was last updated. Legacy pages are listed as
+`legacy/…`: they share many images with the current docs, so updating an image
+updates those pages too. Media without a scene have to be updated by hand (or
+get a scene written for them).
 
 ```bash
 pnpm media capture --all
@@ -40,6 +42,10 @@ This recaptures every automated scene. To recapture only some scenes, name them:
 ```bash
 pnpm media capture happo-report happo-review-panel
 ```
+
+After capturing, it lists media more than a year old on the same pages
+(including legacy pages) as anything it just updated, such as an old GIF right
+above a new screenshot. Update those too, so a page doesn't mix old and new UI.
 
 Open a PR with the updated files. Happo runs on this repo, so the report on the
 PR shows every page where an image changed. Use it to review the new media in
@@ -141,19 +147,35 @@ workflow in happo-showcase and try again.
   async prepare(page) {},                // runs after the page loads, e.g. wait for images
 
   // Screenshots: omit `target` for the whole viewport.
-  target: page => page.locator('.panel'),
-  padding: 16,
+  target: page => page.locator('.panel'), // or an array of locators
+  padding: 16,                           // or { top, right, bottom, left }
   mask: page => [page.locator('.avatar')],
 
   // Videos: define record() instead of target. Output a .webm file.
-  async record(page, { click, moveTo, pause }) {},
+  async record(page, { click, hover, moveTo, pause }) {},
 }
 ```
 
 - Screenshots are taken at 2x pixel density so they're sharp on high-DPI
   screens, then optimized (see above).
-- Videos show a mouse pointer. Use the `click` and `moveTo` helpers so the
-  pointer glides to each element instead of jumping.
+- Crop tightly. Most app pages are much wider than their content, so a
+  whole-viewport screenshot has wide empty margins. Set `target` to the part of
+  the page the docs talk about. When a target returns several locators, the
+  screenshot covers every visible, non-empty element they match, which helps
+  when part of a panel only appears in some states. `pnpm media capture` warns
+  when more than 15% of a screenshot on any side is empty background (beyond the
+  scene's padding).
+- A target taller than the viewport is still captured in full.
+- Videos show a mouse pointer. Use the `click`, `hover` and `moveTo` helpers so
+  the pointer glides to each element instead of jumping.
+- Pace videos for someone seeing the UI for the first time. The helpers do most
+  of this: a video starts with a still moment, the pointer eases between
+  elements, `click` rests on an element before clicking it, and `hover` rests on
+  one without clicking. Give anything new that appears (like an open menu) a
+  second or two before moving on.
+- End a video on the thing the docs are about. If the next step leaves the page
+  (e.g. choosing a menu item that navigates), point at it with `hover` instead
+  of clicking. A screenshot can show where it leads.
 - Scenes must not change real data. Don't click anything that saves (Accept,
   Reject, Create token, …). If you need a page in a certain state, use one
   that's already in that state.
@@ -163,15 +185,18 @@ workflow in happo-showcase and try again.
   creating an access token. Add those as `manual` scenes with instructions, so
   they still show up in `pnpm media status`.
 
-Embed videos with a `<video>` tag instead of Markdown image syntax:
+Embed videos with a `<video>` tag instead of Markdown image syntax. Docs pages
+are MDX, so use the JSX spellings (`autoPlay`, `playsInline`). Browsers only
+autoplay muted videos, so keep `muted`. Describe the video in `aria-label`:
 
-```html
+```jsx
 <video
   src="/video/happo-view-source.webm"
-  autoplay
+  aria-label="Opening the … menu on a snapshot and choosing View source"
+  autoPlay
   loop
   muted
-  playsinline
+  playsInline
   width="100%"
-></video>
+/>
 ```

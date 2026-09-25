@@ -128,6 +128,10 @@ export const authProfiles = {
 export const siteStyles = {
   'happo.io': `
     [class*="GetHelpButton-module"] { display: none !important; }
+    /* The logged-in user's avatar menu. Scenes run with a real account. */
+    nav [class*="Dropdown-module"]:has([class*="Avatar-module"]) {
+      visibility: hidden !important;
+    }
   `,
 };
 
@@ -203,10 +207,25 @@ function reviewPanel(id, branch) {
       [class*="leaveReviewSection"] { border-top: none !important; }
       img[src*="avatars.githubusercontent.com"] { visibility: hidden; }
     `,
-    target: page => page.locator('[class*="leaveReviewSection"]'),
+    // The buttons, and the "Reviewed by" note under them once there is one.
+    // The section itself has padding and room for the note even when it's
+    // empty, which leaves wide empty margins.
+    target: page => [
+      page.locator(
+        '[class*="ReviewVerdictControl-module"][class*="__container"]',
+      ),
+      page.locator(
+        '[class*="leaveReviewSection"] [class*="Comparison-module"][class*="__note"]',
+      ),
+    ],
     padding: 16,
   };
 }
+
+// The "View source for after image…" item in a snapshot's open "…" menu. Each
+// snapshot has its own (hidden) menu, so only look at the visible one.
+const viewSourceMenuItem = page =>
+  page.getByText(/View source for after image/).filter({ visible: true });
 
 export const scenes = [
   // docs/reviewing-diffs.md
@@ -376,7 +395,6 @@ export const scenes = [
   // docs/debugging.md
   //
   // "View source" is only in the overflow menu for logged-in users.
-  // TODO: after recording, switch debugging.md from the old GIF to this video.
   {
     id: 'happo-view-source',
     output: 'static/video/happo-view-source.webm',
@@ -384,14 +402,14 @@ export const scenes = [
     auth: 'happo',
     viewport: { width: 1280, height: 720 },
     prepare: waitForSnapshots,
-    async record(page, { click, pause }) {
+    // Ends pointing at the menu item. Clicking it would go to the Source
+    // page, which the screenshot below the video shows.
+    async record(page, { click, hover }) {
       await click(
         page.locator('button:has([class*="moreOptionsButton"])').first(),
+        { before: 1200, after: 900 },
       );
-      await pause(800);
-      await click(page.getByText('View source').first());
-      await page.waitForLoadState('networkidle');
-      await pause(1500);
+      await hover(viewSourceMenuItem(page), 2500);
     },
   },
   {
@@ -404,9 +422,14 @@ export const scenes = [
         .locator('button:has([class*="moreOptionsButton"])')
         .first()
         .click();
-      await page.getByText('View source').first().click();
+      await viewSourceMenuItem(page).click();
       await page.waitForLoadState('networkidle');
     },
+    // The page's content column. The page itself is much wider than the
+    // content, which leaves wide empty margins.
+    target: page => page.locator('[class*="snapshotSourcePage"]'),
+    // The navbar is right above the content, so keep the top padding small.
+    padding: { top: 8, right: 24, bottom: 24, left: 24 },
   },
 
   // docs/continuous-integration.md
@@ -415,12 +438,16 @@ export const scenes = [
     output: 'static/img/happo-status-diffs.png',
     url: async () => (await findShowcasePR(showcasePRs.needsReview)).html_url,
     auth: 'github',
-    // TODO: check this selector against a logged-in session. The checks list
-    // is only shown to logged-in users.
+    waitUntil: 'load',
+    // The checks part of the merge box, which is only shown to logged-in
+    // users.
     target: page =>
-      page
-        .getByText(/checks? (were not successful|have failed)/i)
-        .locator('xpath=ancestor::*[.//*[contains(text(), "Happo")]][1]'),
+      page.locator(
+        '[data-testid="mergebox-partial"] section[aria-label="Checks"]',
+      ),
+    async prepare(page) {
+      await page.getByText('Some checks were not successful').waitFor();
+    },
     padding: 8,
   },
   {
