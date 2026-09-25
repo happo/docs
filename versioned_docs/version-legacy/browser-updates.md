@@ -22,6 +22,8 @@ diffs. Annoying as this might be, it's usually safe to simply accept the report
 and move on (once you're confident that the changes are solely caused by the
 browser update).
 
+![An alert about a Happo browser update at the top of a report](/img/happo-worker-update-alert.png)
+
 ### No-diff diffs
 
 As a result of some browser updates, diffs can appear that aren't showing any
