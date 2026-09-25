@@ -32,21 +32,9 @@ jobs:
             echo 'EOF'
           } >> "$GITHUB_OUTPUT"
 
-      - name: Setup Node.js
+      - name: Setup environment
         if: steps.changed.outputs.files != ''
-        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
-        with:
-          node-version: '24'
-
-      - name: Setup pnpm
-        if: steps.changed.outputs.files != ''
-        uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v4.4.0
-        with:
-          version: 11
-
-      - name: Install dependencies
-        if: steps.changed.outputs.files != ''
-        run: pnpm install --frozen-lockfile
+        uses: ./.github/actions/setup-env
 
       # Fails with the command to run if a file isn't optimized. Only warns
       # about GIFs.
