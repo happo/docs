@@ -154,22 +154,34 @@ async function screenshotScene(page, scene) {
 
   if (scene.target) {
     // A target can be one locator or several. The screenshot covers every
-    // visible, non-empty element they match.
+    // visible element they match that has something to show. Any of them may
+    // match nothing (e.g. a part that only appears in some states).
     const locators = [scene.target(page)].flat();
-    await locators[0].first().scrollIntoViewIfNeeded();
-    const boxes = [];
+    await Promise.any(
+      locators.map(locator => locator.first().waitFor({ state: 'attached' })),
+    ).catch(() => {
+      throw new Error('Target element is not visible');
+    });
+    const elements = [];
     for (const locator of locators) {
       for (const element of await locator.all()) {
-        const elementBox = await element.boundingBox();
-        const hasContent = await element.evaluate(
-          el =>
+        const hasContent = await element.evaluate(el => {
+          // Elements like these show something even without any text.
+          const media = 'img, svg, canvas, video, input, select, textarea';
+          return (
+            el.matches(media) ||
             el.textContent.trim() !== '' ||
-            el.querySelector('img, svg, canvas, video'),
-        );
-        if (elementBox?.width && elementBox.height && hasContent) {
-          boxes.push(elementBox);
-        }
+            el.querySelector(media) !== null
+          );
+        });
+        if (hasContent) elements.push(element);
       }
+    }
+    if (elements.length) await elements[0].scrollIntoViewIfNeeded();
+    const boxes = [];
+    for (const element of elements) {
+      const elementBox = await element.boundingBox();
+      if (elementBox?.width && elementBox.height) boxes.push(elementBox);
     }
     if (!boxes.length) throw new Error('Target element is not visible');
     const left = Math.min(...boxes.map(b => b.x));
