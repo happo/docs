@@ -194,12 +194,13 @@ and full baseline runs for the main branch.
 In Happo comparison reports, the sidebar shows the effects of a partial run. You
 will see something like:
 
-> 6,809 snapshots — 2,233 quota used — 113 components
+> 6,809 snapshots · 2,233 quota used · 113 components
 
-Clicking that text takes you to a page showing which snapshots were freshly
-rendered and which were carried over from the baseline report. For debugging
-purposes, it's good practice to log the value of your `--only` (or `--skip`)
-filter in your CI logs so you can verify what was included in a given run.
+Clicking the "quota used" link takes you to a page showing which snapshots were
+freshly rendered and which were carried over from the baseline report. For
+debugging purposes, it's good practice to log the value of your `--only` (or
+`--skip`) filter in your CI logs so you can verify what was included in a given
+run.
 
 ## Tips and Tricks
 
@@ -375,9 +376,8 @@ wait for the iframe to finish, we can add a `waitForContent` parameter with some
 unique string in the iframe.
 
 If the content does not appear within the render timeout, the snap fails by
-default. See
-[`failOnWaitForTimeout`](configuration.md#failonwaitfortimeout) if you need to
-opt out of that behavior.
+default. See [`failOnWaitForTimeout`](configuration.md#failonwaitfortimeout) if
+you need to opt out of that behavior.
 
 ````mdx-code-block
 <Tabs>

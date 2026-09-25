@@ -36,7 +36,7 @@ Timing information is displayed below each screenshot in a Happo comparison. It
 looks like this:
 
 ```
-Render 44 ms • Wait 53 ms • Screenshot 106 ms
+Render 44ms • Wait 53ms • Snapshot 106ms
 ```
 
 ### Render performance
@@ -78,15 +78,14 @@ and reuse assets across examples to maximize browser cache utilization. Smaller
 images in modern formats will load faster than larger images in older and less
 optimized formats.
 
-### Screenshot performance
+### Snapshot performance
 
-`Screenshot` is the time it takes to capture a screenshot image of the
-component.
+`Snapshot` is the time it takes to capture a screenshot image of the component.
 
-The screenshot time is largely dependent on the dimensions of the screenshot
-that is being taken and whether everything fits within the configured viewport.
+The snapshot time is largely dependent on the dimensions of the screenshot that
+is being taken and whether everything fits within the configured viewport.
 
-Browsers also perform differently, so the screenshot time will vary between
+Browsers also perform differently, so the snapshot time will vary between
 browsers.
 
 To improve your screenshot time, prefer taking smaller screenshots of smaller

@@ -9,7 +9,9 @@ the way you've intended.
 ## View source
 
 If the screenshots aren't looking right you can use the "View source" feature.
-You'll find it in the overflow menu to the right of a diff/screenshot:
+You'll find it in the "…" overflow menu to the right of a screenshot. For a
+diff, the menu has separate "View source for before image…" and "View source for
+after image…" options:
 
 ![How to find the "View source" option](/img/happo-view-source.gif) _This is
 where you find the "View source" option for a Happo report._
