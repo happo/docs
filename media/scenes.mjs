@@ -20,6 +20,10 @@ const showcasePRs = {
   accessibilityViolations: 'demo/compact-signup',
   animatedDiff: 'demo/toast-slide',
   flake: 'demo/statcard-data',
+  // Changes nothing visible, so its report normally has no diffs. After Happo
+  // updates its browsers, re-running it against its existing baseline gives
+  // diffs caused only by the update. See browserUpdateReport below.
+  browserUpdate: 'demo/browser-update',
 };
 
 async function githubApi(path) {
@@ -359,6 +363,42 @@ async function fakeReviews(page, reportUrl) {
   });
 }
 
+// The newest report for the browser-update demo PR that has diffs from a
+// Happo browser update. GitHub keeps every status posted on a commit, so older
+// runs are searched too, as long as their reports still exist. Until Happo
+// updates its browsers after that PR's baseline was made, there is none, and
+// the scene is skipped.
+async function browserUpdateReport() {
+  let pr;
+  try {
+    pr = await findShowcasePR(showcasePRs.browserUpdate);
+  } catch {
+    throw new SceneSkipped(
+      `Needs an open ${SHOWCASE_REPO} PR from the ${showcasePRs.browserUpdate} ` +
+        'branch that changes nothing visible, labeled docs-demo.',
+    );
+  }
+  const statuses = await githubApi(
+    `commits/${pr.head.sha}/statuses?per_page=100`,
+  );
+  const reports = statuses
+    .filter(
+      s => s.context.startsWith('Happo') && s.target_url?.includes('/compare/'),
+    )
+    .map(s => s.target_url);
+  for (const url of new Set(reports)) {
+    const response = await fetch(comparisonApi(url));
+    if (!response.ok) continue;
+    const comparison = await response.json();
+    if (comparison.diffs > 0 && comparison.systemMessages?.length) return url;
+  }
+  throw new SceneSkipped(
+    `No report for ${SHOWCASE_REPO}#${pr.number} has diffs from a Happo ` +
+      'browser update yet. After Happo announces one, run its Happo workflow ' +
+      'again (without refreshing the baseline), then capture this scene.',
+  );
+}
+
 // One section of a project's compare settings page, e.g. "Compare threshold".
 function thresholdSection(id, target, prepare) {
   return {
@@ -673,6 +713,26 @@ export const scenes = [
       page.locator('svg[class*="AxeSummaries-module"]').locator('..'),
     // The "Reports" heading is right below the chart.
     padding: { top: 16, right: 16, bottom: 4, left: 16 },
+  },
+
+  // docs/browser-updates.md
+  //
+  // Not captured yet: this runs once a real browser update has produced diffs
+  // (see browserUpdateReport).
+  {
+    id: 'happo-browser-update-diff',
+    output: 'static/img/happo-browser-update-diff.png',
+    url: browserUpdateReport,
+    async prepare(page) {
+      await waitForSnapshots(page);
+      await firstSnapshot(page)
+        .getByRole('button', { name: 'Diff', exact: true })
+        .click();
+      await page.waitForTimeout(500);
+    },
+    target: firstSnapshot,
+    // The headings above and below the snapshot are close to it.
+    padding: { top: 0, right: 16, bottom: 0, left: 16 },
   },
 
   // docs/webhooks.md
