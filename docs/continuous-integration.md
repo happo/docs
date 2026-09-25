@@ -228,7 +228,8 @@ Here's what it looks like when Happo posts a status on a pull request:
 
 If there is a diff, the status will be set to failure. To manually flip this to
 a success status, just go to the Happo comparison page (linked to by the
-"Details" link next to the Happo status) and click the Accept button at the top.
+"Details" link next to the Happo status) and click the Accept button in the
+Reject/Accept pair in the left sidebar.
 
 ![Accepting diffs](/img/happo-status-accept.gif)
 
