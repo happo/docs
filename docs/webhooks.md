@@ -225,8 +225,8 @@ webhooks. You can also re-deliver an webhook using the admin UI.
 <img
   src="/img/webhooks-recent-deliveries.png"
   alt="Recent deliveries for a webhook"
-  width="664"
-  height="283"
+  width="721"
+  height="589"
 />
 
 Webhooks are stored a few days on Happo servers, then they are automatically
