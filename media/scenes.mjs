@@ -222,6 +222,193 @@ function reviewPanel(id, branch) {
   };
 }
 
+// Settings pages for the showcase's Happo account. Unlike reports, these need a
+// login with admin access to that account.
+const SHOWCASE_ACCOUNT = 'https://happo.io/a/1342';
+const SHOWCASE_PROJECT = `${SHOWCASE_ACCOUNT}/p/2884`;
+
+// Settings scenes fill in forms and move sliders, but never save. Refusing
+// every request that could change something makes sure a stray click can't
+// save either.
+async function blockWrites(page) {
+  await page.route('**/*', route =>
+    ['GET', 'HEAD', 'OPTIONS'].includes(route.request().method())
+      ? // Leave reads to any other route a scene sets up.
+        route.fallback()
+      : route.abort(),
+  );
+}
+
+// Lets a scene change the data a happo.io page is server-rendered with (its
+// __NEXT_DATA__), e.g. to fill a chart that's empty on the demo account. Only
+// changes what this browser sees.
+async function editPageProps(page, url, edit) {
+  await page.route(url, async route => {
+    const response = await route.fetch();
+    const html = (await response.text()).replace(
+      /(<script id="__NEXT_DATA__" type="application\/json">)(.*?)(<\/script>)/s,
+      (_, open, json, close) => {
+        const data = JSON.parse(json);
+        edit(data.props.pageProps);
+        return open + JSON.stringify(data) + close;
+      },
+    );
+    await route.fulfill({ response, body: html });
+  });
+}
+
+// Daily accessibility violation counts that trend down as fixes land. The
+// showcase has no violations on its main branch, so its graph is empty.
+function illustrativeViolationCounts(days) {
+  // Each series steps down on the given days.
+  const series = {
+    criticalCount: [
+      [0, 18],
+      [8, 12],
+      [15, 5],
+      [22, 0],
+    ],
+    seriousCount: [
+      [0, 34],
+      [6, 30],
+      [12, 21],
+      [19, 14],
+      [25, 9],
+    ],
+    moderateCount: [
+      [0, 12],
+      [10, 10],
+      [18, 6],
+      [27, 4],
+    ],
+    minorCount: [
+      [0, 7],
+      [14, 5],
+      [24, 3],
+    ],
+  };
+  return days.map((day, i) => {
+    const counts = {};
+    for (const [key, steps] of Object.entries(series)) {
+      counts[key] = steps.filter(([from]) => from <= i).at(-1)[1];
+    }
+    return { ...day, ...counts };
+  });
+}
+
+// Moves a range slider to a fraction of the way along it. Playwright can't
+// fill() a range input, so this sets the value the way React expects and fires
+// the events it listens for.
+async function setSlider(locator, fraction) {
+  await locator.evaluate((input, fraction) => {
+    const min = Number(input.min || 0);
+    const max = Number(input.max || 100);
+    const step = Number(input.step) || 1;
+    const value = min + Math.round(((max - min) * fraction) / step) * step;
+    Object.getOwnPropertyDescriptor(
+      HTMLInputElement.prototype,
+      'value',
+    ).set.call(input, String(value));
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    input.dispatchEvent(new Event('change', { bubbles: true }));
+  }, fraction);
+}
+
+// The comparison data behind a Happo report page, from the report's public
+// API.
+const comparisonApi = reportUrl =>
+  reportUrl
+    .replace('happo.io/a/', 'happo.io/api/a/')
+    .replace('/compare/', '/comparisons/');
+
+// Makes Accept/Reject on a report look like it worked, without saving
+// anything. The review request (PATCH /api/a/:account/comparisons/:id) is
+// answered here with the comparison as it would be afterwards, credited to the
+// reviewer of the accepted demo PR. Every other write is refused.
+async function fakeReviews(page, reportUrl) {
+  const current = await (
+    await page.request.get(comparisonApi(reportUrl))
+  ).json();
+  const accepted = await (
+    await page.request.get(
+      comparisonApi(await findHappoReport(showcasePRs.accepted)),
+    )
+  ).json();
+  await page.route('**/*', route => {
+    const request = route.request();
+    if (['GET', 'HEAD', 'OPTIONS'].includes(request.method())) {
+      return route.continue();
+    }
+    if (
+      request.method() === 'PATCH' &&
+      /\/api\/a\/\d+\/comparisons\/\d+$/.test(request.url())
+    ) {
+      return route.fulfill({
+        json: {
+          ...current,
+          ...request.postDataJSON(),
+          resolvedBy: accepted.resolvedBy,
+        },
+      });
+    }
+    return route.abort();
+  });
+}
+
+// One section of a project's compare settings page, e.g. "Compare threshold".
+function thresholdSection(id, target, prepare) {
+  return {
+    id,
+    output: `static/img/${id}.png`,
+    url: `${SHOWCASE_PROJECT}/thresholds`,
+    auth: 'happo',
+    setup: blockWrites,
+    async prepare(page) {
+      await page.getByText('Compare settings for project').waitFor();
+      await prepare?.(page);
+    },
+    target,
+    padding: 16,
+  };
+}
+
+const thresholdsSection = (page, heading) =>
+  page
+    .locator('[class*="thresholds-module"][class*="__section"]')
+    .filter({ has: page.getByRole('heading', { name: heading }) });
+
+// The checks list in the merge box of a showcase PR on GitHub, which is only
+// shown to logged-in users. `wholeMergeBox` includes the merge button too.
+function githubChecks(id, branch, { heading, wholeMergeBox = false }) {
+  const mergeBox = '[data-testid="mergebox-border-container"]';
+  return {
+    id,
+    output: `static/img/${id}.png`,
+    url: async () => (await findShowcasePR(branch)).html_url,
+    auth: 'github',
+    // GitHub keeps connections open, so its pages never go network-idle.
+    waitUntil: 'load',
+    target: page =>
+      page.locator(
+        wholeMergeBox ? mergeBox : `${mergeBox} section[aria-label="Checks"]`,
+      ),
+    async prepare(page) {
+      await page.getByText(heading).waitFor();
+      // GitHub collapses the list when every check passed. Expanding it only
+      // changes the view.
+      const checks = page.locator(`${mergeBox} section[aria-label="Checks"]`);
+      if (!(await checks.getByText('Happo', { exact: false }).count())) {
+        await checks.getByRole('button', { name: 'Expand checks' }).click();
+        await checks
+          .getByText(/^Happo/)
+          .first()
+          .waitFor();
+      }
+    },
+    padding: 8,
+  };
+}
+
 // The "View source for after image…" item in a snapshot's open "…" menu. Each
 // snapshot has its own (hidden) menu, so only look at the visible one.
 const viewSourceMenuItem = page =>
@@ -432,24 +619,89 @@ export const scenes = [
     padding: { top: 8, right: 24, bottom: 24, left: 24 },
   },
 
-  // docs/continuous-integration.md
-  {
-    id: 'happo-status-diffs',
-    output: 'static/img/happo-status-diffs.png',
-    url: async () => (await findShowcasePR(showcasePRs.needsReview)).html_url,
-    auth: 'github',
-    waitUntil: 'load',
-    // The checks part of the merge box, which is only shown to logged-in
-    // users.
-    target: page =>
-      page.locator(
-        '[data-testid="mergebox-partial"] section[aria-label="Checks"]',
+  // docs/compare-threshold.md
+  thresholdSection(
+    'compare_threshold',
+    page => thresholdsSection(page, 'Compare threshold'),
+    // Far enough along that the two gray boxes are visibly different.
+    page => setSlider(page.locator('input[name="compareThreshold"]'), 0.15),
+  ),
+  thresholdSection(
+    'ignore_threshold',
+    page => thresholdsSection(page, 'Ignore threshold'),
+    // Enough that the table shows some pixels allowed at each size.
+    page =>
+      setSlider(
+        page.locator('input[type="range"][name="ignoreThreshold"]'),
+        0.2,
       ),
-    async prepare(page) {
-      await page.getByText('Some checks were not successful').waitFor();
+  ),
+  thresholdSection(
+    'apply_blur',
+    page =>
+      page
+        .locator('[class*="thresholds-module"][class*="__toggle"]')
+        .filter({ hasText: 'Blur images' }),
+    // Turned on (but not saved) to show what it looks like enabled.
+    page => page.getByText('Blur images', { exact: true }).click(),
+  ),
+
+  // docs/accessibility.md
+  {
+    id: 'accessibility-graph',
+    output: 'static/img/accessibility-graph.png',
+    url: `${SHOWCASE_ACCOUNT}/accessibility`,
+    auth: 'happo',
+    async setup(page) {
+      await blockWrites(page);
+      await editPageProps(page, `${SHOWCASE_ACCOUNT}/accessibility`, props => {
+        props.axeSummaries = illustrativeViolationCounts(props.axeSummaries);
+      });
     },
-    padding: 8,
+    async prepare(page) {
+      // Hover part way along so the chart shows its tooltip for that day.
+      const chart = page.locator('svg[class*="AxeSummaries-module"]');
+      const box = await chart.boundingBox();
+      await page.mouse.move(box.x + box.width * 0.3, box.y + box.height * 0.5);
+      await page.waitForTimeout(500);
+    },
+    target: page =>
+      page.locator('svg[class*="AxeSummaries-module"]').locator('..'),
+    // The "Reports" heading is right below the chart.
+    padding: { top: 16, right: 16, bottom: 4, left: 16 },
   },
+
+  // docs/webhooks.md
+  {
+    id: 'webhooks-new',
+    output: 'static/img/webhooks-new.png',
+    url: `${SHOWCASE_ACCOUNT}/webhooks/new/edit`,
+    auth: 'happo',
+    setup: blockWrites,
+    async prepare(page) {
+      // Example values. The form is never saved.
+      await page
+        .locator('input[name="url"]')
+        .fill('https://my-server.com/endpoint');
+      await page.locator('input[name="secret"]').fill('az78ARErhgFJ');
+      await page.locator('input[name="secret"]').blur();
+    },
+    target: page =>
+      page.getByRole('heading', { name: 'New webhook' }).locator('..'),
+    padding: 16,
+  },
+
+  // docs/continuous-integration.md
+  githubChecks('happo-in-ci', showcasePRs.accepted, {
+    heading: 'All checks have passed',
+    wholeMergeBox: true,
+  }),
+  githubChecks('happo-status-diffs', showcasePRs.needsReview, {
+    heading: 'Some checks were not successful',
+  }),
+  githubChecks('happo-status-accepted', showcasePRs.accepted, {
+    heading: 'All checks have passed',
+  }),
   {
     id: 'happo-github-app',
     output: 'static/img/happo-github-app.gif',
@@ -464,16 +716,29 @@ export const scenes = [
   },
   {
     id: 'happo-status-accept',
-    output: 'static/img/happo-status-accept.gif',
-    manual:
-      'Record accepting a report. Can be automated once the accept request is ' +
-      'stubbed with page.route so nothing is saved.',
-  },
-  {
-    id: 'happo-status-accepted',
-    output: 'static/img/happo-status-accepted.png',
-    manual:
-      'Screenshot the GitHub checks list after a Happo report is accepted.',
+    output: 'static/video/happo-status-accept.webm',
+    url: showcaseReport(showcasePRs.needsReview),
+    // Clicking Accept only works for logged-in users. The click is real, but
+    // the request it sends is answered by fakeReviews and never reaches Happo.
+    auth: 'happo',
+    viewport: { width: 1100, height: 620 },
+    async setup(page) {
+      await fakeReviews(page, await findHappoReport(showcasePRs.needsReview));
+    },
+    prepare: waitForSnapshots,
+    async record(page, { click, pause }) {
+      await pause(500);
+      await click(
+        page
+          .locator('[class*="leaveReviewSection"]')
+          .getByRole('button', { name: /^Accept/ }),
+      );
+      await page
+        .locator('[class*="leaveReviewSection"]')
+        .getByRole('button', { name: /^Accepted/ })
+        .waitFor();
+    },
+    holdLastFrame: 2500,
   },
   {
     id: 'happo-bitbucket-api-token',
