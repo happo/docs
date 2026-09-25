@@ -10,14 +10,16 @@
 // for these screenshots. Each PR's report is kept in a known state (see that
 // repo's README). Its Happo project is public, so the reports can be captured
 // without logging in.
+// PRs are looked up by branch, so a demo PR that has to be recreated doesn't
+// need changes here.
 const SHOWCASE_REPO = 'happo/happo-showcase';
 const showcasePRs = {
-  needsReview: 9,
-  accepted: 10,
-  rejected: 11,
-  accessibilityViolations: 12,
-  animatedDiff: 13,
-  flake: 14,
+  needsReview: 'demo/pricing-refresh',
+  accepted: 'demo/notification-count',
+  rejected: 'demo/modal-cleanup',
+  accessibilityViolations: 'demo/compact-signup',
+  animatedDiff: 'demo/toast-slide',
+  flake: 'demo/statcard-data',
 };
 
 async function githubApi(path) {
@@ -36,30 +38,68 @@ async function githubApi(path) {
   return response.json();
 }
 
+// Remembers lookups for the rest of the run, but not failed ones, so a
+// transient error doesn't fail every later scene too.
+function memoize(fn) {
+  const cache = new Map();
+  return key => {
+    if (!cache.has(key)) {
+      cache.set(
+        key,
+        fn(key).catch(error => {
+          cache.delete(key);
+          throw error;
+        }),
+      );
+    }
+    return cache.get(key);
+  };
+}
+
+// The open demo PR for a showcase branch.
+const findShowcasePR = memoize(async branch => {
+  const [pr] = await githubApi(
+    `pulls?head=${SHOWCASE_REPO.split('/')[0]}:${branch}&state=open`,
+  );
+  if (!pr) {
+    throw new Error(`No open PR for ${branch} in ${SHOWCASE_REPO}.`);
+  }
+  return pr;
+});
+
+// Whether a Happo report page has a comparison to show. The page returns 200
+// either way, so this reads the data it renders from.
+async function hasComparison(url) {
+  const html = await (await fetch(url)).text();
+  const match = html.match(
+    /<script id="__NEXT_DATA__" type="application\/json">(.*?)<\/script>/s,
+  );
+  return Boolean(match && JSON.parse(match[1]).props.pageProps.comparison);
+}
+
 // Happo posts a commit status on the PR's head commit that links to the
 // report. Reports can expire and be re-created, so the link is looked up each
 // time instead of being hardcoded.
-async function findHappoReport(pr) {
-  const { head } = await githubApi(`pulls/${pr}`);
-  const { statuses } = await githubApi(`commits/${head.sha}/status`);
-  const status = statuses.find(s => s.context.startsWith('Happo'));
-  if (!status || status.state === 'pending') {
+const findHappoReport = memoize(async branch => {
+  const pr = await findShowcasePR(branch);
+  const { statuses } = await githubApi(`commits/${pr.head.sha}/status`);
+  const url = statuses.find(s => s.context.startsWith('Happo'))?.target_url;
+  // While a run is in progress, or when it failed, the status links to a
+  // Happo job instead of a report.
+  if (!url?.includes('/compare/') || !(await hasComparison(url))) {
     throw new Error(
-      `No finished Happo report on ${SHOWCASE_REPO}#${pr}. Run the ` +
+      `No Happo report for ${SHOWCASE_REPO}#${pr.number}. Run the ` +
         `"Refresh demo reports" workflow in that repo, then try again.`,
     );
   }
-  return status.target_url;
-}
-
-const reports = new Map();
+  return url;
+});
 
 // A scene `url` for the Happo report of a showcase PR, with optional query
 // parameters (e.g. { t: 'ignoredDiffs' } to open a sidebar tab).
-function showcaseReport(pr, params = {}) {
+function showcaseReport(branch, params = {}) {
   return async () => {
-    if (!reports.has(pr)) reports.set(pr, findHappoReport(pr));
-    const url = new URL(await reports.get(pr));
+    const url = new URL(await findHappoReport(branch));
     for (const [key, value] of Object.entries(params)) {
       url.searchParams.set(key, value);
     }
@@ -120,12 +160,17 @@ async function hideEmails(page) {
   });
 }
 
+// The first before/after snapshot pair in a Happo report.
+function firstSnapshot(page) {
+  return page.locator('[class*="SnapItem-module"][class*="target"]').first();
+}
+
 // The Reject/Accept control in the report sidebar of a showcase PR.
-function reviewPanel(id, pr) {
+function reviewPanel(id, branch) {
   return {
     id,
     output: `static/img/${id}.png`,
-    url: showcaseReport(pr),
+    url: showcaseReport(branch),
     // The PR author's avatar sits just above the panel.
     css: `
       [class*="leaveReviewSection"] { border-top: none !important; }
@@ -182,18 +227,36 @@ export const scenes = [
     url: showcaseReport(showcasePRs.animatedDiff),
     viewport: { width: 1200, height: 800 },
     async prepare(page) {
-      const snapshot = page.locator(
-        '[class*="SnapItem-module"][class*="target"]',
-      );
+      const snapshot = firstSnapshot(page);
       // The toast fades in, so the first frame is blank. Show one mid-slide.
-      await snapshot
-        .first()
-        .getByRole('button', { name: /^Frame 4,/ })
-        .click();
-      await page.waitForTimeout(500);
+      await snapshot.getByRole('button', { name: /^Frame 4,/ }).click();
+      await snapshot.getByText(/^Frame 4\//).waitFor();
+      // The frames are drawn on a canvas once both APNGs have loaded.
+      await snapshot.locator('canvas').evaluate(
+        canvas =>
+          new Promise(resolve => {
+            const check = () => {
+              const { data } = canvas
+                .getContext('2d')
+                .getImageData(0, 0, canvas.width, canvas.height);
+              if (data.some((value, i) => i % 4 === 3 && value > 0)) {
+                resolve();
+              } else {
+                requestAnimationFrame(check);
+              }
+            };
+            check();
+          }),
+      );
+      // Let the frame that was just drawn reach the screen.
+      await page.evaluate(
+        () =>
+          new Promise(resolve =>
+            requestAnimationFrame(() => requestAnimationFrame(resolve)),
+          ),
+      );
     },
-    target: page =>
-      page.locator('[class*="SnapItem-module"][class*="target"]').first(),
+    target: firstSnapshot,
     padding: 4,
   },
 
@@ -237,7 +300,7 @@ export const scenes = [
   {
     id: 'happo-status-diffs',
     output: 'static/img/happo-status-diffs.png',
-    url: `https://github.com/${SHOWCASE_REPO}/pull/${showcasePRs.needsReview}`,
+    url: async () => (await findShowcasePR(showcasePRs.needsReview)).html_url,
     auth: 'github',
     // TODO: check this selector against a logged-in session. The checks list
     // is only shown to logged-in users.

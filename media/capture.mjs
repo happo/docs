@@ -264,7 +264,7 @@ async function captureScene(browser, scene, { headed }) {
     // A scene's url can be a function, for pages that have to be looked up
     // when the scene runs.
     const url = typeof scene.url === 'function' ? await scene.url() : scene.url;
-    if (scene.setup) await scene.setup(page, { url });
+    if (scene.setup) await scene.setup(page);
     await page.goto(url, { waitUntil: 'networkidle' });
 
     if (scene.prepare) await scene.prepare(page);
