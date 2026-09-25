@@ -222,6 +222,10 @@ function reviewPanel(id, branch) {
   };
 }
 
+// Thrown by a scene when something it needs doesn't exist yet. `pnpm media
+// capture` reports the scene as skipped, with this message, instead of failed.
+export class SceneSkipped extends Error {}
+
 // Settings pages for the showcase's Happo account. Unlike reports, these need a
 // login with admin access to that account.
 const SHOWCASE_ACCOUNT = 'https://happo.io/a/1342';
@@ -688,6 +692,54 @@ export const scenes = [
     },
     target: page =>
       page.getByRole('heading', { name: 'New webhook' }).locator('..'),
+    padding: 16,
+  },
+  {
+    id: 'webhooks-recent-deliveries',
+    output: 'static/img/webhooks-recent-deliveries.png',
+    url: `${SHOWCASE_ACCOUNT}/webhooks`,
+    auth: 'happo',
+    setup: blockWrites,
+    async prepare(page) {
+      const link = page.getByRole('link', { name: 'Recent deliveries' });
+      if (!(await link.count())) {
+        // Creating a webhook is a real change, so it's left to a person.
+        throw new SceneSkipped(
+          `Needs a webhook on ${SHOWCASE_ACCOUNT}/webhooks that has sent ` +
+            'deliveries. Add one for https://httpbin.org/status/200, run the ' +
+            '"Happo" workflow in happo/happo-showcase on main, then capture ' +
+            'again. Delete the webhook afterwards.',
+        );
+      }
+      await page.goto(
+        new URL(await link.first().getAttribute('href'), page.url()).href,
+        {
+          waitUntil: 'networkidle',
+        },
+      );
+      // Show the same example URL as the New webhook screenshot.
+      await page.evaluate(() => {
+        const walker = document.createTreeWalker(
+          document.body,
+          NodeFilter.SHOW_TEXT,
+        );
+        while (walker.nextNode()) {
+          walker.currentNode.textContent =
+            walker.currentNode.textContent.replace(
+              /https?:\/\/httpbin\.org\/\S*/,
+              'https://my-server.com/endpoint',
+            );
+        }
+      });
+    },
+    // Headings stretch to the width of their container, which is much wider
+    // than the table. Fitting them to their text keeps the crop tight.
+    css: 'h2 { width: fit-content; }',
+    // From the heading down to the end of the table.
+    target: page => [
+      page.getByRole('heading', { name: 'Recent deliveries' }),
+      page.locator('table'),
+    ],
     padding: 16,
   },
 

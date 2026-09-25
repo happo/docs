@@ -184,6 +184,10 @@ workflow in happo-showcase and try again.
 - Some media can't be scripted safely, such as installing a GitHub app or
   creating an access token. Add those as `manual` scenes with instructions, so
   they still show up in `pnpm media status`.
+- If a scene needs data that has to be set up by hand first (like a webhook that
+  has sent deliveries), throw `SceneSkipped` with instructions when it's
+  missing. `pnpm media capture` then reports the scene as skipped instead of
+  failed.
 
 Embed videos with a `<video>` tag instead of Markdown image syntax. Docs pages
 are MDX, so use the JSX spellings (`autoPlay`, `playsInline`). Browsers only

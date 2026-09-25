@@ -17,7 +17,7 @@ import {
   writeOptimizedImage,
   writeOptimizedVideo,
 } from './optimize.mjs';
-import { authProfiles, scenes, siteStyles } from './scenes.mjs';
+import { authProfiles, scenes, SceneSkipped, siteStyles } from './scenes.mjs';
 
 const ROOT = path.resolve(import.meta.dirname, '..');
 const AUTH_DIR = path.join(import.meta.dirname, '.auth');
@@ -475,6 +475,13 @@ async function capture(ids, { all, headed }) {
       console.log(result);
       captured.push(scene.output);
     } catch (error) {
+      // A scene throws SceneSkipped when something it needs doesn't exist,
+      // e.g. data that has to be set up by hand first.
+      if (error instanceof SceneSkipped) {
+        console.log(`skipping\n  ${error.message}`);
+        skipped.push(scene.id);
+        continue;
+      }
       console.log('failed');
       console.error(`  ${error.message.split('\n')[0]}`);
       failures.push(scene.id);
@@ -484,7 +491,7 @@ async function capture(ids, { all, headed }) {
 
   if (captured.length) printOlderMediaNearby(captured);
   if (skipped.length) {
-    console.log(`\nSkipped (not logged in): ${skipped.join(', ')}`);
+    console.log(`\nSkipped: ${skipped.join(', ')}`);
   }
   if (failures.length) {
     console.error(`\nFailed: ${failures.join(', ')}`);
