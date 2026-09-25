@@ -778,8 +778,7 @@ export const scenes = [
       await fakeReviews(page, await findHappoReport(showcasePRs.needsReview));
     },
     prepare: waitForSnapshots,
-    async record(page, { click, pause }) {
-      await pause(500);
+    async record(page, { click }) {
       await click(
         page
           .locator('[class*="leaveReviewSection"]')
