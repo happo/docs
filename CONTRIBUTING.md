@@ -1,8 +1,13 @@
-# Generate a gif from a screen recording
+# Add a screen recording
+
+Use a `.webm` video instead of a GIF. Videos are smaller and sharper. Record
+your screen (for example with Cmd+Shift+5 on macOS), then convert the recording:
 
 ```bash
-ffmpeg -i input.mov -filter:v "fps=30,scale=1024:-1" -f gif output.gif
+pnpm media optimize static/video/my-recording.mov
 ```
 
-The first filter will set the output frame rate at 30 fps. The second filter
-will scale down the size (maintaining aspect ratio).
+This writes `static/video/my-recording.webm`, re-encoded so it's small enough to
+commit. Delete the `.mov`, and embed the video with a `<video>` tag. See
+[media/README.md](media/README.md) for details, and for how to script
+screenshots and videos so they can be refreshed later.

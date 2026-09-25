@@ -16,6 +16,11 @@ Playwright's browser is downloaded separately from its npm package. After
 pnpm exec playwright install chromium
 ```
 
+Videos are optimized with ffmpeg, which `pnpm install` downloads through the
+`ffmpeg-static` package. If that download fails, `pnpm install` still succeeds,
+and optimizing a video tells you what to do. To use an ffmpeg you already have,
+set `FFMPEG_BIN` to its path. It needs to be built with `libvpx-vp9`.
+
 ## Refreshing media after a product update
 
 ```bash
@@ -42,26 +47,47 @@ context.
 
 ## Keeping files small
 
-Binary files stay in git history forever, so every image is optimized before
-it's written:
+Binary files stay in git history forever, so every image and video is optimized
+before it's written:
 
-- Images wider than 1916px are scaled down. The docs content column is at most
-  958px wide, so that's the most detail anyone sees on a high-DPI screen.
+- Images and videos wider than 1916px are scaled down. The docs content column
+  is at most 958px wide, so that's the most detail anyone sees on a high-DPI
+  screen.
 - PNGs are reduced to a 256-color palette, which usually halves their size with
   no visible difference for UI screenshots. If that would change the image too
   much (common with photos and gradients), the PNG stays lossless instead.
-- `pnpm media optimize` only replaces a file with a smaller one, so it's safe to
-  run on images that are already optimized.
+- Videos are re-encoded as VP9 `.webm` at up to 30 fps. Playwright's recordings
+  come out about a third of their original size, with no visible difference in
+  UI text.
+- `pnpm media optimize` only replaces a file with a smaller one. It never
+  reduces the colors of a PNG that already has a palette, or re-encodes a video
+  that's already VP9, so it's safe to run on files that are already optimized.
 
-Screenshots from `pnpm media capture` are optimized automatically. Run
-screenshots you take by hand through the same step before committing them:
+Screenshots and videos from `pnpm media capture` are optimized automatically.
+Run files you make by hand through the same step before committing them:
 
 ```bash
 pnpm media optimize static/img/my-screenshot.png
 ```
 
-Prefer a short `.webm` video over a GIF for anything animated. Videos are a
-fraction of the size of GIFs.
+Prefer a short `.webm` video over a GIF for anything animated. Record your
+screen, then run the recording through `pnpm media optimize`. It converts a
+`.mov`, `.mp4` or `.gif` to a `.webm` next to it, and lists the docs pages that
+still use the old file:
+
+```bash
+pnpm media optimize static/video/my-recording.mov
+```
+
+A GitHub Actions check runs `pnpm media optimize --check` on the images and
+videos a PR adds or changes. It fails when a file is wider than 1916px, or when
+optimizing would make it more than 10% and 10 KB smaller, and prints the
+`pnpm media optimize` command that fixes it. For GIFs it only prints a warning.
+Run the check yourself with:
+
+```bash
+pnpm media optimize --check static/img/my-screenshot.png
+```
 
 ## Scenes that need a login
 
