@@ -24,6 +24,7 @@ server.listen(port, '0.0.0.0', () => {
 
 // Node doesn't exit on SIGTERM when it runs as PID 1, so without this
 // Kubernetes waits out the whole grace period before killing the container.
+// Closing the server lets in-flight responses finish before exiting.
 for (const signal of ['SIGINT', 'SIGTERM']) {
-  process.on(signal, () => process.exit(0));
+  process.on(signal, () => server.close(() => process.exit(0)));
 }
