@@ -4,6 +4,10 @@ This repo is the home of happo.io documentation, served at docs.happo.io
 
 # Changelog
 
+## 3.61.2
+
+- Fix CircleCI configuration to restore release deployment functionality
+
 ## 3.61.1
 
 - Fix broken links and anchors in documentation
