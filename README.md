@@ -4,6 +4,11 @@ This repo is the home of happo.io documentation, served at docs.happo.io
 
 # Changelog
 
+## 3.61.1
+
+- Fix broken links and anchors in documentation
+- Add CI checks to prevent broken links in future releases
+
 ## 3.61.0
 
 - Refresh documentation screenshots and media across multiple UI sections
