@@ -24,7 +24,7 @@
     "esbuild": "^0.28.2",
     "happo": "6.19.2",
     "playwright": "1.63.0",
-    "prettier": "3.9.6",
+    "prettier": "3.9.8",
     "release-with-ease": "^2.7.2",
     "sharp": "0.35.4"
   },
