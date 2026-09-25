@@ -24,6 +24,12 @@ const showcasePRs = {
   // updates its browsers, re-running it against its existing baseline gives
   // diffs caused only by the update. See browserUpdateReport below.
   browserUpdate: 'demo/browser-update',
+  // The showcase has two Happo projects: Storybook components and Playwright
+  // end-to-end tests. These PRs have visual changes in both. The first posts
+  // one status per project, and the second combines them with orchestration.
+  // Only their GitHub checks are used, so their reports aren't refreshed.
+  multiProject: 'demo/multi-project',
+  multiProjectOrchestrated: 'demo/multi-project-orchestrated',
 };
 
 async function githubApi(path) {
@@ -868,4 +874,14 @@ export const scenes = [
     manual:
       'Record creating an Azure DevOps personal access token (then revoke it).',
   },
+
+  // docs/multi-project.md
+  githubChecks('happo-github-status-splitup', showcasePRs.multiProject, {
+    heading: 'Some checks were not successful',
+  }),
+  githubChecks(
+    'happo-github-status-orchestrated',
+    showcasePRs.multiProjectOrchestrated,
+    { heading: 'Some checks were not successful' },
+  ),
 ];
