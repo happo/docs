@@ -3,17 +3,24 @@
 
 import { execFileSync } from 'node:child_process';
 import fs from 'node:fs';
+import os from 'node:os';
 import path from 'node:path';
 import readline from 'node:readline/promises';
 import { parseArgs } from 'node:util';
 import { chromium } from 'playwright';
 
-import { optimizeImage, writeOptimizedImage } from './optimize.mjs';
+import {
+  checkResult,
+  CHECKED,
+  optimizeFile,
+  writeOptimizedImage,
+  writeOptimizedVideo,
+} from './optimize.mjs';
 import { authProfiles, scenes, siteStyles } from './scenes.mjs';
 
 const ROOT = path.resolve(import.meta.dirname, '..');
 const AUTH_DIR = path.join(import.meta.dirname, '.auth');
-const MEDIA_EXTENSIONS = /\.(png|jpe?g|gif|webp|mp4|webm)$/i;
+const MEDIA_EXTENSIONS = /\.(png|jpe?g|gif|webp|mov|mp4|webm)$/i;
 
 // Playwright's browsers are downloaded separately from its npm package.
 async function launchBrowser(options) {
@@ -35,9 +42,9 @@ function authStatePath(profile) {
 
 // Returns a map of media path (e.g. static/img/foo.png) to the docs pages that
 // reference it.
-function findMediaReferences() {
+function findMediaReferences(pages = 'docs/**/*.{md,mdx}') {
   const references = new Map();
-  for (const file of fs.globSync('docs/**/*.{md,mdx}', { cwd: ROOT })) {
+  for (const file of fs.globSync(pages, { cwd: ROOT })) {
     const content = fs
       .readFileSync(path.join(ROOT, file), 'utf-8')
       // Code blocks contain example URLs that aren't real media.
@@ -218,18 +225,28 @@ function recordingHelpers(page) {
   };
 }
 
+// Records the scene to a temporary file, then writes an optimized copy to
+// `outputPath`. Playwright's recordings are several times larger than they
+// need to be.
 async function recordScene(page, scene, outputPath) {
   const viewport = page.viewportSize();
-  await page.mouse.move(viewport.width / 2, viewport.height / 2);
-  await page.screencast.start({ path: outputPath, size: viewport });
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'docs-media-'));
+  const recordingPath = path.join(dir, 'recording.webm');
   try {
-    await page.waitForTimeout(500);
-    await scene.record(page, recordingHelpers(page));
-    // Hold the final frame for a moment so the loop doesn't jump straight
-    // back to the start.
-    await page.waitForTimeout(scene.holdLastFrame ?? 1500);
+    await page.mouse.move(viewport.width / 2, viewport.height / 2);
+    await page.screencast.start({ path: recordingPath, size: viewport });
+    try {
+      await page.waitForTimeout(500);
+      await scene.record(page, recordingHelpers(page));
+      // Hold the final frame for a moment so the loop doesn't jump straight
+      // back to the start.
+      await page.waitForTimeout(scene.holdLastFrame ?? 1500);
+    } finally {
+      await page.screencast.stop();
+    }
+    return await writeOptimizedVideo(outputPath, recordingPath);
   } finally {
-    await page.screencast.stop();
+    fs.rmSync(dir, { recursive: true, force: true });
   }
 }
 
@@ -288,8 +305,7 @@ async function captureScene(browser, scene, { headed }) {
     fs.mkdirSync(path.dirname(outputPath), { recursive: true });
 
     if (scene.record) {
-      await recordScene(page, scene, outputPath);
-      return `${Math.round(fs.statSync(outputPath).size / 1024)} KB`;
+      return await recordScene(page, scene, outputPath);
     }
     return await writeOptimizedImage(
       outputPath,
@@ -355,13 +371,94 @@ async function capture(ids, { all, headed }) {
   }
 }
 
-async function optimize(files) {
+// Prints the docs pages that still use a GIF or video that was converted to
+// .webm. They need a <video> tag pointing at the new file.
+function printConvertedReferences(converted) {
+  const references = findMediaReferences('{docs,versioned_docs}/**/*.{md,mdx}');
+  for (const { file, outputFile } of converted) {
+    const pages = references.get(path.relative(ROOT, path.resolve(file)));
+    console.log(`\n${file} was converted to ${outputFile}.`);
+    if (pages) {
+      console.log(
+        `Update these pages to show it with a <video> tag (see media/README.md):\n` +
+          [...pages].map(page => `  ${page}`).join('\n'),
+      );
+    }
+    console.log(`Then delete ${file}.`);
+  }
+}
+
+// Quotes a file name for a command that can be copied into a shell.
+function shellQuote(file) {
+  return /^[\w@%+=:,./-]+$/.test(file)
+    ? file
+    : `'${file.replaceAll("'", `'\\''`)}'`;
+}
+
+// Prints a message GitHub Actions shows on the file in the PR.
+function annotate(level, file, message) {
+  if (process.env.GITHUB_ACTIONS) {
+    console.log(`::${level} file=${file}::${message}`);
+  }
+}
+
+async function optimize(files, { check, 'drop-audio': dropAudio }) {
   if (!files.length) {
-    console.log('Pass the image files to optimize.');
+    console.log('Pass the image or video files to optimize.');
     return;
   }
+
+  const failed = [];
+  const needsDropAudio = [];
+  const converted = [];
   for (const file of files) {
-    console.log(`- ${file}: ${await optimizeImage(file)}`);
+    if (check && !CHECKED.test(file)) {
+      console.log(`- ${file}: not checked`);
+      continue;
+    }
+    // The same work is done either way. --check only skips writing. It
+    // measures videos with sound as they'd be without it, then reports the
+    // sound as a problem.
+    let result;
+    try {
+      result = await optimizeFile(file, {
+        write: !check,
+        dropAudio: check || dropAudio,
+      });
+    } catch (error) {
+      console.error(`- ${file}: ${error.message}`);
+      process.exitCode = 1;
+      continue;
+    }
+    console.log(`- ${file}: ${result.description}`);
+
+    if (check) {
+      const problem = checkResult(result);
+      if (!problem) continue;
+      console.log(`  ${problem.level}: ${problem.message}`);
+      annotate(problem.level, file, problem.message);
+      if (problem.level === 'error') {
+        (problem.dropAudio ? needsDropAudio : failed).push(file);
+      }
+    } else if (result.outputFile !== file) {
+      converted.push(result);
+    }
+  }
+
+  if (converted.length) printConvertedReferences(converted);
+  if (failed.length || needsDropAudio.length) {
+    const commands = [
+      failed.length &&
+        `pnpm media optimize ${failed.map(shellQuote).join(' ')}`,
+      needsDropAudio.length &&
+        `pnpm media optimize --drop-audio ${needsDropAudio.map(shellQuote).join(' ')}`,
+    ].filter(Boolean);
+    console.error(
+      `\n${failed.length + needsDropAudio.length} file(s) should be optimized ` +
+        `before they're committed. Run this, then commit the result:\n\n` +
+        commands.map(command => `  ${command}\n`).join(''),
+    );
+    process.exitCode = 1;
   }
 }
 
@@ -369,16 +466,21 @@ const USAGE = `Usage:
   pnpm media status                 List docs media, their scenes, and when they were last updated
   pnpm media capture <id...>        Capture specific scenes
   pnpm media capture --all          Capture every automated scene
-  pnpm media optimize <file...>     Shrink PNGs made by hand before committing them
+  pnpm media optimize <file...>     Shrink PNGs and videos made by hand before committing them (a GIF is converted to .webm)
+  pnpm media optimize --check <file...>
+                                    Report what optimizing would save, without changing files. Fails if a file isn't optimized
   pnpm media login <profile>        Save a logged-in session for scenes that need one (${Object.keys(authProfiles).join(', ')})
 
 Options:
+  --drop-audio                      Remove the sound from videos when optimizing them (docs videos play muted)
   --headed                          Show the browser while capturing (handy when writing a scene)`;
 
 const { positionals, values } = parseArgs({
   allowPositionals: true,
   options: {
     all: { type: 'boolean', default: false },
+    check: { type: 'boolean', default: false },
+    'drop-audio': { type: 'boolean', default: false },
     headed: { type: 'boolean', default: false },
     help: { type: 'boolean', short: 'h', default: false },
   },
@@ -393,7 +495,7 @@ if (values.help || !command) {
 } else if (command === 'capture') {
   await capture(rest, values);
 } else if (command === 'optimize') {
-  await optimize(rest);
+  await optimize(rest, values);
 } else if (command === 'login') {
   await login(rest[0]);
 } else {
