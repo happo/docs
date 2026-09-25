@@ -61,9 +61,12 @@ When you click **Report flake**:
 
 - **On the comparison page**
 
-  That diff is hidden from the comparison (and from any other comparison where
-  the same snapshot pair appears). You may see fewer diffs, or none, on the
-  page.
+  That diff is moved out of the list of diffs (in this comparison and in any
+  other comparison where the same snapshot pair appears), so you may see fewer
+  diffs, or none. You can still find it under **Ignored diffs** in the sidebar,
+  along with who reported it and when.
+
+  ![Ignored diffs in a Happo report](/img/happo-ignored-diffs.png)
 
 - **Build status**
 
