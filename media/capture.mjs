@@ -277,10 +277,20 @@ function recordingHelpers(page) {
     await locator.scrollIntoViewIfNeeded();
     const box = await locator.boundingBox();
     // The pointer is drawn below and to the right of where it points, so
-    // pointing at the middle of a wide element (e.g. a menu item) covers its
-    // label. Point near the right end instead, which is usually empty.
+    // pointing at the middle of an element covers its label. Point just past
+    // the right end of the label instead (still inside the element), which
+    // works for left-aligned menu items and centered button labels alike.
+    // Elements without text, like icon buttons, get the middle.
+    const textRight = await locator.evaluate(element => {
+      const range = document.createRange();
+      range.selectNodeContents(element);
+      const rect = range.getBoundingClientRect();
+      return element.textContent.trim() && rect.width ? rect.right : null;
+    });
     const target = {
-      x: box.width > 120 ? box.x + box.width - 32 : box.x + box.width / 2,
+      x: textRight
+        ? Math.min(textRight + 10, box.x + box.width - 6)
+        : box.x + box.width / 2,
       y: box.y + box.height / 2,
     };
     const distance = Math.hypot(target.x - position.x, target.y - position.y);
