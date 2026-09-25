@@ -163,15 +163,18 @@ workflow in happo-showcase and try again.
   creating an access token. Add those as `manual` scenes with instructions, so
   they still show up in `pnpm media status`.
 
-Embed videos with a `<video>` tag instead of Markdown image syntax:
+Embed videos with a `<video>` tag instead of Markdown image syntax. Docs pages
+are MDX, so use the JSX spellings (`autoPlay`, `playsInline`). Browsers only
+autoplay muted videos, so keep `muted`. Describe the video in `aria-label`:
 
-```html
+```jsx
 <video
   src="/video/happo-view-source.webm"
-  autoplay
+  aria-label="Opening the … menu on a snapshot and choosing View source"
+  autoPlay
   loop
   muted
-  playsinline
+  playsInline
   width="100%"
-></video>
+/>
 ```

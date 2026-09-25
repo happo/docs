@@ -13,12 +13,19 @@ You'll find it in the "…" overflow menu to the right of a screenshot. For a
 diff, the menu has separate "View source for before image…" and "View source for
 after image…" options:
 
-![How to find the "View source" option](/img/happo-view-source.gif) _This is
-where you find the "View source" option for a Happo report._
+<video
+  src="/video/happo-view-source.webm"
+  aria-label='Opening the "…" menu on a snapshot and choosing "View source for after image…"'
+  autoPlay
+  loop
+  muted
+  playsInline
+  width="100%"
+/>
 
 You'll land on the Source page. It looks something like this:
-![The Source page](/img/happo-source-page.png) _The Source page for an "Alert"
-snapshot_
+![The Source page](/img/happo-source-page.png) _The Source page for a
+"PricingCard" snapshot_
 
 The Source page has some details about what was used to produce the screenshot,
 and there are a few buttons here that can be useful. Depending on the type of
