@@ -165,6 +165,17 @@ function firstSnapshot(page) {
   return page.locator('[class*="SnapItem-module"][class*="target"]').first();
 }
 
+// The first accessibility snapshot in a Happo report, which has Violations and
+// Snapshot tabs instead of the image diff views.
+function firstAccessibilitySnapshot(page) {
+  return page
+    .locator('[class*="SnapItem-module"][class*="target"]')
+    .filter({
+      has: page.getByRole('button', { name: 'Violations', exact: true }),
+    })
+    .first();
+}
+
 // The Reject/Accept control in the report sidebar of a showcase PR.
 function reviewPanel(id, branch) {
   return {
@@ -218,6 +229,35 @@ export const scenes = [
     async prepare(page) {
       await page.getByText('Active filter:').waitFor();
     },
+  },
+  {
+    id: 'accessibility-violations',
+    output: 'static/img/accessibility-violations.png',
+    url: showcaseReport(showcasePRs.accessibilityViolations),
+    viewport: { width: 1200, height: 800 },
+    async prepare(page) {
+      await firstAccessibilitySnapshot(page)
+        .getByRole('button', { name: 'Show details' })
+        .first()
+        .click();
+    },
+    target: firstAccessibilitySnapshot,
+    padding: 4,
+  },
+  {
+    id: 'aria-snapshot',
+    output: 'static/img/aria-snapshot.png',
+    url: showcaseReport(showcasePRs.accessibilityViolations),
+    viewport: { width: 1200, height: 800 },
+    async prepare(page) {
+      const snapshot = firstAccessibilitySnapshot(page);
+      await snapshot
+        .getByRole('button', { name: 'Snapshot', exact: true })
+        .click();
+      await snapshot.getByText('- document:').first().waitFor();
+    },
+    target: firstAccessibilitySnapshot,
+    padding: 2,
   },
 
   // docs/animated-snapshots.md

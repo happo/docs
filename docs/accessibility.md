@@ -152,11 +152,11 @@ Cypress.on('window:before:load', win => {
 ```
 
 Below is an example of how violations appear in a Happo report. When you make
-changes to remove violations, the comparison report page will show you the
-before and after violation count. Each violation has a section that explains why
-the violation was found and gives you pointers on how to fix it.
+changes that add or remove violations, the comparison report page will show you
+the before and after violation count. Each violation has a section that explains
+why the violation was found and gives you pointers on how to fix it.
 
-![Removed Accessibility Violations](/img/accessibility-violations.png)
+![New accessibility violations in a Happo report](/img/accessibility-violations.png)
 
 Click a violation type in the sidebar to filter the report to only show the
 accessibility snapshots containing that particular violation.
@@ -170,7 +170,7 @@ provide a text-based representation of how screen readers would interpret your
 interface, making it easier to understand the accessibility structure of your
 components and pages.
 
-![ARIA Snapshot](/img/aria-snapshot.png)
+![An ARIA snapshot diff in a Happo report](/img/aria-snapshot.png)
 
 These snapshots help verify that the semantic structure is correct and that
 screen readers will present the interface in an understandable way.
