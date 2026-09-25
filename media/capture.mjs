@@ -20,7 +20,7 @@ import { authProfiles, scenes, siteStyles } from './scenes.mjs';
 
 const ROOT = path.resolve(import.meta.dirname, '..');
 const AUTH_DIR = path.join(import.meta.dirname, '.auth');
-const MEDIA_EXTENSIONS = /\.(png|jpe?g|gif|webp|mp4|webm)$/i;
+const MEDIA_EXTENSIONS = /\.(png|jpe?g|gif|webp|mov|mp4|webm)$/i;
 
 // Playwright's browsers are downloaded separately from its npm package.
 async function launchBrowser(options) {
@@ -402,21 +402,34 @@ function annotate(level, file, message) {
   }
 }
 
-async function optimize(files, { check }) {
+async function optimize(files, { check, 'drop-audio': dropAudio }) {
   if (!files.length) {
     console.log('Pass the image or video files to optimize.');
     return;
   }
 
   const failed = [];
+  const needsDropAudio = [];
   const converted = [];
   for (const file of files) {
     if (check && !CHECKED.test(file)) {
       console.log(`- ${file}: not checked`);
       continue;
     }
-    // The same work is done either way. --check only skips writing.
-    const result = await optimizeFile(file, { write: !check });
+    // The same work is done either way. --check only skips writing. It
+    // measures videos with sound as they'd be without it, then reports the
+    // sound as a problem.
+    let result;
+    try {
+      result = await optimizeFile(file, {
+        write: !check,
+        dropAudio: check || dropAudio,
+      });
+    } catch (error) {
+      console.error(`- ${file}: ${error.message}`);
+      process.exitCode = 1;
+      continue;
+    }
     console.log(`- ${file}: ${result.description}`);
 
     if (check) {
@@ -424,18 +437,26 @@ async function optimize(files, { check }) {
       if (!problem) continue;
       console.log(`  ${problem.level}: ${problem.message}`);
       annotate(problem.level, file, problem.message);
-      if (problem.level === 'error') failed.push(file);
+      if (problem.level === 'error') {
+        (problem.dropAudio ? needsDropAudio : failed).push(file);
+      }
     } else if (result.outputFile !== file) {
       converted.push(result);
     }
   }
 
   if (converted.length) printConvertedReferences(converted);
-  if (failed.length) {
+  if (failed.length || needsDropAudio.length) {
+    const commands = [
+      failed.length &&
+        `pnpm media optimize ${failed.map(shellQuote).join(' ')}`,
+      needsDropAudio.length &&
+        `pnpm media optimize --drop-audio ${needsDropAudio.map(shellQuote).join(' ')}`,
+    ].filter(Boolean);
     console.error(
-      `\n${failed.length} file(s) should be optimized before they're ` +
-        `committed. Run this, then commit the result:\n\n` +
-        `  pnpm media optimize ${failed.map(shellQuote).join(' ')}\n`,
+      `\n${failed.length + needsDropAudio.length} file(s) should be optimized ` +
+        `before they're committed. Run this, then commit the result:\n\n` +
+        commands.map(command => `  ${command}\n`).join(''),
     );
     process.exitCode = 1;
   }
@@ -451,6 +472,7 @@ const USAGE = `Usage:
   pnpm media login <profile>        Save a logged-in session for scenes that need one (${Object.keys(authProfiles).join(', ')})
 
 Options:
+  --drop-audio                      Remove the sound from videos when optimizing them (docs videos play muted)
   --headed                          Show the browser while capturing (handy when writing a scene)`;
 
 const { positionals, values } = parseArgs({
@@ -458,6 +480,7 @@ const { positionals, values } = parseArgs({
   options: {
     all: { type: 'boolean', default: false },
     check: { type: 'boolean', default: false },
+    'drop-audio': { type: 'boolean', default: false },
     headed: { type: 'boolean', default: false },
     help: { type: 'boolean', short: 'h', default: false },
   },

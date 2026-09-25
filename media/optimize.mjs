@@ -116,15 +116,24 @@ async function findFfmpeg() {
 
 const run = promisify(execFile);
 
-// The codec and width of a video. ffmpeg prints these when given only an
-// input, and then exits with an error because there's no output.
+// The codec, width, frame rate and whether a video has sound. ffmpeg prints
+// these when given only an input, and then exits with an error because there's
+// no output.
 async function probeVideo(ffmpeg, file) {
   const { stderr } = await run(ffmpeg, ['-hide_banner', '-i', file]).catch(
     error => error,
   );
-  const match = stderr?.match(/Stream #.*?: Video: (\w+).*?, (\d+)x\d+/);
-  if (!match) throw new Error(`Couldn't read ${file} as a video`);
-  return { codec: match[1], width: Number(match[2]) };
+  const video = stderr?.match(/Stream #.*?: Video: (\w+).*/);
+  const size = video?.[0].match(/, (\d+)x\d+/);
+  if (!size) throw new Error(`Couldn't read ${file} as a video`);
+  // Some formats (e.g. GIF) only report "tbr", ffmpeg's best guess at the rate.
+  const fps = video[0].match(/([\d.]+) fps/) ?? video[0].match(/([\d.]+) tbr/);
+  return {
+    codec: video[1],
+    width: Number(size[1]),
+    fps: fps ? Number(fps[1]) : 0,
+    hasAudio: /Stream #.*?: Audio:/.test(stderr),
+  };
 }
 
 // Two-pass constant-quality VP9. The second pass uses what the first learned
@@ -158,26 +167,51 @@ async function encodeVp9(ffmpeg, inputFile) {
   }
 }
 
-// Re-encodes a video or GIF as a VP9 .webm.
-async function optimizeVideo(file, input) {
+// Re-encodes a video or GIF as a VP9 .webm. Docs videos autoplay muted, so
+// any audio is removed, but only when `dropAudio` says that's intended.
+async function optimizeVideo(file, input, { dropAudio }) {
   const ffmpeg = await findFfmpeg();
-  const { codec, width } = await probeVideo(ffmpeg, file);
+  const { codec, width, fps, hasAudio } = await probeVideo(ffmpeg, file);
   const resized = width > MAX_WIDTH;
+  // Allow for rates like 30.01 that ffmpeg reports for some recordings.
+  const tooFast = fps > MAX_FPS + 0.5;
   const converted = CONVERTED.test(file);
+  const video = { width, fps, hasAudio };
 
   // Like quantizing a PNG twice, re-encoding a video that's already been
   // compressed this well would lose a little quality each time.
-  if (!converted && !resized && ['vp9', 'av1'].includes(codec)) {
-    return { output: input, keepInput: true, width, notes: [] };
+  if (
+    !converted &&
+    !resized &&
+    !tooFast &&
+    !hasAudio &&
+    ['vp9', 'av1'].includes(codec)
+  ) {
+    return { output: input, keepInput: true, ...video, notes: [] };
+  }
+
+  if (hasAudio && !dropAudio) {
+    throw new Error(
+      `${file} has an audio track. Docs videos play muted, so it would never ` +
+        'be heard. Run again with --drop-audio to remove it.',
+    );
   }
 
   const output = await encodeVp9(ffmpeg, file);
+  const notes = [converted ? 'converted to VP9 .webm' : 'VP9'];
+  if (tooFast) notes.push(`capped at ${MAX_FPS} fps`);
+  if (hasAudio) notes.push('audio removed');
   return {
     output,
     // Always convert other formats, since the result is a different file.
-    keepInput: !converted && !resized && output.length >= input.length,
-    width,
-    notes: [converted ? 'converted to VP9 .webm' : 'VP9'],
+    keepInput:
+      !converted &&
+      !resized &&
+      !tooFast &&
+      !hasAudio &&
+      output.length >= input.length,
+    ...video,
+    notes,
   };
 }
 
@@ -198,7 +232,13 @@ function describe(input, { output, keepInput, width, notes }) {
 // it: replaces the file with a smaller version, or writes a .webm next to a
 // GIF, .mov or .mp4. Returns what was (or would be) done, e.g.
 // { description: "412 KB → 194 KB (palette)", savedBytes: 223000, ... }.
-export async function optimizeFile(file, { write = true } = {}) {
+//
+// A video with sound is only re-encoded (which removes the sound) when
+// `dropAudio` is true.
+export async function optimizeFile(
+  file,
+  { write = true, dropAudio = false } = {},
+) {
   if (!OPTIMIZABLE.test(file)) {
     throw new Error(
       `Only .png, .webm, .gif, .mov and .mp4 files can be optimized: ${file}`,
@@ -207,7 +247,7 @@ export async function optimizeFile(file, { write = true } = {}) {
   const input = fs.readFileSync(file);
   const result = PNG.test(file)
     ? await optimizePng(input)
-    : await optimizeVideo(file, input);
+    : await optimizeVideo(file, input, { dropAudio });
   const outputFile = optimizedPath(file);
   if (write && !result.keepInput) fs.writeFileSync(outputFile, result.output);
   return {
@@ -215,6 +255,8 @@ export async function optimizeFile(file, { write = true } = {}) {
     outputFile,
     description: describe(input, result),
     width: result.width,
+    fps: result.fps,
+    hasAudio: result.hasAudio,
     inputBytes: input.length,
     outputBytes: result.keepInput ? input.length : result.output.length,
     savedBytes: result.keepInput ? 0 : input.length - result.output.length,
@@ -223,7 +265,14 @@ export async function optimizeFile(file, { write = true } = {}) {
 
 // What `pnpm media optimize --check` says about a file, given the result of
 // optimizeFile(file, { write: false }). Returns undefined when it's fine.
-export function checkResult({ file, width, inputBytes, outputBytes }) {
+export function checkResult({
+  file,
+  width,
+  fps,
+  hasAudio,
+  inputBytes,
+  outputBytes,
+}) {
   if (GIF.test(file)) {
     return {
       level: 'warning',
@@ -237,6 +286,20 @@ export function checkResult({ file, width, inputBytes, outputBytes }) {
     return {
       level: 'error',
       message: `${width}px wide, which is wider than the docs ever show (${MAX_WIDTH}px).`,
+    };
+  }
+  if (fps > MAX_FPS + 0.5) {
+    return {
+      level: 'error',
+      message: `${Math.round(fps)} fps, which is more than a docs video needs (${MAX_FPS}).`,
+    };
+  }
+  if (hasAudio) {
+    return {
+      level: 'error',
+      message:
+        'Has an audio track, which docs videos never play since they autoplay muted.',
+      dropAudio: true,
     };
   }
   const saved = inputBytes - outputBytes;

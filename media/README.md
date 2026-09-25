@@ -61,7 +61,8 @@ before it's written:
   UI text.
 - `pnpm media optimize` only replaces a file with a smaller one. It never
   reduces the colors of a PNG that already has a palette, or re-encodes a video
-  that's already VP9, so it's safe to run on files that are already optimized.
+  that's already VP9 at up to 30 fps, so it's safe to run on files that are
+  already optimized.
 
 Screenshots and videos from `pnpm media capture` are optimized automatically.
 Run files you make by hand through the same step before committing them:
@@ -79,11 +80,19 @@ still use the old file:
 pnpm media optimize static/video/my-recording.mov
 ```
 
+Docs videos autoplay muted, so sound in a recording is never heard. If a video
+has an audio track, `pnpm media optimize` stops and asks you to confirm that the
+sound can be removed:
+
+```bash
+pnpm media optimize --drop-audio static/video/my-recording.mov
+```
+
 A GitHub Actions check runs `pnpm media optimize --check` on the images and
-videos a PR adds or changes. It fails when a file is wider than 1916px, or when
-optimizing would make it more than 10% and 10 KB smaller, and prints the
-`pnpm media optimize` command that fixes it. For GIFs it only prints a warning.
-Run the check yourself with:
+videos a PR adds or changes. It fails when a file is wider than 1916px, when a
+video is over 30 fps or has an audio track, or when optimizing would make it
+more than 10% and 10 KB smaller, and prints the `pnpm media optimize` command
+that fixes it. For GIFs it only prints a warning. Run the check yourself with:
 
 ```bash
 pnpm media optimize --check static/img/my-screenshot.png
