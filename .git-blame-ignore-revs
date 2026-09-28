@@ -1,0 +1,10 @@
+# Commits listed here are skipped by git blame. They are mass mechanical changes
+# (reformatting, bulk renames) that would otherwise bury the real history. To
+# use this file locally, run:
+#
+#   git config blame.ignoreRevsFile .git-blame-ignore-revs
+#
+# GitHub's blame view reads it automatically. Use full SHAs.
+
+# Reformat with Prettier
+611a739ecc06fcf9c9b8dba0dc779dfb5e944653
