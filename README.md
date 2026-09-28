@@ -88,7 +88,7 @@ This repo is the home of happo.io documentation, served at docs.happo.io
 
 ## 3.60.0
 
-- Add documentation for the Happo MCP server 
+- Add documentation for the Happo MCP server
 - Upgrade React and React DOM to 19.2.7
 
 ## 3.59.2

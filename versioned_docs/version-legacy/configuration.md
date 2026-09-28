@@ -417,7 +417,7 @@ example:
 
 ```js
 module.exports = {
-  customizeWebpackConfig: config => {
+  customizeWebpackConfig: (config) => {
     config.module.rules.push({
       test: /\.css$/,
       use: [{ loader: cssLoader }],
@@ -437,7 +437,7 @@ with a project using
 const craWebpackConfig = require('react-scripts/config/webpack.config');
 
 module.exports = {
-  customizeWebpackConfig: config => {
+  customizeWebpackConfig: (config) => {
     // Use the built-in webpack config provided by create-react-app
     config.module = craWebpackConfig('development').module;
     return config;
@@ -451,7 +451,7 @@ async/await:
 
 ```js
 module.exports = {
-  customizeWebpackConfig: async config => {
+  customizeWebpackConfig: async (config) => {
     config.module = await doSomethingAsync();
     return config;
   },
@@ -567,7 +567,7 @@ module.exports = {
 import React from 'react';
 import ThemeProvider from '../ThemeProvider';
 
-export default component => <ThemeProvider>{component}</ThemeProvider>;
+export default (component) => <ThemeProvider>{component}</ThemeProvider>;
 ```
 
 ## `rootElementSelector`

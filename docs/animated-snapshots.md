@@ -211,11 +211,7 @@ apart:
 export const ENTER_DURATION_MS = 300;
 
 export function Toast({ children }) {
-  return (
-    <div style={{ animation: `toast-enter ${ENTER_DURATION_MS}ms ease-out` }}>
-      {children}
-    </div>
-  );
+  return <div style={{ animation: `toast-enter ${ENTER_DURATION_MS}ms ease-out` }}>{children}</div>;
 }
 ```
 
@@ -825,7 +821,7 @@ export const Celebrating = {
 
         // Runs after the capture. Throw to fail it, the way
         // `onExpectationFailure` says.
-        verify: trace => {
+        verify: (trace) => {
           if (trace.animationCount < 2) {
             throw new Error('the follow-up animation never started');
           }
@@ -884,16 +880,16 @@ import { registerAnimationDriver } from 'happo/storybook/register';
 
 registerAnimationDriver({
   name: 'lottie',
-  discover: root =>
+  discover: (root) =>
     lottie
       .getRegisteredAnimations()
-      .filter(animation => root.contains(animation.wrapper))
-      .map(animation => ({
+      .filter((animation) => root.contains(animation.wrapper))
+      .map((animation) => ({
         target: animation,
         element: animation.wrapper,
         durationMs: (animation.totalFrames / animation.frameRate) * 1000,
         pause: () => animation.pause(),
-        seek: timeMs => animation.goToAndStop(timeMs, false),
+        seek: (timeMs) => animation.goToAndStop(timeMs, false),
       })),
 });
 ```
@@ -938,16 +934,16 @@ import { activeEngines } from '../src/particles';
 
 registerAnimationDriver({
   name: 'particles',
-  discover: root =>
+  discover: (root) =>
     activeEngines
-      .filter(engine => root.contains(engine.canvas))
-      .map(engine => ({
+      .filter((engine) => root.contains(engine.canvas))
+      .map((engine) => ({
         target: engine,
         element: engine.canvas,
         durationMs: engine.duration,
         repeats: engine.loop,
         pause: () => engine.stop(),
-        seek: timeMs => {
+        seek: (timeMs) => {
           engine.time = timeMs;
           engine.draw();
         },

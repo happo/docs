@@ -142,7 +142,7 @@ options are set on every page load, before any app code runs:
 ```js title="cypress/support/e2e.js"
 import 'happo/cypress';
 
-Cypress.on('window:before:load', win => {
+Cypress.on('window:before:load', (win) => {
   win.happoAxeOptions = {
     rules: {
       'color-contrast': { enabled: false },

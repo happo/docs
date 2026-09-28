@@ -194,10 +194,7 @@ You can mix and match dynamic targets and target names as well:
 await happoScreenshot(heroImage, {
   component: 'Footer',
   variant: 'Default',
-  targets: [
-    'chrome-small',
-    { name: 'firefox-small', type: 'firefox', viewport: '400x800' },
-  ],
+  targets: ['chrome-small', { name: 'firefox-small', type: 'firefox', viewport: '400x800' }],
 });
 ```
 
@@ -206,7 +203,7 @@ Firefox (dynamic target).
 
 ## Partial runs
 
-*The `--skip` flag is available in `happo` v6.10.0 and later.*
+_The `--skip` flag is available in `happo` v6.10.0 and later._
 
 To exclude specific components or variants from a run, pass the
 [`--skip`](cli#--skip-json) CLI option to the `happo` wrapper:

@@ -13,7 +13,7 @@ that resolves to configuration options.
 
 ## `apiKey` and `apiSecret`
 
-*Available since happo v6.0.0.*
+_Available since happo v6.0.0._
 
 These tokens authenticate you with happo.io. **Never store these tokens in plain
 text.** Use environment variables instead.
@@ -35,7 +35,7 @@ export default defineConfig({
 
 ## `targets`
 
-*Available since happo v6.0.0.*
+_Available since happo v6.0.0._
 
 Specify the browsers you want to include in your happo run. For example:
 
@@ -91,7 +91,7 @@ Supported types:
 
 ### Target `freezeAnimations`
 
-*Available since happo v6.0.0.*
+_Available since happo v6.0.0._
 
 By default, Happo freezes CSS animations on the last frame. To freeze animations
 on the first frame instead (legacy behavior), use the `freezeAnimations` option:
@@ -115,7 +115,7 @@ To capture how something moves instead of freezing it, see
 
 ### Target `animate`
 
-*Available since happo v6.15.0.*
+_Available since happo v6.15.0._
 
 Capture animations as animated PNGs instead of freezing them. `'auto'` captures
 an animated snapshot only when the page has an animation Happo can drive, and
@@ -141,7 +141,7 @@ an object with options for frame rate, duration, triggers, and more. See
 
 ### Target `chunks`
 
-*Available since happo v6.0.0. Automatic chunk sizing available since happo v6.4.1.*
+_Available since happo v6.0.0. Automatic chunk sizing available since happo v6.4.1._
 
 As of v6.4.1, Happo automatically sets the number of chunks based on an
 estimated snapshot count when using the Storybook integration. Most projects
@@ -204,7 +204,7 @@ more than one chunk might actually slow things down.
 
 ### Target `maxHeight`
 
-*Available since happo v6.0.0.*
+_Available since happo v6.0.0._
 
 Use `maxHeight` to override the default maximum height used by Happo workers
 (5000 pixels). This is useful when taking screenshots of tall components or
@@ -229,7 +229,7 @@ export default defineConfig({
 
 ### Target `maxWidth`
 
-*Available since happo v6.0.0.*
+_Available since happo v6.0.0._
 
 Use `maxWidth` to override the default maximum width used by Happo workers
 (defaults to `maxHeight`, which defaults to 5000 pixels). This is useful when
@@ -251,7 +251,7 @@ export default defineConfig({
 
 ### Target `hideBehavior`
 
-*Available since happo v6.0.0.*
+_Available since happo v6.0.0._
 
 This option controls how Happo handles elements with the `data-happo-hide`
 attribute. By default, elements with this attribute are made invisible. Use the
@@ -274,7 +274,7 @@ export default defineConfig({
 
 ### Target `useFullPageFallbackForTallScreenshots`
 
-*Available since happo v6.0.0.*
+_Available since happo v6.0.0._
 
 This option applies to Chrome and Firefox only.
 
@@ -308,7 +308,7 @@ export default defineConfig({
 
 ### Target `applyPseudoClasses`
 
-*Available since happo v6.0.0.*
+_Available since happo v6.0.0._
 
 When set to `true`, this option allows you to add `data-happo-hover`,
 `data-happo-focus`, `data-happo-focus-visible`, and `data-happo-active`
@@ -381,7 +381,7 @@ And add `data-happo-active` to elements to simulate the `:active` state:
 
 ### Target `prefersColorScheme`
 
-*Available since happo v6.0.0.*
+_Available since happo v6.0.0._
 
 Set `prefersColorScheme: 'dark'` or `prefersColorScheme: 'light'` to set the
 color scheme preference in the browser.
@@ -414,7 +414,7 @@ color: black;
 
 ### Target `prefersReducedMotion`
 
-*Available since happo v6.0.0.*
+_Available since happo v6.0.0._
 
 By default, Happo is configured to prefer reduced motion. Set this option to
 `false` to disable this behavior.
@@ -452,7 +452,7 @@ To override this for [animated snapshots](animated-snapshots.md) only, set
 
 ### Target `allowPointerEvents`
 
-*Available since happo v6.0.0. Default flipped to `true` in happo v6.8.0.*
+_Available since happo v6.0.0. Default flipped to `true` in happo v6.8.0._
 
 Since v6.8.0, pointer events are allowed by default. Happo no longer injects CSS
 to disable pointer events, so mouse interactions in tests work without any extra
@@ -493,7 +493,7 @@ may also want to use the
 
 ### Target `outgoingRequestHeaders`
 
-*Available since happo v6.0.0.*
+_Available since happo v6.0.0._
 
 Add additional headers to outgoing requests from the browser. This is useful if
 you need to tell a CDN or other service that the request originates from a Happo
@@ -521,7 +521,7 @@ export default defineConfig({
 
 ### Target `allowedHostnames`
 
-*Available since happo v6.19.0.*
+_Available since happo v6.19.0._
 
 Restrict which hostnames the browser is allowed to make HTTP(S) requests to
 while rendering. Anything not covered by the list is refused before it leaves
@@ -615,7 +615,7 @@ you to assume that it did.
 
 ## `project`
 
-*Available since happo v6.0.0.*
+_Available since happo v6.0.0._
 
 If you have multiple projects configured for your happo.io account, specify the
 name of the project you want to associate with. If left empty, the default
@@ -632,7 +632,7 @@ export default defineConfig({
 
 ## `deepCompare`
 
-*Available since happo v6.3.0.*
+_Available since happo v6.3.0._
 
 Override the project-level deep-compare settings for comparisons started from
 this configuration file. Omit this option to use the project defaults.
@@ -666,7 +666,7 @@ export default defineConfig({
 
 ## `failOnWaitForTimeout`
 
-*Available since happo v6.12.0.*
+_Available since happo v6.12.0._
 
 Controls how Happo workers react when a `waitForContent`, `waitForSelector`, or
 `waitFor` option times out before the expected content, selector, or condition
@@ -700,7 +700,7 @@ determines how Happo discovers and renders your components.
 
 ### `integration.type`
 
-*Available since happo v6.0.0.*
+_Available since happo v6.0.0._
 
 The type of integration. Supported values:
 
@@ -716,7 +716,7 @@ Each integration has a different set of options that it supports.
 
 #### `integration.configDir`
 
-*Available since happo v6.0.0.*
+_Available since happo v6.0.0._
 
 The directory containing your Storybook configuration. Defaults to `.storybook`.
 
@@ -735,7 +735,7 @@ export default defineConfig({
 
 #### `integration.staticDir`
 
-*Available since happo v6.0.0.*
+_Available since happo v6.0.0._
 
 The directory containing static files to serve with Storybook. This corresponds
 to the `staticDirs` option in your Storybook configuration.
@@ -755,7 +755,7 @@ export default defineConfig({
 
 #### `integration.outputDir`
 
-*Available since happo v6.0.0.*
+_Available since happo v6.0.0._
 
 The directory to output the static Storybook package to. This is useful when
 using `usePrebuiltPackage` to specify where your prebuilt Storybook files are
@@ -776,7 +776,7 @@ export default defineConfig({
 
 #### `integration.usePrebuiltPackage`
 
-*Available since happo v6.0.0.*
+_Available since happo v6.0.0._
 
 When set to `true`, Happo will use a prebuilt Storybook package instead of
 building one. Make sure that files are built to the `outputDir` directory when
@@ -798,7 +798,7 @@ export default defineConfig({
 
 #### `integration.previewOnly`
 
-*Available since happo v6.17.0.*
+_Available since happo v6.17.0._
 
 Build the Storybook preview without the manager UI (Storybook's
 `--preview-only`), which typically makes the uploaded package several times
@@ -829,7 +829,7 @@ ignored and builds the package as usual.
 
 #### `integration.navigatePerStory`
 
-*Available since happo v6.15.0.*
+_Available since happo v6.15.0._
 
 When set to `true`, each story is rendered by navigating directly to
 `iframe.html?id=<storyId>` instead of loading `iframe.html` once and paging
@@ -859,7 +859,7 @@ default navigation strategy.
 
 #### `integration.skip`
 
-*Available since happo v6.0.0.*
+_Available since happo v6.0.0._
 
 Items to skip when generating snapshots. Can be an async function that resolves
 to an array of `{component, variant}`, or an array of `{component, variant}`.
@@ -902,7 +902,7 @@ export default defineConfig({
 
 #### `integration.build`
 
-*Available since happo v6.0.0.*
+_Available since happo v6.0.0._
 
 An async function that builds your custom bundle and returns an object with
 `rootDir` (path to the folder where files have been built) and `entryPoint`
@@ -928,7 +928,7 @@ export default defineConfig({
 
 #### `integration.autoApplyPseudoStateAttributes`
 
-*Available since happo v6.9.0.*
+_Available since happo v6.9.0._
 
 > **Experimental**
 
@@ -971,7 +971,7 @@ export default defineConfig({
 
 #### `integration.allowFailures`
 
-*Available since happo v6.0.0.*
+_Available since happo v6.0.0._
 
 When set to `true`, allows Happo tests to fail without causing the overall test
 run to fail. This is useful when you want to collect visual diffs without
@@ -994,7 +994,7 @@ export default defineConfig({
 
 #### `integration.pages`
 
-*Available since happo v6.0.0.*
+_Available since happo v6.0.0._
 
 A list of pages to screenshot. Each page object must include a `url` (the URL of
 the page to screenshot) and a `title` (used as the "component" identifier in
@@ -1047,7 +1047,7 @@ export default defineConfig({
 
 ## `endpoint`
 
-*Available since happo v6.0.0.*
+_Available since happo v6.0.0._
 
 The endpoint to use for the Happo run (this is used for on-premise Happo).
 Defaults to `https://happo.io`.
@@ -1063,7 +1063,7 @@ export default defineConfig({
 
 ## `githubApiUrl`
 
-*Available since happo v6.0.0.*
+_Available since happo v6.0.0._
 
 Used when you have the CI script configured to
 [post Happo statuses as comments](continuous-integration#posting-statuses-without-installing-the-happo-github-app).

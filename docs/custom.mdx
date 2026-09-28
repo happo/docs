@@ -164,8 +164,7 @@ happoCustom.registerExample({
   render: async () => {
     document.body.innerHTML = '<div id="description">Loading...</div>';
     const data = await fetch('http://example.com/api/data');
-    document.querySelector('#description').innerHTML =
-      `<p>Description: ${data.description}</p>`;
+    document.querySelector('#description').innerHTML = `<p>Description: ${data.description}</p>`;
   },
   waitForContent: 'Description:',
 });
@@ -211,7 +210,7 @@ npx happo
 
 ## Partial runs
 
-*The `--skip` flag is available in `happo` v6.10.0 and later.*
+_The `--skip` flag is available in `happo` v6.10.0 and later._
 
 To exclude specific components or variants from a run, use the
 [`--skip`](cli#--skip-json) CLI option:

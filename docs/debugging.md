@@ -129,7 +129,7 @@ function MyComponent() {
   // ❌ Event listener is never cleaned up
   useEffect(() => {
     const handleClick = () => {
-      setCount(c => c + 1);
+      setCount((c) => c + 1);
     };
     document.addEventListener('click', handleClick);
   }, []);
@@ -147,7 +147,7 @@ function MyComponent() {
   // ✅ Event listener is cleaned up on unmount
   useEffect(() => {
     const handleClick = () => {
-      setCount(c => c + 1);
+      setCount((c) => c + 1);
     };
     document.addEventListener('click', handleClick);
 

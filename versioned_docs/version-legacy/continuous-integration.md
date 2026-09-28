@@ -441,8 +441,7 @@ one-liner. This example is for Circle CI:
 steps:
   - checkout
   - run: npm ci
-  - run:
-      echo 'export HAPPO_NOTIFY=$(git show -s --format=%ae HEAD)' >> $BASH_ENV
+  - run: echo 'export HAPPO_NOTIFY=$(git show -s --format=%ae HEAD)' >> $BASH_ENV
   - happo/run_happo
 ```
 

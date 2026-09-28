@@ -298,7 +298,7 @@ import { setThemeSwitcher } from 'happo/storybook/register';
 import { DARK_MODE_EVENT_NAME } from 'storybook-dark-mode';
 
 setThemeSwitcher((theme, channel) => {
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     const isDarkMode = theme === 'dark';
 
     // Listen for dark mode to change and resolve.

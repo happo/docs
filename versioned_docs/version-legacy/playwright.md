@@ -190,10 +190,7 @@ You can mix and match dynamic targets and target names as well:
 await happoScreenshot(heroImage, {
   component: 'Footer',
   variant: 'Default',
-  targets: [
-    'chrome-small',
-    { name: 'firefox-small', browser: 'firefox', viewport: '400x800' },
-  ],
+  targets: ['chrome-small', { name: 'firefox-small', browser: 'firefox', viewport: '400x800' }],
 });
 ```
 

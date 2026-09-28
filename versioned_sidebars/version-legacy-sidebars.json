@@ -1,13 +1,6 @@
 {
   "docs": {
-    "Overview": [
-      "getting-started",
-      "continuous-integration",
-      "api",
-      "webhooks",
-      "cli",
-      "browsers"
-    ],
+    "Overview": ["getting-started", "continuous-integration", "api", "webhooks", "cli", "browsers"],
     "Configuration": ["configuration", "plugins"],
     "Accessibility": ["accessibility"],
     "Integrations": [

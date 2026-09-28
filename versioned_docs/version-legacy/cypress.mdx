@@ -236,10 +236,7 @@ You can mix and match dynamic targets and target names as well:
 ```js
 cy.get('.footer').happoScreenshot({
   component: 'Footer',
-  targets: [
-    'chrome-small',
-    { name: 'firefox-small', browser: 'firefox', viewport: '400x800' },
-  ],
+  targets: ['chrome-small', { name: 'firefox-small', browser: 'firefox', viewport: '400x800' }],
 });
 ```
 
@@ -493,8 +490,7 @@ workflows:
           start: npm run start-dev-server
           parallel: true
           parallelism: 4
-          command-prefix:
-            'HAPPO_NONCE=${CIRCLE_WORKFLOW_ID} npx happo-e2e -- npx'
+          command-prefix: 'HAPPO_NONCE=${CIRCLE_WORKFLOW_ID} npx happo-e2e -- npx'
           post-steps:
             - run: 'HAPPO_NONCE=${CIRCLE_WORKFLOW_ID} npx happo-e2e finalize'
 ```

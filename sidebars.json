@@ -11,14 +11,7 @@
     ],
     "Configuration": ["configuration"],
     "Accessibility": ["accessibility"],
-    "Integrations": [
-      "storybook",
-      "playwright",
-      "cypress",
-      "full-page",
-      "custom",
-      "native"
-    ],
+    "Integrations": ["storybook", "playwright", "cypress", "full-page", "custom", "native"],
     "Guides": [
       "reviewing-diffs",
       "compare-threshold",

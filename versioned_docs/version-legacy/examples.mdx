@@ -466,7 +466,7 @@ will let you inject things like webpack loaders to the happo run. E.g.
 
 ```js
 module.exports = {
-  customizeWebpackConfig: config => {
+  customizeWebpackConfig: (config) => {
     config.module.rules.push({
       test: /\.css$/,
       use: [{ loader: cssLoader }],
