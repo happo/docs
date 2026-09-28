@@ -180,7 +180,12 @@ async function handleHappoWebhook(req, res, next) {
     const signature = req.get('X-Happo-Signature');
     const hmac = crypto.createHmac('sha256', process.env.HAPPO_WEBHOOK_SECRET);
     const computedSignature = `sha256=${hmac.update(rawBody).digest('hex')}`;
-    if (!crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(computedSignature))) {
+    if (
+      !crypto.timingSafeEqual(
+        Buffer.from(signature),
+        Buffer.from(computedSignature),
+      )
+    ) {
       // The signature is incorrect
       return res.status(401).send();
     }

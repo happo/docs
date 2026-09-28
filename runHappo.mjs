@@ -13,7 +13,9 @@ function getChangedFiles() {
       .map((line) => line.trim())
       .filter(Boolean);
   } catch (error) {
-    console.warn(`Unable to compute changed files against ${BASE_BRANCH}: ${error.message}`);
+    console.warn(
+      `Unable to compute changed files against ${BASE_BRANCH}: ${error.message}`,
+    );
     return null;
   }
 }
@@ -28,7 +30,9 @@ function fileToComponent(file) {
     return `docs/${docsMatch[1]}`;
   }
 
-  const versionedMatch = file.match(/^versioned_docs\/version-([^/]+)\/(.+)\.mdx?$/);
+  const versionedMatch = file.match(
+    /^versioned_docs\/version-([^/]+)\/(.+)\.mdx?$/,
+  );
   if (versionedMatch) {
     return `docs/${versionedMatch[1]}/${versionedMatch[2]}`;
   }
@@ -45,7 +49,9 @@ async function enumerateSourceComponents() {
     if (match) components.push(`docs/${match[1]}`);
   }
 
-  for await (const file of fs.promises.glob('versioned_docs/version-*/**/*.{md,mdx}')) {
+  for await (const file of fs.promises.glob(
+    'versioned_docs/version-*/**/*.{md,mdx}',
+  )) {
     if (/(?:^|\/)_partials\//.test(file)) continue;
     const match = file.match(/^versioned_docs\/version-([^/]+)\/(.+)\.mdx?$/);
     if (match) components.push(`docs/${match[1]}/${match[2]}`);
@@ -63,7 +69,9 @@ async function computeSkipList() {
   }
 
   if (changed.length === 0) {
-    console.log(`No files changed against ${BASE_BRANCH}; running all components.`);
+    console.log(
+      `No files changed against ${BASE_BRANCH}; running all components.`,
+    );
     return null;
   }
 
@@ -85,7 +93,9 @@ async function computeSkipList() {
     toSkip.push({ component, variant: 'dark' });
   }
 
-  console.log(`Touched ${touched.size} doc component(s); skipping ${toSkip.length / 2}.`);
+  console.log(
+    `Touched ${touched.size} doc component(s); skipping ${toSkip.length / 2}.`,
+  );
 
   return toSkip.length > 0 ? toSkip : null;
 }

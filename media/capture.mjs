@@ -52,7 +52,9 @@ function findMediaReferences(pages = '{docs,versioned_docs}/**/*.{md,mdx}') {
       .readFileSync(path.join(ROOT, file), 'utf-8')
       // Code blocks contain example URLs that aren't real media.
       .replace(/```[\s\S]*?```/g, '');
-    for (const [, url] of content.matchAll(/["(](\/(?:img|video)\/[^")\s]+)/g)) {
+    for (const [, url] of content.matchAll(
+      /["(](\/(?:img|video)\/[^")\s]+)/g,
+    )) {
       if (!MEDIA_EXTENSIONS.test(url)) continue;
       const mediaPath = `static${url}`;
       if (!references.has(mediaPath)) references.set(mediaPath, new Set());
@@ -63,10 +65,14 @@ function findMediaReferences(pages = '{docs,versioned_docs}/**/*.{md,mdx}') {
 }
 
 function lastUpdated(file) {
-  const date = execFileSync('git', ['log', '-1', '--format=%ad', '--date=short', '--', file], {
-    cwd: ROOT,
-    encoding: 'utf-8',
-  }).trim();
+  const date = execFileSync(
+    'git',
+    ['log', '-1', '--format=%ad', '--date=short', '--', file],
+    {
+      cwd: ROOT,
+      encoding: 'utf-8',
+    },
+  ).trim();
   return date || 'uncommitted';
 }
 
@@ -94,7 +100,9 @@ async function status() {
     return {
       media: mediaPath.replace(/^static\//, ''),
       updated: exists ? lastUpdated(mediaPath) : 'missing',
-      size: exists ? `${Math.round(fs.statSync(path.join(ROOT, mediaPath)).size / 1024)} KB` : '-',
+      size: exists
+        ? `${Math.round(fs.statSync(path.join(ROOT, mediaPath)).size / 1024)} KB`
+        : '-',
       scene: scene ? `${scene.id} (${sceneKind(scene)})` : '-',
       'used in': usedIn ? [...usedIn].map(pageName).join(', ') : 'unused',
     };
@@ -107,7 +115,9 @@ async function status() {
     console.log(`${missingScenes} media file(s) have no scene yet.`);
   }
   if (unused) {
-    console.log(`${unused} scene output(s) are not referenced by any docs page.`);
+    console.log(
+      `${unused} scene output(s) are not referenced by any docs page.`,
+    );
   }
   await printSizeMismatches(
     [...references.keys()],
@@ -167,7 +177,9 @@ async function screenshotScene(page, scene) {
           // Elements like these show something even without any text.
           const media = 'img, svg, canvas, video, input, select, textarea';
           return (
-            el.matches(media) || el.textContent.trim() !== '' || el.querySelector(media) !== null
+            el.matches(media) ||
+            el.textContent.trim() !== '' ||
+            el.querySelector(media) !== null
           );
         });
         if (hasContent) elements.push(element);
@@ -191,12 +203,14 @@ async function screenshotScene(page, scene) {
 
     // Measured in page coordinates and captured from the full page, so a
     // target taller than the viewport isn't cut off.
-    const { scrollX, scrollY, pageWidth, pageHeight } = await page.evaluate(() => ({
-      scrollX: window.scrollX,
-      scrollY: window.scrollY,
-      pageWidth: document.documentElement.scrollWidth,
-      pageHeight: document.documentElement.scrollHeight,
-    }));
+    const { scrollX, scrollY, pageWidth, pageHeight } = await page.evaluate(
+      () => ({
+        scrollX: window.scrollX,
+        scrollY: window.scrollY,
+        pageWidth: document.documentElement.scrollWidth,
+        pageHeight: document.documentElement.scrollHeight,
+      }),
+    );
     const padding =
       typeof scene.padding === 'object'
         ? { top: 0, right: 0, bottom: 0, left: 0, ...scene.padding }
@@ -212,8 +226,10 @@ async function screenshotScene(page, scene) {
     options.clip = {
       x,
       y,
-      width: Math.min(pageWidth, box.x + scrollX + box.width + padding.right) - x,
-      height: Math.min(pageHeight, box.y + scrollY + box.height + padding.bottom) - y,
+      width:
+        Math.min(pageWidth, box.x + scrollX + box.width + padding.right) - x,
+      height:
+        Math.min(pageHeight, box.y + scrollY + box.height + padding.bottom) - y,
     };
   }
 
@@ -233,7 +249,9 @@ function allowedMargins(scene, scale) {
   return Object.fromEntries(
     sides.map((side) => {
       const padding =
-        typeof scene.padding === 'object' ? (scene.padding[side] ?? 0) : (scene.padding ?? 0);
+        typeof scene.padding === 'object'
+          ? (scene.padding[side] ?? 0)
+          : (scene.padding ?? 0);
       return [side, (padding + slack) * scale];
     }),
   );
@@ -260,7 +278,9 @@ function installCursor() {
     },
     true,
   );
-  document.addEventListener('DOMContentLoaded', () => document.body.append(cursor));
+  document.addEventListener('DOMContentLoaded', () =>
+    document.body.append(cursor),
+  );
 }
 
 // Helpers passed to a scene's record() function.
@@ -288,7 +308,9 @@ function recordingHelpers(page) {
       return element.textContent.trim() && rect.width ? rect.right : null;
     });
     const target = {
-      x: textRight ? Math.min(textRight + 10, box.x + box.width - 6) : box.x + box.width / 2,
+      x: textRight
+        ? Math.min(textRight + 10, box.x + box.width - 6)
+        : box.x + box.width / 2,
       y: box.y + box.height / 2,
     };
     const distance = Math.hypot(target.x - position.x, target.y - position.y);
@@ -386,7 +408,9 @@ async function captureScene(browser, scene, { headed }) {
       if (!css.length) return;
       const style = document.createElement('style');
       style.textContent = css.join('\n');
-      document.addEventListener('DOMContentLoaded', () => document.head.append(style));
+      document.addEventListener('DOMContentLoaded', () =>
+        document.head.append(style),
+      );
     },
     { siteStyles, sceneCss: scene.css },
   );
@@ -435,7 +459,9 @@ async function capture(ids, { all, headed }) {
   if (all) {
     selected = scenes.filter((scene) => !scene.manual);
   } else {
-    const unknown = ids.filter((id) => !scenes.some((scene) => scene.id === id));
+    const unknown = ids.filter(
+      (id) => !scenes.some((scene) => scene.id === id),
+    );
     if (unknown.length) {
       throw new Error(`Unknown scene(s): ${unknown.join(', ')}`);
     }
@@ -540,7 +566,10 @@ async function findSizeMismatches(media) {
 async function printSizeMismatches(media, heading) {
   const mismatches = await findSizeMismatches(media);
   if (mismatches.length) {
-    console.log(`\n${heading}\n` + mismatches.map(({ message }) => `  ${message}`).join('\n'));
+    console.log(
+      `\n${heading}\n` +
+        mismatches.map(({ message }) => `  ${message}`).join('\n'),
+    );
   }
   return mismatches;
 }
@@ -564,7 +593,9 @@ function printOlderMediaNearby(captured) {
 
   const cutoff = Date.now() - OLD_MEDIA_DAYS * 24 * 60 * 60 * 1000;
   const lines = [];
-  for (const page of new Set(captured.flatMap((c) => [...(references.get(c) ?? [])]))) {
+  for (const page of new Set(
+    captured.flatMap((c) => [...(references.get(c) ?? [])]),
+  )) {
     const older = pagesToMedia
       .get(page)
       .filter((media) => !captured.includes(media))
@@ -602,7 +633,9 @@ function printConvertedReferences(converted) {
 
 // Quotes a file name for a command that can be copied into a shell.
 function shellQuote(file) {
-  return /^[\w@%+=:,./-]+$/.test(file) ? file : `'${file.replaceAll("'", `'\\''`)}'`;
+  return /^[\w@%+=:,./-]+$/.test(file)
+    ? file
+    : `'${file.replaceAll("'", `'\\''`)}'`;
 }
 
 // Prints a message GitHub Actions shows on the file in the PR.
@@ -681,7 +714,8 @@ async function optimize(files, { check, 'drop-audio': dropAudio }) {
 
   if (failed.length || needsDropAudio.length) {
     const commands = [
-      failed.length && `pnpm media optimize ${failed.map(shellQuote).join(' ')}`,
+      failed.length &&
+        `pnpm media optimize ${failed.map(shellQuote).join(' ')}`,
       needsDropAudio.length &&
         `pnpm media optimize --drop-audio ${needsDropAudio.map(shellQuote).join(' ')}`,
     ].filter(Boolean);

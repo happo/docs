@@ -77,7 +77,9 @@ async function optimizePng(input) {
   const alreadyQuantized = isPalette && !resized;
   const quality = psnr(await rawPixels(source), await rawPixels(palette));
   const usePalette =
-    !alreadyQuantized && quality >= MIN_PALETTE_PSNR && palette.length < lossless.length;
+    !alreadyQuantized &&
+    quality >= MIN_PALETTE_PSNR &&
+    palette.length < lossless.length;
   const output = usePalette ? palette : lossless;
 
   return {
@@ -118,7 +120,9 @@ const run = promisify(execFile);
 // these when given only an input, and then exits with an error because there's
 // no output.
 async function probeVideo(ffmpeg, file) {
-  const { stderr } = await run(ffmpeg, ['-hide_banner', '-i', file]).catch((error) => error);
+  const { stderr } = await run(ffmpeg, ['-hide_banner', '-i', file]).catch(
+    (error) => error,
+  );
   const video = stderr?.match(/Stream #.*?: Video: (\w+).*/);
   const size = video?.[0].match(/, (\d+)x\d+/);
   if (!size) throw new Error(`Couldn't read ${file} as a video`);
@@ -176,7 +180,13 @@ async function optimizeVideo(file, input, { dropAudio = false } = {}) {
 
   // Like quantizing a PNG twice, re-encoding a video that's already been
   // compressed this well would lose a little quality each time.
-  if (!converted && !resized && !tooFast && !hasAudio && ['vp9', 'av1'].includes(codec)) {
+  if (
+    !converted &&
+    !resized &&
+    !tooFast &&
+    !hasAudio &&
+    ['vp9', 'av1'].includes(codec)
+  ) {
     return { output: input, keepInput: true, ...video, notes: [] };
   }
 
@@ -194,7 +204,12 @@ async function optimizeVideo(file, input, { dropAudio = false } = {}) {
   return {
     output,
     // Always convert other formats, since the result is a different file.
-    keepInput: !converted && !resized && !tooFast && !hasAudio && output.length >= input.length,
+    keepInput:
+      !converted &&
+      !resized &&
+      !tooFast &&
+      !hasAudio &&
+      output.length >= input.length,
     ...video,
     notes,
   };
@@ -220,9 +235,14 @@ function describe(input, { output, keepInput, width, notes }) {
 //
 // A video with sound is only re-encoded (which removes the sound) when
 // `dropAudio` is true.
-export async function optimizeFile(file, { write = true, dropAudio = false } = {}) {
+export async function optimizeFile(
+  file,
+  { write = true, dropAudio = false } = {},
+) {
   if (!OPTIMIZABLE.test(file)) {
-    throw new Error(`Only .png, .webm, .gif, .mov and .mp4 files can be optimized: ${file}`);
+    throw new Error(
+      `Only .png, .webm, .gif, .mov and .mp4 files can be optimized: ${file}`,
+    );
   }
   const input = fs.readFileSync(file);
   const result = PNG.test(file)
@@ -245,7 +265,14 @@ export async function optimizeFile(file, { write = true, dropAudio = false } = {
 
 // What `pnpm media optimize --check` says about a file, given the result of
 // optimizeFile(file, { write: false }). Returns undefined when it's fine.
-export function checkResult({ file, width, fps, hasAudio, inputBytes, outputBytes }) {
+export function checkResult({
+  file,
+  width,
+  fps,
+  hasAudio,
+  inputBytes,
+  outputBytes,
+}) {
   if (GIF.test(file)) {
     return {
       level: 'warning',
@@ -270,12 +297,16 @@ export function checkResult({ file, width, fps, hasAudio, inputBytes, outputByte
   if (hasAudio) {
     return {
       level: 'error',
-      message: 'Has an audio track, which docs videos never play since they autoplay muted.',
+      message:
+        'Has an audio track, which docs videos never play since they autoplay muted.',
       dropAudio: true,
     };
   }
   const saved = inputBytes - outputBytes;
-  if (saved > CHECK_MIN_SAVINGS_BYTES && saved > inputBytes * CHECK_MIN_SAVINGS_RATIO) {
+  if (
+    saved > CHECK_MIN_SAVINGS_BYTES &&
+    saved > inputBytes * CHECK_MIN_SAVINGS_RATIO
+  ) {
     return {
       level: 'error',
       message:
@@ -296,7 +327,10 @@ const MAX_EMPTY_MARGIN = 0.15;
 // should have targeted the part that matters. `allowed` is how many pixels of
 // margin on each side were asked for (a scene's padding), which never count as
 // too much.
-export async function emptyMargins(input, allowed = { top: 0, right: 0, bottom: 0, left: 0 }) {
+export async function emptyMargins(
+  input,
+  allowed = { top: 0, right: 0, bottom: 0, left: 0 },
+) {
   const { data, info } = await sharp(input)
     .removeAlpha()
     .raw()
@@ -307,8 +341,10 @@ export async function emptyMargins(input, allowed = { top: 0, right: 0, bottom: 
     const i = (y * width + x) * channels;
     return background.every((value, c) => Math.abs(data[i + c] - value) <= 8);
   };
-  const emptyColumn = (x) => [...Array(height).keys()].every((y) => isBackground(x, y));
-  const emptyRow = (y) => [...Array(width).keys()].every((x) => isBackground(x, y));
+  const emptyColumn = (x) =>
+    [...Array(height).keys()].every((y) => isBackground(x, y));
+  const emptyRow = (y) =>
+    [...Array(width).keys()].every((x) => isBackground(x, y));
   const count = (length, empty, fromEnd) => {
     let n = 0;
     while (n < length && empty(fromEnd ? length - 1 - n : n)) n++;
@@ -323,12 +359,14 @@ export async function emptyMargins(input, allowed = { top: 0, right: 0, bottom: 
   };
   const size = { left: width, right: width, top: height, bottom: height };
   const wide = Object.entries(margins).filter(
-    ([side, fraction]) => fraction > MAX_EMPTY_MARGIN && fraction * size[side] > allowed[side],
+    ([side, fraction]) =>
+      fraction > MAX_EMPTY_MARGIN && fraction * size[side] > allowed[side],
   );
   if (!wide.length) return undefined;
   return (
-    wide.map(([side, fraction]) => `${side} ${Math.round(fraction * 100)}%`).join(' and ') +
-    ' of the screenshot is empty'
+    wide
+      .map(([side, fraction]) => `${side} ${Math.round(fraction * 100)}%`)
+      .join(' and ') + ' of the screenshot is empty'
   );
 }
 

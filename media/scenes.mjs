@@ -38,9 +38,12 @@ async function githubApi(path) {
   if (process.env.GITHUB_TOKEN) {
     headers.Authorization = `Bearer ${process.env.GITHUB_TOKEN}`;
   }
-  const response = await fetch(`https://api.github.com/repos/${SHOWCASE_REPO}/${path}`, {
-    headers,
-  });
+  const response = await fetch(
+    `https://api.github.com/repos/${SHOWCASE_REPO}/${path}`,
+    {
+      headers,
+    },
+  );
   if (!response.ok) {
     throw new Error(`GitHub API ${path}: ${response.status}`);
   }
@@ -67,7 +70,9 @@ function memoize(fn) {
 
 // The open demo PR for a showcase branch.
 const findShowcasePR = memoize(async (branch) => {
-  const [pr] = await githubApi(`pulls?head=${SHOWCASE_REPO.split('/')[0]}:${branch}&state=open`);
+  const [pr] = await githubApi(
+    `pulls?head=${SHOWCASE_REPO.split('/')[0]}:${branch}&state=open`,
+  );
   if (!pr) {
     throw new Error(`No open PR for ${branch} in ${SHOWCASE_REPO}.`);
   }
@@ -78,7 +83,9 @@ const findShowcasePR = memoize(async (branch) => {
 // either way, so this reads the data it renders from.
 async function hasComparison(url) {
   const html = await (await fetch(url)).text();
-  const match = html.match(/<script id="__NEXT_DATA__" type="application\/json">(.*?)<\/script>/s);
+  const match = html.match(
+    /<script id="__NEXT_DATA__" type="application\/json">(.*?)<\/script>/s,
+  );
   return Boolean(match && JSON.parse(match[1]).props.pageProps.comparison);
 }
 
@@ -155,10 +162,16 @@ async function waitForSnapshots(page) {
 // placeholder so real addresses don't end up in the docs.
 async function hideEmails(page) {
   await page.evaluate(() => {
-    const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+    const walker = document.createTreeWalker(
+      document.body,
+      NodeFilter.SHOW_TEXT,
+    );
     while (walker.nextNode()) {
       const node = walker.currentNode;
-      node.textContent = node.textContent.replace(/[\w.+-]+@[\w-]+(\.[\w-]+)+/g, 'you@example.com');
+      node.textContent = node.textContent.replace(
+        /[\w.+-]+@[\w-]+(\.[\w-]+)+/g,
+        'you@example.com',
+      );
     }
   });
 }
@@ -210,8 +223,12 @@ function reviewPanel(id, branch) {
     // The section itself has padding and room for the note even when it's
     // empty, which leaves wide empty margins.
     target: (page) => [
-      page.locator('[class*="ReviewVerdictControl-module"][class*="__container"]'),
-      page.locator('[class*="leaveReviewSection"] [class*="Comparison-module"][class*="__note"]'),
+      page.locator(
+        '[class*="ReviewVerdictControl-module"][class*="__container"]',
+      ),
+      page.locator(
+        '[class*="leaveReviewSection"] [class*="Comparison-module"][class*="__note"]',
+      ),
     ],
     padding: 16,
   };
@@ -304,10 +321,10 @@ async function setSlider(locator, fraction) {
     const max = Number(input.max || 100);
     const step = Number(input.step) || 1;
     const value = min + Math.round(((max - min) * fraction) / step) * step;
-    Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set.call(
-      input,
-      String(value),
-    );
+    Object.getOwnPropertyDescriptor(
+      HTMLInputElement.prototype,
+      'value',
+    ).set.call(input, String(value));
     input.dispatchEvent(new Event('input', { bubbles: true }));
     input.dispatchEvent(new Event('change', { bubbles: true }));
   }, fraction);
@@ -316,23 +333,32 @@ async function setSlider(locator, fraction) {
 // The comparison data behind a Happo report page, from the report's public
 // API.
 const comparisonApi = (reportUrl) =>
-  reportUrl.replace('happo.io/a/', 'happo.io/api/a/').replace('/compare/', '/comparisons/');
+  reportUrl
+    .replace('happo.io/a/', 'happo.io/api/a/')
+    .replace('/compare/', '/comparisons/');
 
 // Makes Accept/Reject on a report look like it worked, without saving
 // anything. The review request (PATCH /api/a/:account/comparisons/:id) is
 // answered here with the comparison as it would be afterwards, credited to the
 // reviewer of the accepted demo PR. Every other write is refused.
 async function fakeReviews(page, reportUrl) {
-  const current = await (await page.request.get(comparisonApi(reportUrl))).json();
+  const current = await (
+    await page.request.get(comparisonApi(reportUrl))
+  ).json();
   const accepted = await (
-    await page.request.get(comparisonApi(await findHappoReport(showcasePRs.accepted)))
+    await page.request.get(
+      comparisonApi(await findHappoReport(showcasePRs.accepted)),
+    )
   ).json();
   await page.route('**/*', (route) => {
     const request = route.request();
     if (['GET', 'HEAD', 'OPTIONS'].includes(request.method())) {
       return route.continue();
     }
-    if (request.method() === 'PATCH' && /\/api\/a\/\d+\/comparisons\/\d+$/.test(request.url())) {
+    if (
+      request.method() === 'PATCH' &&
+      /\/api\/a\/\d+\/comparisons\/\d+$/.test(request.url())
+    ) {
       return route.fulfill({
         json: {
           ...current,
@@ -360,9 +386,14 @@ async function browserUpdateReport() {
         'branch that changes nothing visible, labeled docs-demo.',
     );
   }
-  const statuses = await githubApi(`commits/${pr.head.sha}/statuses?per_page=100`);
+  const statuses = await githubApi(
+    `commits/${pr.head.sha}/statuses?per_page=100`,
+  );
   const reports = statuses
-    .filter((s) => s.context.startsWith('Happo') && s.target_url?.includes('/compare/'))
+    .filter(
+      (s) =>
+        s.context.startsWith('Happo') && s.target_url?.includes('/compare/'),
+    )
     .map((s) => s.target_url);
   for (const url of new Set(reports)) {
     const response = await fetch(comparisonApi(url));
@@ -411,7 +442,9 @@ function githubChecks(id, branch, { heading, wholeMergeBox = false }) {
     // GitHub keeps connections open, so its pages never go network-idle.
     waitUntil: 'load',
     target: (page) =>
-      page.locator(wholeMergeBox ? mergeBox : `${mergeBox} section[aria-label="Checks"]`),
+      page.locator(
+        wholeMergeBox ? mergeBox : `${mergeBox} section[aria-label="Checks"]`,
+      ),
     async prepare(page) {
       await page.getByText(heading).waitFor();
       // GitHub collapses the list when every check passed. Expanding it only
@@ -485,19 +518,30 @@ export const scenes = [
     setup: blockWrites,
     prepare: waitForSnapshots,
     async record(page, { click, hover }) {
-      await hover(page.getByRole('button', { name: 'Report flake' }).first(), 2000);
-      await click(page.locator('button:has([class*="moreOptionsButton"])').first(), {
-        before: 900,
-        after: 900,
-      });
+      await hover(
+        page.getByRole('button', { name: 'Report flake' }).first(),
+        2000,
+      );
+      await click(
+        page.locator('button:has([class*="moreOptionsButton"])').first(),
+        {
+          before: 900,
+          after: 900,
+        },
+      );
       // Each snapshot also has a "Report flake" tooltip, so look inside the
       // open menu (the only place "View history…" is visible).
       const menu = page
         .getByText('View history…')
         .filter({ visible: true })
-        .locator('xpath=ancestor::*[.//*[normalize-space(text())="Report flake"]][1]');
+        .locator(
+          'xpath=ancestor::*[.//*[normalize-space(text())="Report flake"]][1]',
+        );
       // Point at the whole menu row, so the pointer can rest past the label.
-      await hover(menu.getByText('Report flake', { exact: true }).locator('..'), 2500);
+      await hover(
+        menu.getByText('Report flake', { exact: true }).locator('..'),
+        2500,
+      );
     },
   },
   {
@@ -545,7 +589,9 @@ export const scenes = [
     viewport: { width: 1200, height: 800 },
     async prepare(page) {
       const snapshot = firstAccessibilitySnapshot(page);
-      await snapshot.getByRole('button', { name: 'Snapshot', exact: true }).click();
+      await snapshot
+        .getByRole('button', { name: 'Snapshot', exact: true })
+        .click();
       await snapshot.getByText('- document:').first().waitFor();
     },
     target: firstAccessibilitySnapshot,
@@ -582,7 +628,10 @@ export const scenes = [
       );
       // Let the frame that was just drawn reach the screen.
       await page.evaluate(
-        () => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve))),
+        () =>
+          new Promise((resolve) =>
+            requestAnimationFrame(() => requestAnimationFrame(resolve)),
+          ),
       );
     },
     target: firstSnapshot,
@@ -637,7 +686,9 @@ export const scenes = [
       });
     },
     async prepare(page) {
-      await firstSnapshot(page).locator('button:has([class*="moreOptionsButton"])').click();
+      await firstSnapshot(page)
+        .locator('button:has([class*="moreOptionsButton"])')
+        .click();
       await page.getByText(/^Render\s44ms/).waitFor();
     },
     target: (page) => page.locator('ul[class*="Dropdown-module"]'),
@@ -653,7 +704,9 @@ export const scenes = [
     url: showcaseReport(showcasePRs.needsReview),
     target: (page) =>
       page
-        .locator('[class*="ComparisonPanel-module"][class*="filterItemTextOnly"]')
+        .locator(
+          '[class*="ComparisonPanel-module"][class*="filterItemTextOnly"]',
+        )
         .filter({ has: page.getByRole('link', { name: 'View logs' }) }),
     padding: 12,
   },
@@ -669,10 +722,13 @@ export const scenes = [
     // Ends pointing at the menu item. Clicking it would go to the Source
     // page, which the screenshot below the video shows.
     async record(page, { click, hover }) {
-      await click(page.locator('button:has([class*="moreOptionsButton"])').first(), {
-        before: 1200,
-        after: 900,
-      });
+      await click(
+        page.locator('button:has([class*="moreOptionsButton"])').first(),
+        {
+          before: 1200,
+          after: 900,
+        },
+      );
       await hover(viewSourceMenuItem(page), 2500);
     },
   },
@@ -682,7 +738,10 @@ export const scenes = [
     url: showcaseReport(showcasePRs.needsReview),
     auth: 'happo',
     async prepare(page) {
-      await page.locator('button:has([class*="moreOptionsButton"])').first().click();
+      await page
+        .locator('button:has([class*="moreOptionsButton"])')
+        .first()
+        .click();
       await viewSourceMenuItem(page).click();
       await page.waitForLoadState('networkidle');
     },
@@ -704,7 +763,11 @@ export const scenes = [
     'ignore_threshold',
     (page) => thresholdsSection(page, 'Ignore threshold'),
     // Enough that the table shows some pixels allowed at each size.
-    (page) => setSlider(page.locator('input[type="range"][name="ignoreThreshold"]'), 0.2),
+    (page) =>
+      setSlider(
+        page.locator('input[type="range"][name="ignoreThreshold"]'),
+        0.2,
+      ),
   ),
   thresholdSection(
     'apply_blur',
@@ -724,9 +787,13 @@ export const scenes = [
     auth: 'happo',
     async setup(page) {
       await blockWrites(page);
-      await editPageProps(page, `${SHOWCASE_ACCOUNT}/accessibility`, (props) => {
-        props.axeSummaries = illustrativeViolationCounts(props.axeSummaries);
-      });
+      await editPageProps(
+        page,
+        `${SHOWCASE_ACCOUNT}/accessibility`,
+        (props) => {
+          props.axeSummaries = illustrativeViolationCounts(props.axeSummaries);
+        },
+      );
     },
     async prepare(page) {
       // Hover part way along so the chart shows its tooltip for that day.
@@ -735,7 +802,8 @@ export const scenes = [
       await page.mouse.move(box.x + box.width * 0.3, box.y + box.height * 0.5);
       await page.waitForTimeout(500);
     },
-    target: (page) => page.locator('svg[class*="AxeSummaries-module"]').locator('..'),
+    target: (page) =>
+      page.locator('svg[class*="AxeSummaries-module"]').locator('..'),
     // The "Reports" heading is right below the chart.
     padding: { top: 16, right: 16, bottom: 4, left: 16 },
   },
@@ -750,7 +818,9 @@ export const scenes = [
     url: browserUpdateReport,
     async prepare(page) {
       await waitForSnapshots(page);
-      await firstSnapshot(page).getByRole('button', { name: 'Diff', exact: true }).click();
+      await firstSnapshot(page)
+        .getByRole('button', { name: 'Diff', exact: true })
+        .click();
       await page.waitForTimeout(500);
     },
     target: firstSnapshot,
@@ -785,11 +855,14 @@ export const scenes = [
     setup: blockWrites,
     async prepare(page) {
       // Example values. The form is never saved.
-      await page.locator('input[name="url"]').fill('https://my-server.com/endpoint');
+      await page
+        .locator('input[name="url"]')
+        .fill('https://my-server.com/endpoint');
       await page.locator('input[name="secret"]').fill('az78ARErhgFJ');
       await page.locator('input[name="secret"]').blur();
     },
-    target: (page) => page.getByRole('heading', { name: 'New webhook' }).locator('..'),
+    target: (page) =>
+      page.getByRole('heading', { name: 'New webhook' }).locator('..'),
     padding: 16,
   },
   {
@@ -809,17 +882,24 @@ export const scenes = [
             'again. Delete the webhook afterwards.',
         );
       }
-      await page.goto(new URL(await link.first().getAttribute('href'), page.url()).href, {
-        waitUntil: 'networkidle',
-      });
+      await page.goto(
+        new URL(await link.first().getAttribute('href'), page.url()).href,
+        {
+          waitUntil: 'networkidle',
+        },
+      );
       // Show the same example URL as the New webhook screenshot.
       await page.evaluate(() => {
-        const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+        const walker = document.createTreeWalker(
+          document.body,
+          NodeFilter.SHOW_TEXT,
+        );
         while (walker.nextNode()) {
-          walker.currentNode.textContent = walker.currentNode.textContent.replace(
-            /https?:\/\/httpbin\.org\/\S*/,
-            'https://my-server.com/endpoint',
-          );
+          walker.currentNode.textContent =
+            walker.currentNode.textContent.replace(
+              /https?:\/\/httpbin\.org\/\S*/,
+              'https://my-server.com/endpoint',
+            );
         }
       });
     },
@@ -871,7 +951,9 @@ export const scenes = [
     prepare: waitForSnapshots,
     async record(page, { click }) {
       await click(
-        page.locator('[class*="leaveReviewSection"]').getByRole('button', { name: /^Accept/ }),
+        page
+          .locator('[class*="leaveReviewSection"]')
+          .getByRole('button', { name: /^Accept/ }),
       );
       await page
         .locator('[class*="leaveReviewSection"]')
@@ -888,19 +970,25 @@ export const scenes = [
   {
     id: 'happo-bitbucket-repo-access-token',
     output: 'static/img/happo-bitbucket-repo-access-token.gif',
-    manual: 'Record creating a Bitbucket repository access token (then revoke it).',
+    manual:
+      'Record creating a Bitbucket repository access token (then revoke it).',
   },
   {
     id: 'happo-azure-pat',
     output: 'static/img/happo-azure-pat.gif',
-    manual: 'Record creating an Azure DevOps personal access token (then revoke it).',
+    manual:
+      'Record creating an Azure DevOps personal access token (then revoke it).',
   },
 
   // docs/multi-project.md
   githubChecks('happo-github-status-splitup', showcasePRs.multiProject, {
     heading: 'Some checks were not successful',
   }),
-  githubChecks('happo-github-status-orchestrated', showcasePRs.multiProjectOrchestrated, {
-    heading: 'Some checks were not successful',
-  }),
+  githubChecks(
+    'happo-github-status-orchestrated',
+    showcasePRs.multiProjectOrchestrated,
+    {
+      heading: 'Some checks were not successful',
+    },
+  ),
 ];

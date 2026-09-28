@@ -202,7 +202,10 @@ You can mix and match dynamic targets and target names as well:
 ```js
 cy.get('.footer').happoScreenshot({
   component: 'Footer',
-  targets: ['chrome-small', { name: 'firefox-small', type: 'firefox', viewport: '400x800' }],
+  targets: [
+    'chrome-small',
+    { name: 'firefox-small', type: 'firefox', viewport: '400x800' },
+  ],
 });
 ```
 

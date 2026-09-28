@@ -18,12 +18,19 @@ export default async function buildHappoCustom() {
     let htmlContent = fs.readFileSync(filePath, 'utf-8');
 
     // Skip redirecting HTML files
-    if (/meta\s+http-equiv="refresh"\s+content="\d+;\s+url=([^"]+)"/.test(htmlContent)) {
+    if (
+      /meta\s+http-equiv="refresh"\s+content="\d+;\s+url=([^"]+)"/.test(
+        htmlContent,
+      )
+    ) {
       continue;
     }
 
     // Strip script tags from HTML files
-    htmlContent = htmlContent.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
+    htmlContent = htmlContent.replace(
+      /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi,
+      '',
+    );
     fs.writeFileSync(filePath, htmlContent, 'utf-8');
 
     // Use the relative path without index.html as the component name
@@ -96,8 +103,13 @@ happoCustom.registerExample({
 
     console.log('Successfully bundled entryPoint.js into bundle.js');
   } catch (error) {
-    if (error.code === 'ERR_MODULE_NOT_FOUND' && error.message.includes('esbuild')) {
-      console.error('esbuild not found. Please install it: pnpm add -D esbuild');
+    if (
+      error.code === 'ERR_MODULE_NOT_FOUND' &&
+      error.message.includes('esbuild')
+    ) {
+      console.error(
+        'esbuild not found. Please install it: pnpm add -D esbuild',
+      );
       throw error;
     }
     throw error;

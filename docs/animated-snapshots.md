@@ -169,7 +169,11 @@ When you do set it, take the value from the component so the two can't drift apa
 export const ENTER_DURATION_MS = 300;
 
 export function Toast({ children }) {
-  return <div style={{ animation: `toast-enter ${ENTER_DURATION_MS}ms ease-out` }}>{children}</div>;
+  return (
+    <div style={{ animation: `toast-enter ${ENTER_DURATION_MS}ms ease-out` }}>
+      {children}
+    </div>
+  );
 }
 ```
 
@@ -325,10 +329,10 @@ export const Appearing = {
 };
 ```
 
-| Field       | Default | Meaning                                                            |
-| ----------- | ------- | ------------------------------------------------------------------ |
-| `settleMs`  | `0`     | How long to keep looking, in ms (up to 10000). `0` looks only once |
-| `maxFrames` | `90`    | The most checks (one per frame) the search may take                |
+| Field | Default | Meaning |
+| --- | --- | --- |
+| `settleMs` | `0` | How long to keep looking, in ms (up to 10000). `0` looks only once |
+| `maxFrames` | `90` | The most checks (one per frame) the search may take |
 
 `settleMs` is a fixed limit counted from the start of the capture. Finding something new doesn't extend it, so make it long enough to cover the last animation you expect. `discovery: 600` is short for `{ settleMs: 600 }`.
 
@@ -378,10 +382,10 @@ Happo captures the current stage, then lets it finish so its `finished` promises
 
 `stages` is a single object (or a number, as a shorthand for `max`):
 
-| Field    | Default | Meaning                                                     |
-| -------- | ------- | ----------------------------------------------------------- |
-| `max`    | `1`     | The most stages to capture (up to 16). `1` means no staging |
-| `waitMs` | `1000`  | How long to wait for the next stage to appear, in ms        |
+| Field | Default | Meaning |
+| --- | --- | --- |
+| `max` | `1` | The most stages to capture (up to 16). `1` means no staging |
+| `waitMs` | `1000` | How long to wait for the next stage to appear, in ms |
 
 The capture stops at the first of:
 
