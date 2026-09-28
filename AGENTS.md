@@ -51,8 +51,8 @@ from a Docker image.
 
 ## CI
 
-- GitHub Actions: `build.yml` (site build + CircleCI config validation),
-  `happo.yml` (Happo run), `media.yml` (checks added/changed media are
-  optimized). Shared setup is `.github/actions/setup-env`.
+- GitHub Actions: `build.yml` (`pnpm lint`, site build, CircleCI config
+  validation), `happo.yml` (Happo run), `media.yml` (checks added/changed media
+  are optimized). Shared setup is `.github/actions/setup-env`.
 - CircleCI (`.circleci/config.yml`): builds and smoke-tests the Docker image on
   every push, and publishes it on `v*` tags.
