@@ -40,7 +40,9 @@ async function githubApi(path) {
   }
   const response = await fetch(
     `https://api.github.com/repos/${SHOWCASE_REPO}/${path}`,
-    { headers },
+    {
+      headers,
+    },
   );
   if (!response.ok) {
     throw new Error(`GitHub API ${path}: ${response.status}`);
@@ -52,11 +54,11 @@ async function githubApi(path) {
 // transient error doesn't fail every later scene too.
 function memoize(fn) {
   const cache = new Map();
-  return key => {
+  return (key) => {
     if (!cache.has(key)) {
       cache.set(
         key,
-        fn(key).catch(error => {
+        fn(key).catch((error) => {
           cache.delete(key);
           throw error;
         }),
@@ -67,7 +69,7 @@ function memoize(fn) {
 }
 
 // The open demo PR for a showcase branch.
-const findShowcasePR = memoize(async branch => {
+const findShowcasePR = memoize(async (branch) => {
   const [pr] = await githubApi(
     `pulls?head=${SHOWCASE_REPO.split('/')[0]}:${branch}&state=open`,
   );
@@ -90,10 +92,10 @@ async function hasComparison(url) {
 // Happo posts a commit status on the PR's head commit that links to the
 // report. Reports can expire and be re-created, so the link is looked up each
 // time instead of being hardcoded.
-const findHappoReport = memoize(async branch => {
+const findHappoReport = memoize(async (branch) => {
   const pr = await findShowcasePR(branch);
   const { statuses } = await githubApi(`commits/${pr.head.sha}/status`);
-  const url = statuses.find(s => s.context.startsWith('Happo'))?.target_url;
+  const url = statuses.find((s) => s.context.startsWith('Happo'))?.target_url;
   // While a run is in progress, or when it failed, the status links to a
   // Happo job instead of a report.
   if (!url?.includes('/compare/') || !(await hasComparison(url))) {
@@ -151,7 +153,7 @@ async function waitForSnapshots(page) {
   await images.first().waitFor();
   await page.waitForFunction(() =>
     [...document.querySelectorAll('img[class*="SideBySide-module"]')].every(
-      img => img.complete && img.naturalWidth > 0,
+      (img) => img.complete && img.naturalWidth > 0,
     ),
   );
 }
@@ -193,7 +195,7 @@ function firstAccessibilitySnapshot(page) {
 // Lets a scene change the report data a Happo report page loads, e.g. to show
 // numbers that match the docs. Only changes what this browser sees.
 async function editReportData(page, edit) {
-  await page.route('**/api/**/compare-results*', async route => {
+  await page.route('**/api/**/compare-results*', async (route) => {
     const response = await route.fetch();
     const body = await response.text();
     if (!body) {
@@ -220,7 +222,7 @@ function reviewPanel(id, branch) {
     // The buttons, and the "Reviewed by" note under them once there is one.
     // The section itself has padding and room for the note even when it's
     // empty, which leaves wide empty margins.
-    target: page => [
+    target: (page) => [
       page.locator(
         '[class*="ReviewVerdictControl-module"][class*="__container"]',
       ),
@@ -245,7 +247,7 @@ const SHOWCASE_PROJECT = `${SHOWCASE_ACCOUNT}/p/2884`;
 // every request that could change something makes sure a stray click can't
 // save either.
 async function blockWrites(page) {
-  await page.route('**/*', route =>
+  await page.route('**/*', (route) =>
     ['GET', 'HEAD', 'OPTIONS'].includes(route.request().method())
       ? // Leave reads to any other route a scene sets up.
         route.fallback()
@@ -257,7 +259,7 @@ async function blockWrites(page) {
 // __NEXT_DATA__), e.g. to fill a chart that's empty on the demo account. Only
 // changes what this browser sees.
 async function editPageProps(page, url, edit) {
-  await page.route(url, async route => {
+  await page.route(url, async (route) => {
     const response = await route.fetch();
     const html = (await response.text()).replace(
       /(<script id="__NEXT_DATA__" type="application\/json">)(.*?)(<\/script>)/s,
@@ -330,7 +332,7 @@ async function setSlider(locator, fraction) {
 
 // The comparison data behind a Happo report page, from the report's public
 // API.
-const comparisonApi = reportUrl =>
+const comparisonApi = (reportUrl) =>
   reportUrl
     .replace('happo.io/a/', 'happo.io/api/a/')
     .replace('/compare/', '/comparisons/');
@@ -348,7 +350,7 @@ async function fakeReviews(page, reportUrl) {
       comparisonApi(await findHappoReport(showcasePRs.accepted)),
     )
   ).json();
-  await page.route('**/*', route => {
+  await page.route('**/*', (route) => {
     const request = route.request();
     if (['GET', 'HEAD', 'OPTIONS'].includes(request.method())) {
       return route.continue();
@@ -389,9 +391,10 @@ async function browserUpdateReport() {
   );
   const reports = statuses
     .filter(
-      s => s.context.startsWith('Happo') && s.target_url?.includes('/compare/'),
+      (s) =>
+        s.context.startsWith('Happo') && s.target_url?.includes('/compare/'),
     )
-    .map(s => s.target_url);
+    .map((s) => s.target_url);
   for (const url of new Set(reports)) {
     const response = await fetch(comparisonApi(url));
     if (!response.ok) continue;
@@ -438,7 +441,7 @@ function githubChecks(id, branch, { heading, wholeMergeBox = false }) {
     auth: 'github',
     // GitHub keeps connections open, so its pages never go network-idle.
     waitUntil: 'load',
-    target: page =>
+    target: (page) =>
       page.locator(
         wholeMergeBox ? mergeBox : `${mergeBox} section[aria-label="Checks"]`,
       ),
@@ -467,7 +470,7 @@ function githubChecks(id, branch, { heading, wholeMergeBox = false }) {
 const BROWSER_UPDATE_ALERT_REPORT =
   'https://happo.io/a/1520/p/2452/compare/d23e6756d814888b92b45de97f66cc725d313913/806f86eac8a414e6a196cf836de37c2833e57452';
 
-const viewSourceMenuItem = page =>
+const viewSourceMenuItem = (page) =>
   page.getByText(/View source for after image/).filter({ visible: true });
 
 export const scenes = [
@@ -497,7 +500,7 @@ export const scenes = [
       }
       return BROWSER_UPDATE_ALERT_REPORT;
     },
-    target: page => page.locator('[class*="Alert-module"][class*="__root"]'),
+    target: (page) => page.locator('[class*="Alert-module"][class*="__root"]'),
     padding: 8,
   },
 
@@ -521,7 +524,10 @@ export const scenes = [
       );
       await click(
         page.locator('button:has([class*="moreOptionsButton"])').first(),
-        { before: 900, after: 900 },
+        {
+          before: 900,
+          after: 900,
+        },
       );
       // Each snapshot also has a "Report flake" tooltip, so look inside the
       // open menu (the only place "View history…" is visible).
@@ -605,8 +611,8 @@ export const scenes = [
       await snapshot.getByText(/^Frame 4\//).waitFor();
       // The frames are drawn on a canvas once both APNGs have loaded.
       await snapshot.locator('canvas').evaluate(
-        canvas =>
-          new Promise(resolve => {
+        (canvas) =>
+          new Promise((resolve) => {
             const check = () => {
               const { data } = canvas
                 .getContext('2d')
@@ -623,7 +629,7 @@ export const scenes = [
       // Let the frame that was just drawn reach the screen.
       await page.evaluate(
         () =>
-          new Promise(resolve =>
+          new Promise((resolve) =>
             requestAnimationFrame(() => requestAnimationFrame(resolve)),
           ),
       );
@@ -642,7 +648,7 @@ export const scenes = [
     output: 'static/img/happo-partial-run-stats.png',
     url: showcaseReport(showcasePRs.needsReview),
     async setup(page) {
-      await editReportData(page, data => {
+      await editReportData(page, (data) => {
         data.stats = {
           ...data.stats,
           snapshotsCount: 6809,
@@ -654,7 +660,7 @@ export const scenes = [
     async prepare(page) {
       await page.getByRole('link', { name: '2,233 quota used' }).waitFor();
     },
-    target: page => page.locator('[class*="statsDescription"]'),
+    target: (page) => page.locator('[class*="statsDescription"]'),
     padding: 8,
   },
 
@@ -669,7 +675,7 @@ export const scenes = [
     url: showcaseReport(showcasePRs.needsReview),
     viewport: { width: 1600, height: 800 },
     async setup(page) {
-      await editReportData(page, data => {
+      await editReportData(page, (data) => {
         for (const snapshot of data.diffs[0]) {
           Object.assign(snapshot, {
             renderTime: 44,
@@ -685,7 +691,7 @@ export const scenes = [
         .click();
       await page.getByText(/^Render\s44ms/).waitFor();
     },
-    target: page => page.locator('ul[class*="Dropdown-module"]'),
+    target: (page) => page.locator('ul[class*="Dropdown-module"]'),
     padding: 6,
   },
 
@@ -696,7 +702,7 @@ export const scenes = [
     id: 'happo-view-logs-link',
     output: 'static/img/happo-view-logs-link.png',
     url: showcaseReport(showcasePRs.needsReview),
-    target: page =>
+    target: (page) =>
       page
         .locator(
           '[class*="ComparisonPanel-module"][class*="filterItemTextOnly"]',
@@ -718,7 +724,10 @@ export const scenes = [
     async record(page, { click, hover }) {
       await click(
         page.locator('button:has([class*="moreOptionsButton"])').first(),
-        { before: 1200, after: 900 },
+        {
+          before: 1200,
+          after: 900,
+        },
       );
       await hover(viewSourceMenuItem(page), 2500);
     },
@@ -738,7 +747,7 @@ export const scenes = [
     },
     // The page's content column. The page itself is much wider than the
     // content, which leaves wide empty margins.
-    target: page => page.locator('[class*="snapshotSourcePage"]'),
+    target: (page) => page.locator('[class*="snapshotSourcePage"]'),
     // The navbar is right above the content, so keep the top padding small.
     padding: { top: 8, right: 24, bottom: 24, left: 24 },
   },
@@ -746,15 +755,15 @@ export const scenes = [
   // docs/compare-threshold.md
   thresholdSection(
     'compare_threshold',
-    page => thresholdsSection(page, 'Compare threshold'),
+    (page) => thresholdsSection(page, 'Compare threshold'),
     // Far enough along that the two gray boxes are visibly different.
-    page => setSlider(page.locator('input[name="compareThreshold"]'), 0.15),
+    (page) => setSlider(page.locator('input[name="compareThreshold"]'), 0.15),
   ),
   thresholdSection(
     'ignore_threshold',
-    page => thresholdsSection(page, 'Ignore threshold'),
+    (page) => thresholdsSection(page, 'Ignore threshold'),
     // Enough that the table shows some pixels allowed at each size.
-    page =>
+    (page) =>
       setSlider(
         page.locator('input[type="range"][name="ignoreThreshold"]'),
         0.2,
@@ -762,12 +771,12 @@ export const scenes = [
   ),
   thresholdSection(
     'apply_blur',
-    page =>
+    (page) =>
       page
         .locator('[class*="thresholds-module"][class*="__toggle"]')
         .filter({ hasText: 'Blur images' }),
     // Turned on (but not saved) to show what it looks like enabled.
-    page => page.getByText('Blur images', { exact: true }).click(),
+    (page) => page.getByText('Blur images', { exact: true }).click(),
   ),
 
   // docs/accessibility.md
@@ -778,9 +787,13 @@ export const scenes = [
     auth: 'happo',
     async setup(page) {
       await blockWrites(page);
-      await editPageProps(page, `${SHOWCASE_ACCOUNT}/accessibility`, props => {
-        props.axeSummaries = illustrativeViolationCounts(props.axeSummaries);
-      });
+      await editPageProps(
+        page,
+        `${SHOWCASE_ACCOUNT}/accessibility`,
+        (props) => {
+          props.axeSummaries = illustrativeViolationCounts(props.axeSummaries);
+        },
+      );
     },
     async prepare(page) {
       // Hover part way along so the chart shows its tooltip for that day.
@@ -789,7 +802,7 @@ export const scenes = [
       await page.mouse.move(box.x + box.width * 0.3, box.y + box.height * 0.5);
       await page.waitForTimeout(500);
     },
-    target: page =>
+    target: (page) =>
       page.locator('svg[class*="AxeSummaries-module"]').locator('..'),
     // The "Reports" heading is right below the chart.
     padding: { top: 16, right: 16, bottom: 4, left: 16 },
@@ -826,7 +839,7 @@ export const scenes = [
     auth: 'happo',
     setup: blockWrites,
     prepare: hideEmails,
-    target: page => [
+    target: (page) => [
       page.getByRole('heading', { name: 'Permissions' }),
       page.getByRole('heading', { name: 'Users' }).locator('..'),
     ],
@@ -848,7 +861,7 @@ export const scenes = [
       await page.locator('input[name="secret"]').fill('az78ARErhgFJ');
       await page.locator('input[name="secret"]').blur();
     },
-    target: page =>
+    target: (page) =>
       page.getByRole('heading', { name: 'New webhook' }).locator('..'),
     padding: 16,
   },
@@ -894,7 +907,7 @@ export const scenes = [
     // than the table. Fitting them to their text keeps the crop tight.
     css: 'h2 { width: fit-content; }',
     // From the heading down to the end of the table.
-    target: page => [
+    target: (page) => [
       page.getByRole('heading', { name: 'Recent deliveries' }),
       page.locator('table'),
     ],
@@ -974,6 +987,8 @@ export const scenes = [
   githubChecks(
     'happo-github-status-orchestrated',
     showcasePRs.multiProjectOrchestrated,
-    { heading: 'Some checks were not successful' },
+    {
+      heading: 'Some checks were not successful',
+    },
   ),
 ];

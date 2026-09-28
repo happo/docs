@@ -121,7 +121,7 @@ const run = promisify(execFile);
 // no output.
 async function probeVideo(ffmpeg, file) {
   const { stderr } = await run(ffmpeg, ['-hide_banner', '-i', file]).catch(
-    error => error,
+    (error) => error,
   );
   const video = stderr?.match(/Stream #.*?: Video: (\w+).*/);
   const size = video?.[0].match(/, (\d+)x\d+/);
@@ -341,9 +341,10 @@ export async function emptyMargins(
     const i = (y * width + x) * channels;
     return background.every((value, c) => Math.abs(data[i + c] - value) <= 8);
   };
-  const emptyColumn = x =>
-    [...Array(height).keys()].every(y => isBackground(x, y));
-  const emptyRow = y => [...Array(width).keys()].every(x => isBackground(x, y));
+  const emptyColumn = (x) =>
+    [...Array(height).keys()].every((y) => isBackground(x, y));
+  const emptyRow = (y) =>
+    [...Array(width).keys()].every((x) => isBackground(x, y));
   const count = (length, empty, fromEnd) => {
     let n = 0;
     while (n < length && empty(fromEnd ? length - 1 - n : n)) n++;

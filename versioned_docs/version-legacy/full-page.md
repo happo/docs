@@ -7,8 +7,7 @@ The full-page integration helps you get screenshots of an existing website.
 
 ## Installation
 
-No other libraries than `happo.io` need to be installed for a full-page
-integration:
+No other libraries than `happo.io` need to be installed for a full-page integration:
 
 ```sh
 npm install --save-dev happo.io
@@ -29,8 +28,7 @@ module.exports = {
 };
 ```
 
-> The urls to the website need to be publicly available, otherwise Happo workers
-> won't be able to access the pages
+> The urls to the website need to be publicly available, otherwise Happo workers won't be able to access the pages
 
 Add a `happo` script to your `package.json` file:
 
@@ -44,18 +42,15 @@ Add a `happo` script to your `package.json` file:
 
 ## Running
 
-Invoke `npm run happo run` to execute the `pages` test suite. To run in CI,
-follow [the Continuous Integration guide](continuous-integration.md).
+Invoke `npm run happo run` to execute the `pages` test suite. To run in CI, follow [the Continuous Integration guide](continuous-integration.md).
 
 ## Options
 
-Each item in the `pages` array can the following optional attributes in addition
-to `url` and `title`:
+Each item in the `pages` array can the following optional attributes in addition to `url` and `title`:
 
 ### `waitForContent`
 
-If present, Happo will wait for content to appear on the page before taking the
-screenshot. E.g.
+If present, Happo will wait for content to appear on the page before taking the screenshot. E.g.
 
 ```js
 module.exports = {
@@ -69,5 +64,4 @@ module.exports = {
 };
 ```
 
-Happo will wait at most 10 seconds for the content to appear before it takes the
-screenshot.
+Happo will wait at most 10 seconds for the content to appear before it takes the screenshot.

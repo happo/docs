@@ -1,7 +1,8 @@
 name: Build
 
-# Builds the site so broken links, anchors and Markdown links fail the PR
-# instead of the deploy. docusaurus.config.js sets these checks to throw.
+# Checks formatting, and builds the site so broken links, anchors and Markdown
+# links fail the PR instead of the deploy. docusaurus.config.js sets these
+# checks to throw.
 
 on:
   push:
@@ -19,6 +20,9 @@ jobs:
 
       - name: Setup environment
         uses: ./.github/actions/setup-env
+
+      - name: Check formatting
+        run: pnpm lint
 
       - name: Build
         run: pnpm build

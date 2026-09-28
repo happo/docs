@@ -3,14 +3,11 @@ id: webhooks
 title: Webhooks
 ---
 
-Webhooks allow you to get notified about certain events that occur in your Happo
-account. Use webhooks to create deeper integrations with Happo.
+Webhooks allow you to get notified about certain events that occur in your Happo account. Use webhooks to create deeper integrations with Happo.
 
 ## Usage
 
-You'll find a link to [Webhooks admin](https://happo.io/webhooks) from your
-Happo dashboard. Please note that you must be an administrator of the Happo
-account to use this feature.
+You'll find a link to [Webhooks admin](https://happo.io/webhooks) from your Happo dashboard. Please note that you must be an administrator of the Happo account to use this feature.
 
 <img
   src="/img/webhooks-new.png"
@@ -19,17 +16,13 @@ account to use this feature.
   height="623"
 />
 
-Enter a URL where your server is listening and a secret to use when signing
-requests.
+Enter a URL where your server is listening and a secret to use when signing requests.
 
 ## Event types
 
 ### `comparison`
 
-The comparison event is sent when a comparison between two reports have been
-made. The payload data for this event is
-[a Comparison object](https://happo.io/docs/api#Comparison). Here's an example
-payload:
+The comparison event is sent when a comparison between two reports have been made. The payload data for this event is [a Comparison object](https://happo.io/docs/api#Comparison). Here's an example payload:
 
 ```json
 {
@@ -82,10 +75,7 @@ payload:
 
 ## Verifying signatures
 
-Every webhook call made by Happo will contain a `X-Happo-Signature` header. You
-can use the value of this header to verify that the call is in fact made by
-Happo. The signature is computed using a SHA-256 HMAC hex digest. Here's how you
-can verify the signature using NodeJS with Express:
+Every webhook call made by Happo will contain a `X-Happo-Signature` header. You can use the value of this header to verify that the call is in fact made by Happo. The signature is computed using a SHA-256 HMAC hex digest. Here's how you can verify the signature using NodeJS with Express:
 
 ```js
 const crypto = require('crypto');
@@ -115,15 +105,11 @@ async function handleHappoWebhook(req, res, next) {
 
 ## Timeouts
 
-Happo will wait at most 20 seconds for a response from the webhook. Make sure
-you handle the event quickly. Ideally you shouldn't keep Happo waiting if you
-are doing time-consuming things as a result of an event.
+Happo will wait at most 20 seconds for a response from the webhook. Make sure you handle the event quickly. Ideally you shouldn't keep Happo waiting if you are doing time-consuming things as a result of an event.
 
 ## Re-delivering a webhook
 
-Every webhook that Happo sends is stored with your Happo account. You can
-inspect the results of each webhook delivery. This will help when debugging
-webhooks. You can also re-deliver an webhook using the admin UI.
+Every webhook that Happo sends is stored with your Happo account. You can inspect the results of each webhook delivery. This will help when debugging webhooks. You can also re-deliver an webhook using the admin UI.
 
 <img
   src="/img/webhooks-recent-deliveries.png"
@@ -132,5 +118,4 @@ webhooks. You can also re-deliver an webhook using the admin UI.
   height="589"
 />
 
-Webhooks are stored a few days on Happo servers, then they are automatically
-cleaned out.
+Webhooks are stored a few days on Happo servers, then they are automatically cleaned out.

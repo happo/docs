@@ -4,19 +4,13 @@ title: Configuration
 sidebar_label: List of options
 ---
 
-Happo looks for configuration in a `happo.config.{js,ts,mjs,cjs,mts,cts}` file
-in your current working directory. You can override this path using the
-`--config` CLI option or the `HAPPO_CONFIG_FILE` environment variable. The
-config file can use CommonJS or ES modules syntax. The configuration file can
-export either an object containing configuration options or an (async) function
-that resolves to configuration options.
+Happo looks for configuration in a `happo.config.{js,ts,mjs,cjs,mts,cts}` file in your current working directory. You can override this path using the `--config` CLI option or the `HAPPO_CONFIG_FILE` environment variable. The config file can use CommonJS or ES modules syntax. The configuration file can export either an object containing configuration options or an (async) function that resolves to configuration options.
 
 ## `apiKey` and `apiSecret`
 
-*Available since happo v6.0.0.*
+_Available since happo v6.0.0._
 
-These tokens authenticate you with happo.io. **Never store these tokens in plain
-text.** Use environment variables instead.
+These tokens authenticate you with happo.io. **Never store these tokens in plain text.** Use environment variables instead.
 
 ```js title="happo.config.ts"
 import { defineConfig } from 'happo';
@@ -27,15 +21,11 @@ export default defineConfig({
 });
 ```
 
-> **Note:** If `apiKey` and `apiSecret` are not provided, the CLI will attempt
-> to authenticate interactively by opening a browser. This interactive
-> authentication creates short-lived tokens and **will not work in CI
-> environments or non-interactive terminals**. For CI and production use, you
-> must provide explicit `apiKey` and `apiSecret` values.
+> **Note:** If `apiKey` and `apiSecret` are not provided, the CLI will attempt to authenticate interactively by opening a browser. This interactive authentication creates short-lived tokens and **will not work in CI environments or non-interactive terminals**. For CI and production use, you must provide explicit `apiKey` and `apiSecret` values.
 
 ## `targets`
 
-*Available since happo v6.0.0.*
+_Available since happo v6.0.0._
 
 Specify the browsers you want to include in your happo run. For example:
 
@@ -75,9 +65,7 @@ export default defineConfig({
 });
 ```
 
-Viewport sizes can range from `300x300` to `2000x2000`. The `ios-safari` target
-type runs on an iPhone with a fixed viewport of `375x667`. The `ipad-safari`
-target type is always `1080x810`.
+Viewport sizes can range from `300x300` to `2000x2000`. The `ios-safari` target type runs on an iPhone with a fixed viewport of `375x667`. The `ipad-safari` target type is always `1080x810`.
 
 Supported types:
 
@@ -91,10 +79,9 @@ Supported types:
 
 ### Target `freezeAnimations`
 
-*Available since happo v6.0.0.*
+_Available since happo v6.0.0._
 
-By default, Happo freezes CSS animations on the last frame. To freeze animations
-on the first frame instead (legacy behavior), use the `freezeAnimations` option:
+By default, Happo freezes CSS animations on the last frame. To freeze animations on the first frame instead (legacy behavior), use the `freezeAnimations` option:
 
 ```js title="happo.config.ts"
 import { defineConfig } from 'happo';
@@ -110,16 +97,13 @@ export default defineConfig({
 });
 ```
 
-To capture how something moves instead of freezing it, see
-[`animate`](#target-animate).
+To capture how something moves instead of freezing it, see [`animate`](#target-animate).
 
 ### Target `animate`
 
-*Available since happo v6.15.0.*
+_Available since happo v6.15.0._
 
-Capture animations as animated PNGs instead of freezing them. `'auto'` captures
-an animated snapshot only when the page has an animation Happo can drive, and
-takes an ordinary still image otherwise, so it's safe to enable for a whole target:
+Capture animations as animated PNGs instead of freezing them. `'auto'` captures an animated snapshot only when the page has an animation Happo can drive, and takes an ordinary still image otherwise, so it's safe to enable for a whole target:
 
 ```js title="happo.config.ts"
 import { defineConfig } from 'happo';
@@ -135,21 +119,15 @@ export default defineConfig({
 });
 ```
 
-`animate` can also be set on individual Storybook stories and pages, and takes
-an object with options for frame rate, duration, triggers, and more. See
-[Animated snapshots](animated-snapshots.md) for the full list of options.
+`animate` can also be set on individual Storybook stories and pages, and takes an object with options for frame rate, duration, triggers, and more. See [Animated snapshots](animated-snapshots.md) for the full list of options.
 
 ### Target `chunks`
 
-*Available since happo v6.0.0. Automatic chunk sizing available since happo v6.4.1.*
+_Available since happo v6.0.0. Automatic chunk sizing available since happo v6.4.1._
 
-As of v6.4.1, Happo automatically sets the number of chunks based on an
-estimated snapshot count when using the Storybook integration. Most projects
-don't need to configure this manually.
+As of v6.4.1, Happo automatically sets the number of chunks based on an estimated snapshot count when using the Storybook integration. Most projects don't need to configure this manually.
 
-If you are using the [custom integration type](#custom-integration-options),
-automatic chunk sizing requires returning `estimatedSnapsCount` from your
-`build` function:
+If you are using the [custom integration type](#custom-integration-options), automatic chunk sizing requires returning `estimatedSnapsCount` from your `build` function:
 
 ```js title="happo.config.ts"
 import { defineConfig } from 'happo';
@@ -166,11 +144,9 @@ export default defineConfig({
 });
 ```
 
-Without this value, Happo cannot auto-chunk custom integrations and you will
-need to set `chunks` explicitly.
+Without this value, Happo cannot auto-chunk custom integrations and you will need to set `chunks` explicitly.
 
-If you want to override the automatic behavior, use the `chunks` option to
-explicitly split a target into multiple parallel workers:
+If you want to override the automatic behavior, use the `chunks` option to explicitly split a target into multiple parallel workers:
 
 ```js title="happo.config.ts"
 import { defineConfig } from 'happo';
@@ -186,29 +162,19 @@ export default defineConfig({
 });
 ```
 
-Happo.io attempts to run chunks in parallel, but there's no guarantee. The
-`chunks` option adds some overhead, so if your test suite isn't large, using
-more than one chunk might actually slow things down.
+Happo.io attempts to run chunks in parallel, but there's no guarantee. The `chunks` option adds some overhead, so if your test suite isn't large, using more than one chunk might actually slow things down.
 
 **When to set `chunks` manually:**
 
-- **Storybook with many interaction tests:** The automatic estimate is based on
-  story count and does not account for interaction tests. If you use the
-  Storybook integration and have a large number of interaction tests, the
-  estimate may be too low and you may benefit from setting a higher chunk count
-  explicitly.
-- **Consistently slow runs:** If happo runs are taking longer than expected and
-  parallelism seems insufficient, try increasing chunks.
-- **Reducing parallelism:** If you want to limit resource usage, you can set
-  `chunks: 1` to disable splitting entirely.
+- **Storybook with many interaction tests:** The automatic estimate is based on story count and does not account for interaction tests. If you use the Storybook integration and have a large number of interaction tests, the estimate may be too low and you may benefit from setting a higher chunk count explicitly.
+- **Consistently slow runs:** If happo runs are taking longer than expected and parallelism seems insufficient, try increasing chunks.
+- **Reducing parallelism:** If you want to limit resource usage, you can set `chunks: 1` to disable splitting entirely.
 
 ### Target `maxHeight`
 
-*Available since happo v6.0.0.*
+_Available since happo v6.0.0._
 
-Use `maxHeight` to override the default maximum height used by Happo workers
-(5000 pixels). This is useful when taking screenshots of tall components or
-pages. For example:
+Use `maxHeight` to override the default maximum height used by Happo workers (5000 pixels). This is useful when taking screenshots of tall components or pages. For example:
 
 ```js title="happo.config.ts"
 import { defineConfig } from 'happo';
@@ -224,16 +190,13 @@ export default defineConfig({
 });
 ```
 
-**Note:** The maximum width defaults to the maximum height, so if you set
-`maxHeight`, you may also want to set `maxWidth` at the same time.
+**Note:** The maximum width defaults to the maximum height, so if you set `maxHeight`, you may also want to set `maxWidth` at the same time.
 
 ### Target `maxWidth`
 
-*Available since happo v6.0.0.*
+_Available since happo v6.0.0._
 
-Use `maxWidth` to override the default maximum width used by Happo workers
-(defaults to `maxHeight`, which defaults to 5000 pixels). This is useful when
-taking screenshots of wide components or pages. For example:
+Use `maxWidth` to override the default maximum width used by Happo workers (defaults to `maxHeight`, which defaults to 5000 pixels). This is useful when taking screenshots of wide components or pages. For example:
 
 ```js title="happo.config.ts"
 import { defineConfig } from 'happo';
@@ -251,12 +214,9 @@ export default defineConfig({
 
 ### Target `hideBehavior`
 
-*Available since happo v6.0.0.*
+_Available since happo v6.0.0._
 
-This option controls how Happo handles elements with the `data-happo-hide`
-attribute. By default, elements with this attribute are made invisible. Use the
-value `ignore` to make the content appear in screenshots but exclude it from
-comparison.
+This option controls how Happo handles elements with the `data-happo-hide` attribute. By default, elements with this attribute are made invisible. Use the value `ignore` to make the content appear in screenshots but exclude it from comparison.
 
 ```js title="happo.config.ts"
 import { defineConfig } from 'happo';
@@ -274,18 +234,11 @@ export default defineConfig({
 
 ### Target `useFullPageFallbackForTallScreenshots`
 
-*Available since happo v6.0.0.*
+_Available since happo v6.0.0._
 
 This option applies to Chrome and Firefox only.
 
-When Chrome and Firefox workers take screenshots of pages taller than 4000
-pixels, they apply a workaround that briefly resizes the viewport so all content
-fits inside it. Without this workaround, content below the viewport's bottom
-edge can disappear inconsistently. However, this workaround can cause other
-issues, especially when using the `vh` CSS unit. A page with an element of
-`height: 100vh` will take up the entire screenshot when the viewport-altering
-fallback is active. To disable this workaround completely, set
-`useFullPageFallbackForTallScreenshots: false`.
+When Chrome and Firefox workers take screenshots of pages taller than 4000 pixels, they apply a workaround that briefly resizes the viewport so all content fits inside it. Without this workaround, content below the viewport's bottom edge can disappear inconsistently. However, this workaround can cause other issues, especially when using the `vh` CSS unit. A page with an element of `height: 100vh` will take up the entire screenshot when the viewport-altering fallback is active. To disable this workaround completely, set `useFullPageFallbackForTallScreenshots: false`.
 
 ```js title="happo.config.ts"
 import { defineConfig } from 'happo';
@@ -308,13 +261,9 @@ export default defineConfig({
 
 ### Target `applyPseudoClasses`
 
-*Available since happo v6.0.0.*
+_Available since happo v6.0.0._
 
-When set to `true`, this option allows you to add `data-happo-hover`,
-`data-happo-focus`, `data-happo-focus-visible`, and `data-happo-active`
-attributes to your DOM elements and have Happo apply the corresponding `:hover`,
-`:focus`, `:focus-visible`, or `:active` styles. For example, if you have this
-markup:
+When set to `true`, this option allows you to add `data-happo-hover`, `data-happo-focus`, `data-happo-focus-visible`, and `data-happo-active` attributes to your DOM elements and have Happo apply the corresponding `:hover`, `:focus`, `:focus-visible`, or `:active` styles. For example, if you have this markup:
 
 ```html
 <button>Hover me</button>
@@ -325,8 +274,7 @@ markup:
 </style>
 ```
 
-To apply the hover style before taking the screenshot (making the button blue),
-change the markup to:
+To apply the hover style before taking the screenshot (making the button blue), change the markup to:
 
 ```html
 <button data-happo-hover>Hover me</button>
@@ -343,13 +291,9 @@ Similarly, you can add focus to elements using `data-happo-focus`:
 <input type="text" data-happo-focus />
 ```
 
-`data-happo-focus` focuses the element the same way a mouse click or a
-programmatic `element.focus()` call does, which means `:focus` styles are
-applied but `:focus-visible` styles are **not**.
+`data-happo-focus` focuses the element the same way a mouse click or a programmatic `element.focus()` call does, which means `:focus` styles are applied but `:focus-visible` styles are **not**.
 
-To capture the focus ring that keyboard users see, use
-`data-happo-focus-visible` instead. It focuses the element as if the user had
-tabbed to it, so both `:focus` and `:focus-visible` styles are applied:
+To capture the focus ring that keyboard users see, use `data-happo-focus-visible` instead. It focuses the element as if the user had tabbed to it, so both `:focus` and `:focus-visible` styles are applied:
 
 ```html
 <button data-happo-focus-visible>Tab to me</button>
@@ -363,10 +307,7 @@ tabbed to it, so both `:focus` and `:focus-visible` styles are applied:
 </style>
 ```
 
-Use one or the other on a given snapshot — since only one element can hold focus
-at a time, Happo focuses the first element it finds with `data-happo-focus`,
-then the first element with `data-happo-focus-visible`, so the latter wins if
-both are present.
+Use one or the other on a given snapshot — since only one element can hold focus at a time, Happo focuses the first element it finds with `data-happo-focus`, then the first element with `data-happo-focus-visible`, so the latter wins if both are present.
 
 And add `data-happo-active` to elements to simulate the `:active` state:
 
@@ -381,10 +322,9 @@ And add `data-happo-active` to elements to simulate the `:active` state:
 
 ### Target `prefersColorScheme`
 
-*Available since happo v6.0.0.*
+_Available since happo v6.0.0._
 
-Set `prefersColorScheme: 'dark'` or `prefersColorScheme: 'light'` to set the
-color scheme preference in the browser.
+Set `prefersColorScheme: 'dark'` or `prefersColorScheme: 'light'` to set the color scheme preference in the browser.
 
 ```js title="happo.config.ts"
 import { defineConfig } from 'happo';
@@ -414,10 +354,9 @@ color: black;
 
 ### Target `prefersReducedMotion`
 
-*Available since happo v6.0.0.*
+_Available since happo v6.0.0._
 
-By default, Happo is configured to prefer reduced motion. Set this option to
-`false` to disable this behavior.
+By default, Happo is configured to prefer reduced motion. Set this option to `false` to disable this behavior.
 
 **Note:** This option has no effect in iOS Safari.
 
@@ -435,8 +374,7 @@ export default defineConfig({
 });
 ```
 
-When `true` (default behavior), media queries that use
-`prefers-reduced-motion: reduce` will be activated:
+When `true` (default behavior), media queries that use `prefers-reduced-motion: reduce` will be activated:
 
 ```css
 @media (prefers-reduced-motion: reduce) {
@@ -446,20 +384,15 @@ When `true` (default behavior), media queries that use
 }
 ```
 
-To override this for [animated snapshots](animated-snapshots.md) only, set
-`prefersReducedMotion` inside `animate` instead. See
-[reduced motion](animated-snapshots.md#prefersreducedmotion).
+To override this for [animated snapshots](animated-snapshots.md) only, set `prefersReducedMotion` inside `animate` instead. See [reduced motion](animated-snapshots.md#prefersreducedmotion).
 
 ### Target `allowPointerEvents`
 
-*Available since happo v6.0.0. Default flipped to `true` in happo v6.8.0.*
+_Available since happo v6.0.0. Default flipped to `true` in happo v6.8.0._
 
-Since v6.8.0, pointer events are allowed by default. Happo no longer injects CSS
-to disable pointer events, so mouse interactions in tests work without any extra
-configuration.
+Since v6.8.0, pointer events are allowed by default. Happo no longer injects CSS to disable pointer events, so mouse interactions in tests work without any extra configuration.
 
-If you notice unexpected diffs caused by hover effects, you can set
-`allowPointerEvents: false` to restore the previous behavior:
+If you notice unexpected diffs caused by hover effects, you can set `allowPointerEvents: false` to restore the previous behavior:
 
 ```js title="happo.config.ts"
 import { defineConfig } from 'happo';
@@ -475,8 +408,7 @@ export default defineConfig({
 });
 ```
 
-:::note Before v6.8.0, the default was `allowPointerEvents: false`, which caused
-Happo to inject this CSS:
+:::note Before v6.8.0, the default was `allowPointerEvents: false`, which caused Happo to inject this CSS:
 
 ```css
 * {
@@ -484,23 +416,17 @@ Happo to inject this CSS:
 }
 ```
 
-This prevented spurious hover effects but also caused Storybook interaction
-tests that relied on pointer events to be silently skipped. :::
+This prevented spurious hover effects but also caused Storybook interaction tests that relied on pointer events to be silently skipped. :::
 
-If you're interested in testing hover, focus, and active states with Happo, you
-may also want to use the
-[`applyPseudoClasses` option](#target-applypseudoclasses).
+If you're interested in testing hover, focus, and active states with Happo, you may also want to use the [`applyPseudoClasses` option](#target-applypseudoclasses).
 
 ### Target `outgoingRequestHeaders`
 
-*Available since happo v6.0.0.*
+_Available since happo v6.0.0._
 
-Add additional headers to outgoing requests from the browser. This is useful if
-you need to tell a CDN or other service that the request originates from a Happo
-run, or if you need to pass authentication headers.
+Add additional headers to outgoing requests from the browser. This is useful if you need to tell a CDN or other service that the request originates from a Happo run, or if you need to pass authentication headers.
 
-**Note:** This option only applies to desktop browsers (Chrome, Firefox, Edge,
-Safari, and accessibility).
+**Note:** This option only applies to desktop browsers (Chrome, Firefox, Edge, Safari, and accessibility).
 
 ```js title="happo.config.ts"
 import { defineConfig } from 'happo';
@@ -521,15 +447,11 @@ export default defineConfig({
 
 ### Target `allowedHostnames`
 
-*Available since happo v6.19.0.*
+_Available since happo v6.19.0._
 
-Restrict which hostnames the browser is allowed to make HTTP(S) requests to
-while rendering. Anything not covered by the list is refused before it leaves
-the browser.
+Restrict which hostnames the browser is allowed to make HTTP(S) requests to while rendering. Anything not covered by the list is refused before it leaves the browser.
 
-A snapshot that loads a font, a script, or an image from somewhere else changes
-when that somewhere else does, and fails when it is down. The fewer hostnames a
-target needs, the more reproducible its snapshots are.
+A snapshot that loads a font, a script, or an image from somewhere else changes when that somewhere else does, and fails when it is down. The fewer hostnames a target needs, the more reproducible its snapshots are.
 
 ```js title="happo.config.ts"
 import { defineConfig } from 'happo';
@@ -545,42 +467,24 @@ export default defineConfig({
 });
 ```
 
-Entries are hostnames, matched exactly. Prefix one with `*.` to cover
-subdomains: `*.example.com` covers `cdn.example.com` but not `example.com`
-itself, so list both if you need both. Ports and paths are ignored, so
-`https://example.com/assets` and `example.com` mean the same thing.
+Entries are hostnames, matched exactly. Prefix one with `*.` to cover subdomains: `*.example.com` covers `cdn.example.com` but not `example.com` itself, so list both if you need both. Ports and paths are ignored, so `https://example.com/assets` and `example.com` mean the same thing.
 
-Requests to the Happo worker's own server — the page being rendered and
-everything in your uploaded package — are always allowed and don't belong in the
-list. Neither do `data:` and `blob:` URLs, which never hit the network.
+Requests to the Happo worker's own server — the page being rendered and everything in your uploaded package — are always allowed and don't belong in the list. Neither do `data:` and `blob:` URLs, which never hit the network.
 
 Leaving the option unset is not the same as setting it to an empty array:
 
 - **Unset** (the default) blocks nothing.
-- **`allowedHostnames: []`** blocks every external request. This is a good goal
-  for a self-contained test suite, and a good way to find out what your
-  snapshots depend on.
+- **`allowedHostnames: []`** blocks every external request. This is a good goal for a self-contained test suite, and a good way to find out what your snapshots depend on.
 
-You don't have to guess what to put in the list. Every run logs the external
-hostnames its pages reached for, whether or not a list is set, so you can run
-once without one and read them off the snap-request's logs in happo.io:
+You don't have to guess what to put in the list. Every run logs the external hostnames its pages reached for, whether or not a list is set, so you can run once without one and read them off the snap-request's logs in happo.io:
 
 ```
 External requests: 12 to 2 hostnames: fonts.gstatic.com (x11), cdn.example.com
 ```
 
-Once a list is in force, the same line splits into what was allowed and what was
-blocked. That's the line to read when a snapshot comes back missing something,
-and the report's logs page in happo.io opens with it rather than making you
-search for it. See
-[Missing fonts, images, or other external assets](debugging.md#missing-fonts-images-or-other-external-assets)
-for how to work through one.
+Once a list is in force, the same line splits into what was allowed and what was blocked. That's the line to read when a snapshot comes back missing something, and the report's logs page in happo.io opens with it rather than making you search for it. See [Missing fonts, images, or other external assets](debugging.md#missing-fonts-images-or-other-external-assets) for how to work through one.
 
-**Important:** With the [pages integration](#pages-integration-options), the
-pages you screenshot are loaded over the network like any other external
-request. If you set `allowedHostnames`, you **must** include the hostnames of
-your page URLs, or those pages will no longer load and their snapshots will
-fail.
+**Important:** With the [pages integration](#pages-integration-options), the pages you screenshot are loaded over the network like any other external request. If you set `allowedHostnames`, you **must** include the hostnames of your page URLs, or those pages will no longer load and their snapshots will fail.
 
 ```js title="happo.config.ts"
 import { defineConfig } from 'happo';
@@ -607,19 +511,13 @@ export default defineConfig({
 
 **Note:** This option is experimental. Its shape may change in a future release.
 
-**Note:** This option only applies to desktop browsers (Chrome, Firefox, Edge,
-Safari, and accessibility). It is not supported on `ios-safari` or
-`ipad-safari`, where the browser can't be pointed at the proxy that does the
-blocking. Those targets log that the option had no effect rather than leaving
-you to assume that it did.
+**Note:** This option only applies to desktop browsers (Chrome, Firefox, Edge, Safari, and accessibility). It is not supported on `ios-safari` or `ipad-safari`, where the browser can't be pointed at the proxy that does the blocking. Those targets log that the option had no effect rather than leaving you to assume that it did.
 
 ## `project`
 
-*Available since happo v6.0.0.*
+_Available since happo v6.0.0._
 
-If you have multiple projects configured for your happo.io account, specify the
-name of the project you want to associate with. If left empty, the default
-project will be used.
+If you have multiple projects configured for your happo.io account, specify the name of the project you want to associate with. If left empty, the default project will be used.
 
 ```js title="happo.config.ts"
 import { defineConfig } from 'happo';
@@ -632,13 +530,11 @@ export default defineConfig({
 
 ## `deepCompare`
 
-*Available since happo v6.3.0.*
+_Available since happo v6.3.0._
 
-Override the project-level deep-compare settings for comparisons started from
-this configuration file. Omit this option to use the project defaults.
+Override the project-level deep-compare settings for comparisons started from this configuration file. Omit this option to use the project defaults.
 
-See the [Compare with a threshold](compare-threshold.md) guide for a full
-explanation of each setting.
+See the [Compare with a threshold](compare-threshold.md) guide for a full explanation of each setting.
 
 ```js title="happo.config.ts"
 import { defineConfig } from 'happo';
@@ -656,33 +552,24 @@ export default defineConfig({
 });
 ```
 
-| Option             | Type                        | Default         | Description                                                                                                                      |
-| ------------------ | --------------------------- | --------------- | -------------------------------------------------------------------------------------------------------------------------------- |
-| `compareThreshold` | `number`                    | —               | How different two pixels are allowed to be (0–1). Required when using deepCompare.                                               |
-| `diffAlgorithm`    | `'color-delta'` \| `'ssim'` | `'color-delta'` | Algorithm used for pixel comparison. `'ssim'` is experimental.                                                                   |
-| `ignoreThreshold`  | `number`                    | `0`             | Fraction of pixels allowed to exceed `compareThreshold` before the screenshot is considered a diff (e.g. `0.01` = 1% of pixels). |
-| `ignoreWhitespace` | `boolean`                   | `false`         | When `true`, whitespace-only differences are ignored.                                                                            |
-| `applyBlur`        | `boolean`                   | `false`         | When `true`, a blur is applied before comparing to smooth out subtle edge differences.                                           |
+| Option | Type | Default | Description |
+| --- | --- | --- | --- |
+| `compareThreshold` | `number` | — | How different two pixels are allowed to be (0–1). Required when using deepCompare. |
+| `diffAlgorithm` | `'color-delta'` \| `'ssim'` | `'color-delta'` | Algorithm used for pixel comparison. `'ssim'` is experimental. |
+| `ignoreThreshold` | `number` | `0` | Fraction of pixels allowed to exceed `compareThreshold` before the screenshot is considered a diff (e.g. `0.01` = 1% of pixels). |
+| `ignoreWhitespace` | `boolean` | `false` | When `true`, whitespace-only differences are ignored. |
+| `applyBlur` | `boolean` | `false` | When `true`, a blur is applied before comparing to smooth out subtle edge differences. |
 
 ## `failOnWaitForTimeout`
 
-*Available since happo v6.12.0.*
+_Available since happo v6.12.0._
 
-Controls how Happo workers react when a `waitForContent`, `waitForSelector`, or
-`waitFor` option times out before the expected content, selector, or condition
-appears. Defaults to `true`.
+Controls how Happo workers react when a `waitForContent`, `waitForSelector`, or `waitFor` option times out before the expected content, selector, or condition appears. Defaults to `true`.
 
-- `true` (default) — the snap fails with a clear error. This surfaces stale
-  `waitForContent` strings, `waitForSelector` values, and `waitFor` predicates
-  immediately, so they can be fixed at the source instead of silently adding
-  multi-second waits to every run.
-- `false` — the timeout only emits a warning in the worker logs and the
-  screenshot is taken anyway against whatever happens to be on the page. This
-  is the legacy behavior.
+- `true` (default) — the snap fails with a clear error. This surfaces stale `waitForContent` strings, `waitForSelector` values, and `waitFor` predicates immediately, so they can be fixed at the source instead of silently adding multi-second waits to every run.
+- `false` — the timeout only emits a warning in the worker logs and the screenshot is taken anyway against whatever happens to be on the page. This is the legacy behavior.
 
-We recommend leaving this set to `true`. Set it to `false` as a temporary
-escape hatch while you investigate a failing run; the long-term fix is to
-update the offending wait so it matches the content that actually renders.
+We recommend leaving this set to `true`. Set it to `false` as a temporary escape hatch while you investigate a failing run; the long-term fix is to update the offending wait so it matches the content that actually renders.
 
 ```js title="happo.config.ts"
 import { defineConfig } from 'happo';
@@ -695,12 +582,11 @@ export default defineConfig({
 
 ## `integration`
 
-Specify the type of integration you're using with Happo. The integration type
-determines how Happo discovers and renders your components.
+Specify the type of integration you're using with Happo. The integration type determines how Happo discovers and renders your components.
 
 ### `integration.type`
 
-*Available since happo v6.0.0.*
+_Available since happo v6.0.0._
 
 The type of integration. Supported values:
 
@@ -716,7 +602,7 @@ Each integration has a different set of options that it supports.
 
 #### `integration.configDir`
 
-*Available since happo v6.0.0.*
+_Available since happo v6.0.0._
 
 The directory containing your Storybook configuration. Defaults to `.storybook`.
 
@@ -735,10 +621,9 @@ export default defineConfig({
 
 #### `integration.staticDir`
 
-*Available since happo v6.0.0.*
+_Available since happo v6.0.0._
 
-The directory containing static files to serve with Storybook. This corresponds
-to the `staticDirs` option in your Storybook configuration.
+The directory containing static files to serve with Storybook. This corresponds to the `staticDirs` option in your Storybook configuration.
 
 ```js title="happo.config.ts"
 import { defineConfig } from 'happo';
@@ -755,11 +640,9 @@ export default defineConfig({
 
 #### `integration.outputDir`
 
-*Available since happo v6.0.0.*
+_Available since happo v6.0.0._
 
-The directory to output the static Storybook package to. This is useful when
-using `usePrebuiltPackage` to specify where your prebuilt Storybook files are
-located.
+The directory to output the static Storybook package to. This is useful when using `usePrebuiltPackage` to specify where your prebuilt Storybook files are located.
 
 ```js title="happo.config.ts"
 import { defineConfig } from 'happo';
@@ -776,11 +659,9 @@ export default defineConfig({
 
 #### `integration.usePrebuiltPackage`
 
-*Available since happo v6.0.0.*
+_Available since happo v6.0.0._
 
-When set to `true`, Happo will use a prebuilt Storybook package instead of
-building one. Make sure that files are built to the `outputDir` directory when
-using this option.
+When set to `true`, Happo will use a prebuilt Storybook package instead of building one. Make sure that files are built to the `outputDir` directory when using this option.
 
 ```js title="happo.config.ts"
 import { defineConfig } from 'happo';
@@ -798,17 +679,11 @@ export default defineConfig({
 
 #### `integration.previewOnly`
 
-*Available since happo v6.17.0.*
+_Available since happo v6.17.0._
 
-Build the Storybook preview without the manager UI (Storybook's
-`--preview-only`), which typically makes the uploaded package several times
-smaller. Defaults to `true`.
+Build the Storybook preview without the manager UI (Storybook's `--preview-only`), which typically makes the uploaded package several times smaller. Defaults to `true`.
 
-Happo only ever loads `iframe.html`, so the manager is dead weight as far as
-rendering goes. Set this option to `false` if you download built packages and
-open them locally to debug: without the manager, a package is no longer a
-browsable Storybook, and reaching a story means visiting
-`iframe.html?id=<storyId>&viewMode=story` by hand.
+Happo only ever loads `iframe.html`, so the manager is dead weight as far as rendering goes. Set this option to `false` if you download built packages and open them locally to debug: without the manager, a package is no longer a browsable Storybook, and reaching a story means visiting `iframe.html?id=<storyId>&viewMode=story` by hand.
 
 ```js title="happo.config.ts"
 import { defineConfig } from 'happo';
@@ -823,22 +698,15 @@ export default defineConfig({
 });
 ```
 
-**Note:** This option is ignored on Storybook v8, which has no `--preview-only`
-flag. If you set `previewOnly: true` explicitly on v8, Happo logs that it was
-ignored and builds the package as usual.
+**Note:** This option is ignored on Storybook v8, which has no `--preview-only` flag. If you set `previewOnly: true` explicitly on v8, Happo logs that it was ignored and builds the package as usual.
 
 #### `integration.navigatePerStory`
 
-*Available since happo v6.15.0.*
+_Available since happo v6.15.0._
 
-When set to `true`, each story is rendered by navigating directly to
-`iframe.html?id=<storyId>` instead of loading `iframe.html` once and paging
-through stories client-side. Defaults to `false`.
+When set to `true`, each story is rendered by navigating directly to `iframe.html?id=<storyId>` instead of loading `iframe.html` once and paging through stories client-side. Defaults to `false`.
 
-This is slower, since it means one navigation per story, but it gives every
-story a fresh page load. That can help with Storybooks where state leaks between
-stories, e.g. through global CSS, singletons, or other side effects that the
-default in-page navigation doesn't reset.
+This is slower, since it means one navigation per story, but it gives every story a fresh page load. That can help with Storybooks where state leaks between stories, e.g. through global CSS, singletons, or other side effects that the default in-page navigation doesn't reset.
 
 ```js title="happo.config.ts"
 import { defineConfig } from 'happo';
@@ -853,16 +721,13 @@ export default defineConfig({
 });
 ```
 
-**Note:** This option requires an `index.json` or `stories.json` file in the
-built Storybook package. If that file is missing, Happo falls back to the
-default navigation strategy.
+**Note:** This option requires an `index.json` or `stories.json` file in the built Storybook package. If that file is missing, Happo falls back to the default navigation strategy.
 
 #### `integration.skip`
 
-*Available since happo v6.0.0.*
+_Available since happo v6.0.0._
 
-Items to skip when generating snapshots. Can be an async function that resolves
-to an array of `{component, variant}`, or an array of `{component, variant}`.
+Items to skip when generating snapshots. Can be an async function that resolves to an array of `{component, variant}`, or an array of `{component, variant}`.
 
 ```js title="happo.config.ts"
 import { defineConfig } from 'happo';
@@ -902,11 +767,9 @@ export default defineConfig({
 
 #### `integration.build`
 
-*Available since happo v6.0.0.*
+_Available since happo v6.0.0._
 
-An async function that builds your custom bundle and returns an object with
-`rootDir` (path to the folder where files have been built) and `entryPoint`
-(local file name of the built JavaScript bundle).
+An async function that builds your custom bundle and returns an object with `rootDir` (path to the folder where files have been built) and `entryPoint` (local file name of the built JavaScript bundle).
 
 ```js title="happo.config.ts"
 import { defineConfig } from 'happo';
@@ -928,26 +791,15 @@ export default defineConfig({
 
 #### `integration.autoApplyPseudoStateAttributes`
 
-*Available since happo v6.9.0.*
+_Available since happo v6.9.0._
 
 > **Experimental**
 
-When set to `true`, Happo automatically collects and represents `:focus`,
-`:focus-visible`, `:active`, and `:hover` states in screenshots. At snapshot
-time, elements that are currently in one of those states get the corresponding
-`data-happo-hover`, `data-happo-active`, and `data-happo-focus-visible`
-attribute added for you. This lets you capture interactive states — including
-the keyboard focus ring — without manually adding `data-happo-*` attributes to
-your markup.
+When set to `true`, Happo automatically collects and represents `:focus`, `:focus-visible`, `:active`, and `:hover` states in screenshots. At snapshot time, elements that are currently in one of those states get the corresponding `data-happo-hover`, `data-happo-active`, and `data-happo-focus-visible` attribute added for you. This lets you capture interactive states — including the keyboard focus ring — without manually adding `data-happo-*` attributes to your markup.
 
-**Note:** Basic focus handling (`data-happo-focus`, based on the document's
-active element) is always applied, regardless of this option. Enabling
-`autoApplyPseudoStateAttributes` additionally traverses into shadow DOM to find
-the deepest focused element, and distinguishes keyboard focus
-(`data-happo-focus-visible`) from other focus.
+**Note:** Basic focus handling (`data-happo-focus`, based on the document's active element) is always applied, regardless of this option. Enabling `autoApplyPseudoStateAttributes` additionally traverses into shadow DOM to find the deepest focused element, and distinguishes keyboard focus (`data-happo-focus-visible`) from other focus.
 
-This option requires the
-[`applyPseudoClasses` target option](#target-applypseudoclasses).
+This option requires the [`applyPseudoClasses` target option](#target-applypseudoclasses).
 
 ```js title="happo.config.ts"
 import { defineConfig } from 'happo';
@@ -971,11 +823,9 @@ export default defineConfig({
 
 #### `integration.allowFailures`
 
-*Available since happo v6.0.0.*
+_Available since happo v6.0.0._
 
-When set to `true`, allows Happo tests to fail without causing the overall test
-run to fail. This is useful when you want to collect visual diffs without
-blocking your CI pipeline.
+When set to `true`, allows Happo tests to fail without causing the overall test run to fail. This is useful when you want to collect visual diffs without blocking your CI pipeline.
 
 ```js title="happo.config.ts"
 import { defineConfig } from 'happo';
@@ -994,28 +844,15 @@ export default defineConfig({
 
 #### `integration.pages`
 
-*Available since happo v6.0.0.*
+_Available since happo v6.0.0._
 
-A list of pages to screenshot. Each page object must include a `url` (the URL of
-the page to screenshot) and a `title` (used as the "component" identifier in
-Happo reports, so ensure it is unique for each page).
+A list of pages to screenshot. Each page object must include a `url` (the URL of the page to screenshot) and a `title` (used as the "component" identifier in Happo reports, so ensure it is unique for each page).
 
-Optionally, you can specify `waitForContent` to wait for specific content to
-appear on the page before taking the screenshot, or `waitForSelector` to wait
-for a selector to appear in the document before taking the screenshot. If the
-content or selector does not appear within the worker's timeout, the snap
-fails by default. See
-[`failOnWaitForTimeout`](#failonwaitfortimeout) if you need to opt out of that
-behavior.
+Optionally, you can specify `waitForContent` to wait for specific content to appear on the page before taking the screenshot, or `waitForSelector` to wait for a selector to appear in the document before taking the screenshot. If the content or selector does not appear within the worker's timeout, the snap fails by default. See [`failOnWaitForTimeout`](#failonwaitfortimeout) if you need to opt out of that behavior.
 
-**Note:** The URLs to the website need to be publicly available, otherwise Happo
-workers won't be able to access the pages.
+**Note:** The URLs to the website need to be publicly available, otherwise Happo workers won't be able to access the pages.
 
-**Note:** If you use the
-[`allowedHostnames` target option](#target-allowedhostnames), the hostnames of
-these page URLs need to be in that list. They are loaded over the network like
-any other external request, so a list that leaves them out will stop these pages
-from loading.
+**Note:** If you use the [`allowedHostnames` target option](#target-allowedhostnames), the hostnames of these page URLs need to be in that list. They are loaded over the network like any other external request, so a list that leaves them out will stop these pages from loading.
 
 ```js title="happo.config.ts"
 import { defineConfig } from 'happo';
@@ -1047,10 +884,9 @@ export default defineConfig({
 
 ## `endpoint`
 
-*Available since happo v6.0.0.*
+_Available since happo v6.0.0._
 
-The endpoint to use for the Happo run (this is used for on-premise Happo).
-Defaults to `https://happo.io`.
+The endpoint to use for the Happo run (this is used for on-premise Happo). Defaults to `https://happo.io`.
 
 ```js title="happo.config.ts"
 import { defineConfig } from 'happo';
@@ -1063,11 +899,6 @@ export default defineConfig({
 
 ## `githubApiUrl`
 
-*Available since happo v6.0.0.*
+_Available since happo v6.0.0._
 
-Used when you have the CI script configured to
-[post Happo statuses as comments](continuous-integration#posting-statuses-without-installing-the-happo-github-app).
-The default is `https://api.github.com`. If you're using GitHub Enterprise,
-enter the URL to your local GitHub API here, such as
-`https://ghe.mycompany.zone/api/v3` (the default for GHE installation is for the
-API to be located at `/api/v3`).
+Used when you have the CI script configured to [post Happo statuses as comments](continuous-integration#posting-statuses-without-installing-the-happo-github-app). The default is `https://api.github.com`. If you're using GitHub Enterprise, enter the URL to your local GitHub API here, such as `https://ghe.mycompany.zone/api/v3` (the default for GHE installation is for the API to be located at `/api/v3`).

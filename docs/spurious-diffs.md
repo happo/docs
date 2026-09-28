@@ -3,10 +3,7 @@ id: spurious-diffs
 title: Spurious/flaky diffs
 ---
 
-An important factor when constructing a good screenshot testing setup is to keep
-the number of flaky diffs to a minimum. A flaky diff (i.e. spurious diff or
-false positive) is when Happo finds a visual difference that isn't caused by a
-change in the code. These may involve (but are not limited to):
+An important factor when constructing a good screenshot testing setup is to keep the number of flaky diffs to a minimum. A flaky diff (i.e. spurious diff or false positive) is when Happo finds a visual difference that isn't caused by a change in the code. These may involve (but are not limited to):
 
 - image loading
 - font loading
@@ -16,8 +13,7 @@ change in the code. These may involve (but are not limited to):
 - dates, timestamps, etc
 - stack traces
 
-Happo tries to take care of as many of these as possible, automatically. For
-instance, the following tasks are performed before taking the screenshot:
+Happo tries to take care of as many of these as possible, automatically. For instance, the following tasks are performed before taking the screenshot:
 
 - wait for images (including background images and `srcset`)
 - wait for custom fonts
@@ -27,45 +23,25 @@ instance, the following tasks are performed before taking the screenshot:
 
 ## Tips & tricks
 
-In some cases however, Happo can't automatically detect things that cause flaky
-diffs. Here are some tips & tricks that you might find useful when dealing with
-flaky diffs.
+In some cases however, Happo can't automatically detect things that cause flaky diffs. Here are some tips & tricks that you might find useful when dealing with flaky diffs.
 
 ### Dates and timestamps
 
-If you have dates/timestamps, either injecting a fixed
-`new Date('2024-05-23T08:28:02.446Z')` into your component or freezing time via
-something like [mockdate](https://www.npmjs.com/package/mockdate) or
-[Sinon.js](https://sinonjs.org/) can help. You can also use the
-[`data-happo-hide` attribute](hiding-content.md) on the DOM element with the
-timestamp.
+If you have dates/timestamps, either injecting a fixed `new Date('2024-05-23T08:28:02.446Z')` into your component or freezing time via something like [mockdate](https://www.npmjs.com/package/mockdate) or [Sinon.js](https://sinonjs.org/) can help. You can also use the [`data-happo-hide` attribute](hiding-content.md) on the DOM element with the timestamp.
 
 ### External data
 
-If a component depends on external data (e.g. via an API), consider splitting
-out the data fetching from the visual component and test the visual component
-without data fetching, injecting the data needed to render it.
+If a component depends on external data (e.g. via an API), consider splitting out the data fetching from the visual component and test the visual component without data fetching, injecting the data needed to render it.
 
 ### External requests
 
-Anything your snapshots load from a third party — fonts, scripts, images —
-changes when that third party changes, and fails when it is down. The
-[`allowedHostnames` target option](configuration.md#target-allowedhostnames)
-lets you see and control what your snapshots reach for. Every run logs the
-external hostnames it requested, and the report's logs page opens with that
-list, so you can start by reading it and working out which entries you'd rather
-serve yourself. If a snapshot is missing something after you set a list, see
-[Missing fonts, images, or other external assets](debugging.md#missing-fonts-images-or-other-external-assets).
+Anything your snapshots load from a third party — fonts, scripts, images — changes when that third party changes, and fails when it is down. The [`allowedHostnames` target option](configuration.md#target-allowedhostnames) lets you see and control what your snapshots reach for. Every run logs the external hostnames it requested, and the report's logs page opens with that list, so you can start by reading it and working out which entries you'd rather serve yourself. If a snapshot is missing something after you set a list, see [Missing fonts, images, or other external assets](debugging.md#missing-fonts-images-or-other-external-assets).
 
 ### CI merge commits and mixed baselines
 
-You can sometimes see diffs where the "after" image includes changes from a
-later commit on the main/base branch. The most likely cause is that the CI
-system is creating a dynamic merge commit (PR head merged with the current main
-tip) and Happo is using that merge instead of the PR head itself.
+You can sometimes see diffs where the "after" image includes changes from a later commit on the main/base branch. The most likely cause is that the CI system is creating a dynamic merge commit (PR head merged with the current main tip) and Happo is using that merge instead of the PR head itself.
 
-In GitHub Actions for instance, a way to fix this is to tell the checkout step
-to use a specific ref, like this:
+In GitHub Actions for instance, a way to fix this is to tell the checkout step to use a specific ref, like this:
 
 ```yaml
 - uses: actions/checkout@v6
@@ -74,24 +50,15 @@ to use a specific ref, like this:
     fetch-depth: 100
 ```
 
-Other CI systems may do the same kind of merge-by-default (sometimes called
-"merge refs" or "merge builds"). Look for settings that control whether the job
-checks out a synthetic merge commit vs the PR head SHA, and switch to the PR
-head SHA when you want deterministic Happo diffs.
+Other CI systems may do the same kind of merge-by-default (sometimes called "merge refs" or "merge builds"). Look for settings that control whether the job checks out a synthetic merge commit vs the PR head SHA, and switch to the PR head SHA when you want deterministic Happo diffs.
 
 ### Font loading issues
 
-Font loading can be a common source of flaky diffs, especially when using
-external font CDNs. While Happo automatically waits for custom fonts to load,
-there are several scenarios where font loading can still cause inconsistencies:
+Font loading can be a common source of flaky diffs, especially when using external font CDNs. While Happo automatically waits for custom fonts to load, there are several scenarios where font loading can still cause inconsistencies:
 
 #### CDN throttling and rate limiting
 
-External font CDNs may throttle or rate-limit requests coming from the same IP
-or IP range. This is particularly problematic for Happo since it generates
-significant traffic to font URLs during screenshot testing. When throttling
-occurs, fonts may take longer to load or fail to load entirely, causing the
-browser to fall back to system fonts.
+External font CDNs may throttle or rate-limit requests coming from the same IP or IP range. This is particularly problematic for Happo since it generates significant traffic to font URLs during screenshot testing. When throttling occurs, fonts may take longer to load or fail to load entirely, causing the browser to fall back to system fonts.
 
 **Symptoms may include:**
 
@@ -100,35 +67,22 @@ browser to fall back to system fonts.
 
 **Solutions:**
 
-1. **Use locally hosted fonts:** The most stable solution is to host fonts
-   locally within your testing environment. This eliminates external
-   dependencies and ensures consistent font loading.
-1. **Disable throttling for font URLs:** Contact your CDN provider to disable
-   rate limiting for font URLs from your Happo testing environment. Using a
-   custom header on outgoing requests using the
-   [`outgoingRequestHeaders` option](configuration.md#target-outgoingrequestheaders)
-   could make CDN configuration simpler.
+1. **Use locally hosted fonts:** The most stable solution is to host fonts locally within your testing environment. This eliminates external dependencies and ensures consistent font loading.
+1. **Disable throttling for font URLs:** Contact your CDN provider to disable rate limiting for font URLs from your Happo testing environment. Using a custom header on outgoing requests using the [`outgoingRequestHeaders` option](configuration.md#target-outgoingrequestheaders) could make CDN configuration simpler.
 
 ### AVIF images
 
-Avoid using images served in [AVIF format](https://en.wikipedia.org/wiki/AVIF).
-These are known to render in a non-deterministic way which will cause small but
-significant changes in pixel output. Use WEBP, PNG or JPG instead. If your
-images are served by a CDN, it's possible that they are automatically converted
-to AVIF even if the original image was of a different format.
+Avoid using images served in [AVIF format](https://en.wikipedia.org/wiki/AVIF). These are known to render in a non-deterministic way which will cause small but significant changes in pixel output. Use WEBP, PNG or JPG instead. If your images are served by a CDN, it's possible that they are automatically converted to AVIF even if the original image was of a different format.
 
 ### Animations
 
-Happo freezes most types of animations (e.g. CSS transitions & animations, SVG
-animations, etc). But if you have animations controlled from JavaScript, you
-need to find a way to disable them for the Happo test suite.
+Happo freezes most types of animations (e.g. CSS transitions & animations, SVG animations, etc). But if you have animations controlled from JavaScript, you need to find a way to disable them for the Happo test suite.
 
 **Examples of animations Happo can stop automatically:**
 
 - CSS transitions, e.g. `.hero-img { transition: opacity 0.3s }`
 - CSS animations, e.g. `.nav-menu { animation: fade-in 0.3s }`
-- SVG animations, e.g.
-  `<rect><animate attributeName="rx" values="0;5;0" dur="10s" /></rect>`
+- SVG animations, e.g. `<rect><animate attributeName="rx" values="0;5;0" dur="10s" /></rect>`
 
 **Example of an animation that you need to disable yourself:**
 
@@ -157,18 +111,13 @@ if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
 
 #### `prefers-reduced-motion` media query
 
-One way to avoid flaky diffs caused by animations is to disable animations for
-browsers that signal they prefer reduced motion. By default,
-[Happo is configured to prefer reduced motion](./configuration#target-prefersreducedmotion).
+One way to avoid flaky diffs caused by animations is to disable animations for browsers that signal they prefer reduced motion. By default, [Happo is configured to prefer reduced motion](./configuration#target-prefersreducedmotion).
 
 ### Stack traces
 
-If you have components that throw errors, consider catching them and rendering a
-normalized error message. This is especially useful if you have components that
-render stack traces, which are likely to change between test runs.
+If you have components that throw errors, consider catching them and rendering a normalized error message. This is especially useful if you have components that render stack traces, which are likely to change between test runs.
 
-One way to normalize these stack traces in a React component is to use an error
-boundary. Here's an example:
+One way to normalize these stack traces in a React component is to use an error boundary. Here's an example:
 
 ```jsx
 import { ErrorBoundary } from 'react-error-boundary';
@@ -194,9 +143,7 @@ export const MiscFailing = () => (
 
 ### Hiding content with `data-happo-hide`
 
-If individual elements are known to cause spuriousness,
-[consider adding the `data-happo-hide` attribute](hiding-content.md). This will
-render the element invisible in the screenshot. Example:
+If individual elements are known to cause spuriousness, [consider adding the `data-happo-hide` attribute](hiding-content.md). This will render the element invisible in the screenshot. Example:
 
 ```jsx
 <div data-happo-hide>{Math.random()}</div>

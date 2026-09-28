@@ -68,7 +68,10 @@ function lastUpdated(file) {
   const date = execFileSync(
     'git',
     ['log', '-1', '--format=%ad', '--date=short', '--', file],
-    { cwd: ROOT, encoding: 'utf-8' },
+    {
+      cwd: ROOT,
+      encoding: 'utf-8',
+    },
   ).trim();
   return date || 'uncommitted';
 }
@@ -87,10 +90,10 @@ function sceneKind(scene) {
 
 async function status() {
   const references = findMediaReferences();
-  const sceneByOutput = new Map(scenes.map(scene => [scene.output, scene]));
+  const sceneByOutput = new Map(scenes.map((scene) => [scene.output, scene]));
   const allPaths = new Set([...references.keys(), ...sceneByOutput.keys()]);
 
-  const rows = [...allPaths].sort().map(mediaPath => {
+  const rows = [...allPaths].sort().map((mediaPath) => {
     const scene = sceneByOutput.get(mediaPath);
     const usedIn = references.get(mediaPath);
     const exists = fs.existsSync(path.join(ROOT, mediaPath));
@@ -106,8 +109,8 @@ async function status() {
   });
   console.table(rows);
 
-  const missingScenes = rows.filter(row => row.scene === '-').length;
-  const unused = rows.filter(row => row['used in'] === 'unused').length;
+  const missingScenes = rows.filter((row) => row.scene === '-').length;
+  const unused = rows.filter((row) => row['used in'] === 'unused').length;
   if (missingScenes) {
     console.log(`${missingScenes} media file(s) have no scene yet.`);
   }
@@ -163,14 +166,14 @@ async function screenshotScene(page, scene) {
     // match nothing (e.g. a part that only appears in some states).
     const locators = [scene.target(page)].flat();
     await Promise.any(
-      locators.map(locator => locator.first().waitFor({ state: 'attached' })),
+      locators.map((locator) => locator.first().waitFor({ state: 'attached' })),
     ).catch(() => {
       throw new Error('Target element is not visible');
     });
     const elements = [];
     for (const locator of locators) {
       for (const element of await locator.all()) {
-        const hasContent = await element.evaluate(el => {
+        const hasContent = await element.evaluate((el) => {
           // Elements like these show something even without any text.
           const media = 'img, svg, canvas, video, input, select, textarea';
           return (
@@ -189,13 +192,13 @@ async function screenshotScene(page, scene) {
       if (elementBox?.width && elementBox.height) boxes.push(elementBox);
     }
     if (!boxes.length) throw new Error('Target element is not visible');
-    const left = Math.min(...boxes.map(b => b.x));
-    const top = Math.min(...boxes.map(b => b.y));
+    const left = Math.min(...boxes.map((b) => b.x));
+    const top = Math.min(...boxes.map((b) => b.y));
     const box = {
       x: left,
       y: top,
-      width: Math.max(...boxes.map(b => b.x + b.width)) - left,
-      height: Math.max(...boxes.map(b => b.y + b.height)) - top,
+      width: Math.max(...boxes.map((b) => b.x + b.width)) - left,
+      height: Math.max(...boxes.map((b) => b.y + b.height)) - top,
     };
 
     // Measured in page coordinates and captured from the full page, so a
@@ -244,7 +247,7 @@ function allowedMargins(scene, scale) {
   const slack = 24;
   const sides = ['top', 'right', 'bottom', 'left'];
   return Object.fromEntries(
-    sides.map(side => {
+    sides.map((side) => {
       const padding =
         typeof scene.padding === 'object'
           ? (scene.padding[side] ?? 0)
@@ -270,7 +273,7 @@ function installCursor() {
   });
   document.addEventListener(
     'mousemove',
-    event => {
+    (event) => {
       cursor.style.transform = `translate(${event.clientX - 4}px, ${event.clientY - 2}px)`;
     },
     true,
@@ -298,7 +301,7 @@ function recordingHelpers(page) {
     // the right end of the label instead (still inside the element), which
     // works for left-aligned menu items and centered button labels alike.
     // Elements without text, like icon buttons, get the middle.
-    const textRight = await locator.evaluate(element => {
+    const textRight = await locator.evaluate((element) => {
       const range = document.createRange();
       range.selectNodeContents(element);
       const rect = range.getBoundingClientRect();
@@ -454,13 +457,15 @@ async function captureScene(browser, scene, { headed }) {
 async function capture(ids, { all, headed }) {
   let selected;
   if (all) {
-    selected = scenes.filter(scene => !scene.manual);
+    selected = scenes.filter((scene) => !scene.manual);
   } else {
-    const unknown = ids.filter(id => !scenes.some(scene => scene.id === id));
+    const unknown = ids.filter(
+      (id) => !scenes.some((scene) => scene.id === id),
+    );
     if (unknown.length) {
       throw new Error(`Unknown scene(s): ${unknown.join(', ')}`);
     }
-    selected = scenes.filter(scene => ids.includes(scene.id));
+    selected = scenes.filter((scene) => ids.includes(scene.id));
   }
 
   if (!selected.length) {
@@ -531,7 +536,7 @@ async function capture(ids, { all, headed }) {
 async function findSizeMismatches(media) {
   const references = findMediaReferences();
   const mismatches = [];
-  for (const file of media.filter(file => /\.png$/i.test(file))) {
+  for (const file of media.filter((file) => /\.png$/i.test(file))) {
     if (!fs.existsSync(path.join(ROOT, file))) continue;
     const { width, height } = await sharp(path.join(ROOT, file)).metadata();
     const url = file.replace(/^static/, '');
@@ -589,12 +594,12 @@ function printOlderMediaNearby(captured) {
   const cutoff = Date.now() - OLD_MEDIA_DAYS * 24 * 60 * 60 * 1000;
   const lines = [];
   for (const page of new Set(
-    captured.flatMap(c => [...(references.get(c) ?? [])]),
+    captured.flatMap((c) => [...(references.get(c) ?? [])]),
   )) {
     const older = pagesToMedia
       .get(page)
-      .filter(media => !captured.includes(media))
-      .map(media => ({ media, updated: lastUpdated(media) }))
+      .filter((media) => !captured.includes(media))
+      .map((media) => ({ media, updated: lastUpdated(media) }))
       .filter(({ updated }) => Date.parse(updated) < cutoff);
     for (const { media, updated } of older) {
       lines.push(`  ${pageName(page)}: ${media} (last updated ${updated})`);
@@ -619,7 +624,7 @@ function printConvertedReferences(converted) {
     if (pages) {
       console.log(
         `Update these pages to show it with a <video> tag (see media/README.md):\n` +
-          [...pages].map(page => `  ${page}`).join('\n'),
+          [...pages].map((page) => `  ${page}`).join('\n'),
       );
     }
     console.log(`Then delete ${file}.`);
@@ -688,7 +693,7 @@ async function optimize(files, { check, 'drop-audio': dropAudio }) {
   // A changed image can leave pages showing it at its old shape. Checked here
   // as well as after capturing, so images made by hand are covered too.
   const sizeMismatches = await findSizeMismatches(
-    files.map(file => path.relative(ROOT, path.resolve(file))),
+    files.map((file) => path.relative(ROOT, path.resolve(file))),
   );
   if (check && sizeMismatches.length) {
     console.error(
@@ -717,7 +722,7 @@ async function optimize(files, { check, 'drop-audio': dropAudio }) {
     console.error(
       `\n${failed.length + needsDropAudio.length} file(s) should be optimized ` +
         `before they're committed. Run this, then commit the result:\n\n` +
-        commands.map(command => `  ${command}\n`).join(''),
+        commands.map((command) => `  ${command}\n`).join(''),
     );
     process.exitCode = 1;
   }

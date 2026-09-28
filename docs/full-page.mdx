@@ -36,23 +36,19 @@ export default defineConfig({
 });
 ```
 
-> The urls to the website need to be publicly available, otherwise Happo workers
-> won't be able to access the pages
+> The urls to the website need to be publicly available, otherwise Happo workers won't be able to access the pages
 
 ## Running
 
-Invoke `npx happo` to execute the `pages` test suite. To run in CI, follow
-[the Continuous Integration guide](continuous-integration.md).
+Invoke `npx happo` to execute the `pages` test suite. To run in CI, follow [the Continuous Integration guide](continuous-integration.md).
 
 ## Options
 
-Each item in the `pages` array can have the following optional attributes in
-addition to `url` and `title`:
+Each item in the `pages` array can have the following optional attributes in addition to `url` and `title`:
 
 ### `waitForContent`
 
-If present, Happo will wait for content to appear on the page before taking the
-screenshot. Fox example:
+If present, Happo will wait for content to appear on the page before taking the screenshot. Fox example:
 
 ```js title="happo.config.ts"
 import { defineConfig } from 'happo';
@@ -76,16 +72,11 @@ export default defineConfig({
 });
 ```
 
-Happo will wait at most 10 seconds for the content to appear before it takes the
-screenshot. If the content does not appear within that time, the snap fails by
-default. See
-[`failOnWaitForTimeout`](configuration.md#failonwaitfortimeout) if you need to
-opt out of that behavior.
+Happo will wait at most 10 seconds for the content to appear before it takes the screenshot. If the content does not appear within that time, the snap fails by default. See [`failOnWaitForTimeout`](configuration.md#failonwaitfortimeout) if you need to opt out of that behavior.
 
 ### `waitForSelector`
 
-If present, Happo will wait for a selector to appear in the document before
-taking the screenshot. For example:
+If present, Happo will wait for a selector to appear in the document before taking the screenshot. For example:
 
 ```js title="happo.config.ts"
 import { defineConfig } from 'happo';
@@ -109,8 +100,4 @@ export default defineConfig({
 });
 ```
 
-Happo will wait at most 10 seconds for the selector to appear before it takes
-the screenshot. If the selector does not appear within that time, the snap
-fails by default. See
-[`failOnWaitForTimeout`](configuration.md#failonwaitfortimeout) if you need to
-opt out of that behavior.
+Happo will wait at most 10 seconds for the selector to appear before it takes the screenshot. If the selector does not appear within that time, the snap fails by default. See [`failOnWaitForTimeout`](configuration.md#failonwaitfortimeout) if you need to opt out of that behavior.

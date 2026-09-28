@@ -3,40 +3,23 @@ id: multi-project
 title: Multi-project setup
 ---
 
-If you want to use Happo in multiple projects in your organization, you can do
-so with the [`project` config option](configuration.md#project). You can have
-separate projects per repository, or even have separate projects within the same
-repository.
+If you want to use Happo in multiple projects in your organization, you can do so with the [`project` config option](configuration.md#project). You can have separate projects per repository, or even have separate projects within the same repository.
 
 By default, Happo will post one build status per project:
 
-![Two Happo projects with statuses for a PR](/img/happo-github-status-splitup.png)
-_Two Happo projects posting separate PR build statuses._
+![Two Happo projects with statuses for a PR](/img/happo-github-status-splitup.png) _Two Happo projects posting separate PR build statuses._
 
-If you want to combine all statuses into a single status check, keep reading!
-We'll walk you through how to achieve this:
+If you want to combine all statuses into a single status check, keep reading! We'll walk you through how to achieve this:
 
-![Two Happo projects with a combined status for a PR](/img/happo-github-status-orchestrated.png)
-_Two Happo projects posting a combined PR build status using the orchestration
-feature._
+![Two Happo projects with a combined status for a PR](/img/happo-github-status-orchestrated.png) _Two Happo projects posting a combined PR build status using the orchestration feature._
 
 ## Orchestration
 
-If you know beforehand what projects you are going to run Happo for in CI, you
-can call the
-[Orchestration API endpoint](https://happo.io/docs/api#Create%20an%20orchestration%20job)
-to tell Happo what projects you intend to process. Happo then combines them into
-one job, and posts one status for all of them.
+If you know beforehand what projects you are going to run Happo for in CI, you can call the [Orchestration API endpoint](https://happo.io/docs/api#Create%20an%20orchestration%20job) to tell Happo what projects you intend to process. Happo then combines them into one job, and posts one status for all of them.
 
-Call the endpoint before any of the projects start running, with the same
-"before" and "after" commits that the `happo` command uses. For a pull request,
-that's the merge base of the PR's base branch and its head commit, and the head
-commit itself.
+Call the endpoint before any of the projects start running, with the same "before" and "after" commits that the `happo` command uses. For a pull request, that's the merge base of the PR's base branch and its head commit, and the head commit itself.
 
-Here's an example GitHub Actions workflow with two projects: `components`, a
-Storybook configured in `happo.config.ts`, and `e2e`, a Playwright test suite
-configured in `happo.e2e.config.ts`. Pushes to `main` only create the reports
-that PRs are compared against, so there's nothing to orchestrate there.
+Here's an example GitHub Actions workflow with two projects: `components`, a Storybook configured in `happo.config.ts`, and `e2e`, a Playwright test suite configured in `happo.e2e.config.ts`. Pushes to `main` only create the reports that PRs are compared against, so there's nothing to orchestrate there.
 
 ```yaml title=".github/workflows/happo.yml"
 name: Happo
@@ -107,5 +90,4 @@ jobs:
           HAPPO_API_SECRET: ${{ secrets.HAPPO_API_SECRET }}
 ```
 
-The project names in the orchestration call have to match the
-[`project`](configuration.md#project) option in each config file.
+The project names in the orchestration call have to match the [`project`](configuration.md#project) option in each config file.

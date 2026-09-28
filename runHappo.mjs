@@ -10,7 +10,7 @@ function getChangedFiles() {
     });
     return out
       .split('\n')
-      .map(line => line.trim())
+      .map((line) => line.trim())
       .filter(Boolean);
   } catch (error) {
     console.warn(

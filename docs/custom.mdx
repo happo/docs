@@ -7,8 +7,7 @@ title: Custom Integration
 import Installation from './_partials/installation.mdx';
 ```
 
-By providing your own JavaScript bundle you can create a custom Happo
-integration that you have full control over.
+By providing your own JavaScript bundle you can create a custom Happo integration that you have full control over.
 
 ## Installation
 
@@ -16,9 +15,7 @@ integration that you have full control over.
 
 ## Configuration
 
-Then, create or modify `happo.config.ts` and add an `integration` field. Point
-it to the root of a custom built package folder. In our example, we're using
-`./tmp/happo-custom`.
+Then, create or modify `happo.config.ts` and add an `integration` field. Point it to the root of a custom built package folder. In our example, we're using `./tmp/happo-custom`.
 
 ```js title="happo.config.ts"
 import { defineConfig } from 'happo';
@@ -37,8 +34,7 @@ export default defineConfig({
 });
 ```
 
-The configuration above assumes a pre-built folder. You can also generate the
-package on the fly here, something like:
+The configuration above assumes a pre-built folder. You can also generate the package on the fly here, something like:
 
 ```js title="happo.config.ts"
 import { defineConfig } from 'happo';
@@ -64,9 +60,7 @@ export default defineConfig({
 
 ### Enabling auto-chunking
 
-As of v6.4.1, Happo can automatically parallelize rendering across multiple
-workers based on an estimated snapshot count. For the custom integration, you
-opt into this by returning `estimatedSnapsCount` from your `build` function:
+As of v6.4.1, Happo can automatically parallelize rendering across multiple workers based on an estimated snapshot count. For the custom integration, you opt into this by returning `estimatedSnapsCount` from your `build` function:
 
 ```js title="happo.config.ts"
 import { defineConfig } from 'happo';
@@ -91,26 +85,19 @@ export default defineConfig({
 });
 ```
 
-The value doesn't need to be exact — it's used as a hint to determine how many
-parallel workers to spin up. Without it, Happo will not auto-chunk and you'll
-need to set [`chunks`](configuration.md#target-chunks) explicitly if you want
-parallel workers.
+The value doesn't need to be exact — it's used as a hint to determine how many parallel workers to spin up. Without it, Happo will not auto-chunk and you'll need to set [`chunks`](configuration.md#target-chunks) explicitly if you want parallel workers.
 
 ## Prepare JavaScript bundle
 
-The `happo/custom` library has two methods you should use when creating your
-JavaScript bundle:
+The `happo/custom` library has two methods you should use when creating your JavaScript bundle:
 
 ### `happoCustom.init()`
 
-Call this method once in your bundle. This will prep the bundle for usage on
-Happo workers. It doesn't matter when you call `init` (can be first, last or in
-between).
+Call this method once in your bundle. This will prep the bundle for usage on Happo workers. It doesn't matter when you call `init` (can be first, last or in between).
 
 ### `happoCustom.registerExample()`
 
-Call this method to register your Happo examples. Takes an object with the
-following structure:
+Call this method to register your Happo examples. Takes an object with the following structure:
 
 - `component` - (string) name of the component
 - `variant` - (string) name of the component variant
@@ -143,19 +130,11 @@ happoCustom.registerExample({
 
 #### Waiting for content
 
-In some cases, examples might not be ready by the time Happo takes the
-screenshot. Although adding a delay could help, it will only work well if the
-asynchronous event is consistently timed. In these cases the `waitForContent`
-parameter might help.
+In some cases, examples might not be ready by the time Happo takes the screenshot. Although adding a delay could help, it will only work well if the asynchronous event is consistently timed. In these cases the `waitForContent` parameter might help.
 
-Let's assume that we have an example that needs to fetch some external data. In
-order to wait for the data to finish loading, we can add a `waitForContent`
-parameter with some unique string from the loaded state.
+Let's assume that we have an example that needs to fetch some external data. In order to wait for the data to finish loading, we can add a `waitForContent` parameter with some unique string from the loaded state.
 
-If the content does not appear within the worker's timeout, the snap fails by
-default. See
-[`failOnWaitForTimeout`](configuration.md#failonwaitfortimeout) if you need to
-opt out of that behavior.
+If the content does not appear within the worker's timeout, the snap fails by default. See [`failOnWaitForTimeout`](configuration.md#failonwaitfortimeout) if you need to opt out of that behavior.
 
 ```js title="main.js"
 happoCustom.registerExample({
@@ -173,15 +152,9 @@ happoCustom.registerExample({
 
 ## Optional: Create an HTML document
 
-By default, Happo will create an HTML document that it will render your custom
-examples into. This document includes basic defaults such as setting `lang="en"`
-on the `<html>` element, setting the charset to `utf-8`, adding a `dir="ltr"`
-attribute, and a meta viewport tag.
+By default, Happo will create an HTML document that it will render your custom examples into. This document includes basic defaults such as setting `lang="en"` on the `<html>` element, setting the charset to `utf-8`, adding a `dir="ltr"` attribute, and a meta viewport tag.
 
-If you want to use a custom HTML document to render your examples into, you can
-create a file named `iframe.html` in the root of your built custom package
-directory. This document must include a `script` tag that loads the built entry
-point to your custom bundle. For example:
+If you want to use a custom HTML document to render your examples into, you can create a file named `iframe.html` in the root of your built custom package directory. This document must include a `script` tag that loads the built entry point to your custom bundle. For example:
 
 ```html title="tmp/happo-custom/iframe.html"
 <!DOCTYPE html>
@@ -196,14 +169,11 @@ point to your custom bundle. For example:
 </html>
 ```
 
-`/bundle.js` is the path to your JavaScript bundle. You can assume that the
-custom package folder is the root, so in our case, `/bundle.js` would refer to
-`./tmp/happo-custom/bundle.js`.
+`/bundle.js` is the path to your JavaScript bundle. You can assume that the custom package folder is the root, so in our case, `/bundle.js` would refer to `./tmp/happo-custom/bundle.js`.
 
 ## Running happo
 
-Once you have everything set up, you can invoke the `happo` command via the
-command line.
+Once you have everything set up, you can invoke the `happo` command via the command line.
 
 ```sh
 npx happo
@@ -211,41 +181,32 @@ npx happo
 
 ## Partial runs
 
-*The `--skip` flag is available in `happo` v6.10.0 and later.*
+_The `--skip` flag is available in `happo` v6.10.0 and later._
 
-To exclude specific components or variants from a run, use the
-[`--skip`](cli#--skip-json) CLI option:
+To exclude specific components or variants from a run, use the [`--skip`](cli#--skip-json) CLI option:
 
 ```sh
 npx happo --skip '[{"component":"Card"},{"component":"Button"}]'
 ```
 
-Any matching `registerExample` calls will be skipped during the run. See the
-[CLI reference](cli#--skip-json) for the full list of entry forms.
+Any matching `registerExample` calls will be skipped during the run. See the [CLI reference](cli#--skip-json) for the full list of entry forms.
 
 ## Testing locally
 
-If you serve the custom folder (`./tmp/happo-custom` in our case) through an
-HTTP server, you can open up `iframe.html` and test the integration straight in
-your browser. You can use the
-[`http-server` package](https://www.npmjs.com/package/http-server) for that:
+If you serve the custom folder (`./tmp/happo-custom` in our case) through an HTTP server, you can open up `iframe.html` and test the integration straight in your browser. You can use the [`http-server` package](https://www.npmjs.com/package/http-server) for that:
 
 ```sh
 npx http-server ./tmp/happo-custom
 ```
 
-Once the server is up and running, open `http://localhost:8080/iframe.html` in a
-browser window. Then, in the JavaScript console of the page (e.g. through Chrome
-DevTools), call the following function:
+Once the server is up and running, open `http://localhost:8080/iframe.html` in a browser window. Then, in the JavaScript console of the page (e.g. through Chrome DevTools), call the following function:
 
 ```js
 window.happo.nextExample();
 ```
 
-This should render the first example. Repeat calling this method until you've
-rendered all your examples.
+This should render the first example. Repeat calling this method until you've rendered all your examples.
 
 ## Continuous integration
 
-To integrate a Custom bundle integration with CI, follow the instructions on the
-[Continuous Integration page](continuous-integration.md).
+To integrate a Custom bundle integration with CI, follow the instructions on the [Continuous Integration page](continuous-integration.md).

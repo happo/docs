@@ -3,14 +3,11 @@ id: webhooks
 title: Webhooks
 ---
 
-Webhooks allow you to get notified about certain events that occur in your Happo
-account. Use webhooks to create deeper integrations with Happo.
+Webhooks allow you to get notified about certain events that occur in your Happo account. Use webhooks to create deeper integrations with Happo.
 
 ## Usage
 
-You'll find a link to [Webhooks admin](https://happo.io/webhooks) from your
-Happo dashboard. Please note that you must be an administrator of the Happo
-account to use this feature.
+You'll find a link to [Webhooks admin](https://happo.io/webhooks) from your Happo dashboard. Please note that you must be an administrator of the Happo account to use this feature.
 
 <img
   src="/img/webhooks-new.png"
@@ -19,20 +16,15 @@ account to use this feature.
   height="623"
 />
 
-Enter a URL where your server is listening and a secret to use when signing
-requests.
+Enter a URL where your server is listening and a secret to use when signing requests.
 
-Use the checkboxes to select which event types the webhook should receive. At
-least one event type must be enabled.
+Use the checkboxes to select which event types the webhook should receive. At least one event type must be enabled.
 
 ## Event types
 
 ### `comparison`
 
-The comparison event is sent when a comparison between two reports have been
-made. The payload data for this event is
-[a Comparison object](https://happo.io/docs/api#Comparison). Here's an example
-payload:
+The comparison event is sent when a comparison between two reports have been made. The payload data for this event is [a Comparison object](https://happo.io/docs/api#Comparison). Here's an example payload:
 
 ```json
 {
@@ -85,8 +77,7 @@ payload:
 
 ### `flake`
 
-The flake event is sent when a diff is [reported as flaky](reporting-flake.md).
-It is also sent when the report is undone.
+The flake event is sent when a diff is [reported as flaky](reporting-flake.md). It is also sent when the report is undone.
 
 **Example — flake reported, tied to a comparison**
 
@@ -168,21 +159,18 @@ It is also sent when the report is undone.
 
 **Field reference**
 
-| Field                         | Type                       | Notes                                                                                                                                       |
-| ----------------------------- | -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| `action`                      | `"reported"` \| `"undone"` | Whether a flake was just reported or had its report withdrawn.                                                                              |
-| `link`                        | string                     | Best page link to view the diff: comparison page when available, otherwise the snapshot-vs-snapshot page.                                   |
-| `reportedAt`                  | ISO 8601 string            | Server-side event timestamp; useful for de-duping retries.                                                                                  |
-| `project.id` / `project.name` | number / string            | The project the flake belongs to.                                                                                                           |
-| `comparison`                  | object \| `null`           | Most flake reporting happens in the context of a comparison, but it is not guaranteed. Contains `id`, `beforeSha`, `afterSha` when present. |
-| `snapshot1` / `snapshot2`     | object                     | The two snapshots being compared. `width`/`height` may be `null` for accessibility snapshots.                                               |
+| Field | Type | Notes |
+| --- | --- | --- |
+| `action` | `"reported"` \| `"undone"` | Whether a flake was just reported or had its report withdrawn. |
+| `link` | string | Best page link to view the diff: comparison page when available, otherwise the snapshot-vs-snapshot page. |
+| `reportedAt` | ISO 8601 string | Server-side event timestamp; useful for de-duping retries. |
+| `project.id` / `project.name` | number / string | The project the flake belongs to. |
+| `comparison` | object \| `null` | Most flake reporting happens in the context of a comparison, but it is not guaranteed. Contains `id`, `beforeSha`, `afterSha` when present. |
+| `snapshot1` / `snapshot2` | object | The two snapshots being compared. `width`/`height` may be `null` for accessibility snapshots. |
 
 ## Verifying signatures
 
-Every webhook call made by Happo will contain a `X-Happo-Signature` header. You
-can use the value of this header to verify that the call is in fact made by
-Happo. The signature is computed using a SHA-256 HMAC hex digest. Here's how you
-can verify the signature using NodeJS with Express:
+Every webhook call made by Happo will contain a `X-Happo-Signature` header. You can use the value of this header to verify that the call is in fact made by Happo. The signature is computed using a SHA-256 HMAC hex digest. Here's how you can verify the signature using NodeJS with Express:
 
 ```js
 const crypto = require('crypto');
@@ -212,15 +200,11 @@ async function handleHappoWebhook(req, res, next) {
 
 ## Timeouts
 
-Happo will wait at most 20 seconds for a response from the webhook. Make sure
-you handle the event quickly. Ideally you shouldn't keep Happo waiting if you
-are doing time-consuming things as a result of an event.
+Happo will wait at most 20 seconds for a response from the webhook. Make sure you handle the event quickly. Ideally you shouldn't keep Happo waiting if you are doing time-consuming things as a result of an event.
 
 ## Re-delivering a webhook
 
-Every webhook that Happo sends is stored with your Happo account. You can
-inspect the results of each webhook delivery. This will help when debugging
-webhooks. You can also re-deliver an webhook using the admin UI.
+Every webhook that Happo sends is stored with your Happo account. You can inspect the results of each webhook delivery. This will help when debugging webhooks. You can also re-deliver an webhook using the admin UI.
 
 <img
   src="/img/webhooks-recent-deliveries.png"
@@ -229,5 +213,4 @@ webhooks. You can also re-deliver an webhook using the admin UI.
   height="589"
 />
 
-Webhooks are stored a few days on Happo servers, then they are automatically
-cleaned out.
+Webhooks are stored a few days on Happo servers, then they are automatically cleaned out.

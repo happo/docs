@@ -50,7 +50,7 @@ export default async function buildHappoCustom() {
 happoCustom.init();
 
 ${examples
-  .map(example => {
+  .map((example) => {
     return `happoCustom.registerExample({
   component: ${JSON.stringify(example.component)},
   variant: 'default',

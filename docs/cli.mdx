@@ -8,28 +8,17 @@ sidebar_label: CLI reference
 import Installation from './_partials/installation.mdx';
 ```
 
-The `happo` command provides all the functionality you need for running Happo
-tests, including CI integration. The following documentation covers all
-available commands and options to help you configure Happo for your specific
-needs.
+The `happo` command provides all the functionality you need for running Happo tests, including CI integration. The following documentation covers all available commands and options to help you configure Happo for your specific needs.
 
 ## Authentication
 
-The `happo` CLI requires authentication to communicate with the happo.io
-service. You can authenticate in two ways:
+The `happo` CLI requires authentication to communicate with the happo.io service. You can authenticate in two ways:
 
-1. **API Key and Secret** (recommended for CI and production): Provide `apiKey`
-   and `apiSecret` in your configuration file or as environment variables. See
-   [Configuration](configuration.md#apikey-and-apisecret) for details.
+1. **API Key and Secret** (recommended for CI and production): Provide `apiKey` and `apiSecret` in your configuration file or as environment variables. See [Configuration](configuration.md#apikey-and-apisecret) for details.
 
-2. **Interactive Browser Authentication**: If no `apiKey` or `apiSecret` is
-   detected, the CLI will prompt you to authenticate in your browser. This
-   creates short-lived authentication tokens.
+2. **Interactive Browser Authentication**: If no `apiKey` or `apiSecret` is detected, the CLI will prompt you to authenticate in your browser. This creates short-lived authentication tokens.
 
-   > **Important:** Interactive authentication will not work in CI environments
-   > or non-interactive terminals. You must provide explicit `apiKey` and
-   > `apiSecret` values for these scenarios. See
-   > [Continuous Integration](continuous-integration.md) for setup instructions.
+   > **Important:** Interactive authentication will not work in CI environments or non-interactive terminals. You must provide explicit `apiKey` and `apiSecret` values for these scenarios. See [Continuous Integration](continuous-integration.md) for setup instructions.
 
 ## Installation
 
@@ -49,10 +38,9 @@ You'll also need to add a script to `package.json`:
 
 ### Default command
 
-*Available since happo v6.0.0.*
+_Available since happo v6.0.0._
 
-Run happo tests to generate screenshots and upload them to the remote happo.io
-service.
+Run happo tests to generate screenshots and upload them to the remote happo.io service.
 
 ```sh
 npm run happo
@@ -60,10 +48,9 @@ npm run happo
 
 ### Wrapping command
 
-*Available since happo v6.0.0.*
+_Available since happo v6.0.0._
 
-Use `happo` as a wrapping command when using Cypress or Playwright. This allows
-Happo to coordinate test execution and collect results from parallel test runs.
+Use `happo` as a wrapping command when using Cypress or Playwright. This allows Happo to coordinate test execution and collect results from parallel test runs.
 
 ```sh
 npm run happo -- playwright test
@@ -77,12 +64,9 @@ npm run happo --nonce [NONCE] -- playwright test
 
 ### Finalize command
 
-*Available since happo v6.0.0.*
+_Available since happo v6.0.0._
 
-Finalize a Happo report for Cypress or Playwright tests running in parallel.
-This command is used after parallel test execution completes to aggregate
-results and finalize the report. It's used in combination with the `--nonce`
-argument.
+Finalize a Happo report for Cypress or Playwright tests running in parallel. This command is used after parallel test execution completes to aggregate results and finalize the report. It's used in combination with the `--nonce` argument.
 
 ```sh
 npm run happo finalize
@@ -94,10 +78,9 @@ npm run happo finalize --nonce [NONCE]
 
 ### Flake command
 
-*Available since happo v6.3.0.*
+_Available since happo v6.3.0._
 
-List [reported flakes](reporting-flake.md) for a project. By default, results
-are printed in a human-readable format, one flake per line.
+List [reported flakes](reporting-flake.md) for a project. By default, results are printed in a human-readable format, one flake per line.
 
 ```sh
 npm run happo flake
@@ -127,10 +110,9 @@ npm run happo flake --sha=ff2df74c1730341240840010c7518b2c1f4b55cb
 
 ### `--config` / `-c`
 
-*Available since happo v6.0.0.*
+_Available since happo v6.0.0._
 
-Specify a custom path to the Happo configuration file. By default, Happo looks
-for configuration files in the following order:
+Specify a custom path to the Happo configuration file. By default, Happo looks for configuration files in the following order:
 
 - `happo.config.js`,
 - `happo.config.mjs`,
@@ -145,7 +127,7 @@ npm run happo --config path/to/happo.config.ts
 
 ### `--version` / `-v`
 
-*Available since happo v6.0.0.*
+_Available since happo v6.0.0._
 
 Display the version number of the Happo CLI.
 
@@ -155,7 +137,7 @@ npm run happo --version
 
 ### `--help` / `-h`
 
-*Available since happo v6.0.0.*
+_Available since happo v6.0.0._
 
 Display help text with available commands and options.
 
@@ -165,7 +147,7 @@ npm run happo --help
 
 ### `--baseBranch <branch>`
 
-*Available since happo v6.0.0.*
+_Available since happo v6.0.0._
 
 Base branch to use for comparison. Default: `origin/main`.
 
@@ -175,7 +157,7 @@ npm run happo --baseBranch origin/long-lived-branch
 
 ### `--link <url>`
 
-*Available since happo v6.0.0.*
+_Available since happo v6.0.0._
 
 URL to contextualize the comparison. Default: auto-detected from CI environment.
 
@@ -185,10 +167,9 @@ npm run happo --link https://github.com/happo/happo/pull/123
 
 ### `--message <message>`
 
-*Available since happo v6.0.0.*
+_Available since happo v6.0.0._
 
-Message to associate with the comparison. Default: auto-detected from CI
-environment.
+Message to associate with the comparison. Default: auto-detected from CI environment.
 
 ```sh
 npm run happo --message "Add new feature"
@@ -196,10 +177,9 @@ npm run happo --message "Add new feature"
 
 ### `--authorEmail <email>`
 
-*Available since happo v6.0.0.*
+_Available since happo v6.0.0._
 
-Email address of the author of the comparison. Default: auto-detected from CI
-environment.
+Email address of the author of the comparison. Default: auto-detected from CI environment.
 
 ```sh
 npm run happo --authorEmail author@example.com
@@ -207,10 +187,9 @@ npm run happo --authorEmail author@example.com
 
 ### `--afterSha <sha>`
 
-*Available since happo v6.0.0.*
+_Available since happo v6.0.0._
 
-"After" SHA to use for comparison. Default: auto-detected from CI environment,
-or HEAD SHA if not set.
+"After" SHA to use for comparison. Default: auto-detected from CI environment, or HEAD SHA if not set.
 
 ```sh
 npm run happo --afterSha abc123def456
@@ -218,7 +197,7 @@ npm run happo --afterSha abc123def456
 
 ### `--beforeSha <sha>`
 
-*Available since happo v6.0.0.*
+_Available since happo v6.0.0._
 
 "Before" SHA to use for comparison. Default: auto-detected from CI environment.
 
@@ -228,10 +207,9 @@ npm run happo --beforeSha xyz789ghi012
 
 ### `--fallbackShas <shas>`
 
-*Available since happo v6.0.0.*
+_Available since happo v6.0.0._
 
-Space-, newline- or comma-separated list of fallback shas for compare calls.
-Default: auto-detected from CI environment.
+Space-, newline- or comma-separated list of fallback shas for compare calls. Default: auto-detected from CI environment.
 
 ```sh
 npm run happo --fallbackShas "sha1,sha2,sha3"
@@ -239,7 +217,7 @@ npm run happo --fallbackShas "sha1,sha2,sha3"
 
 ### `--fallbackShasCount <count>`
 
-*Available since happo v6.0.0.*
+_Available since happo v6.0.0._
 
 Number of fallback shas to use for compare calls. Default: `50`.
 
@@ -249,7 +227,7 @@ npm run happo --fallbackShasCount 100
 
 ### `--notify <emails>`
 
-*Available since happo v6.0.0.*
+_Available since happo v6.0.0._
 
 One or more (comma-separated) email addresses to notify with results.
 
@@ -259,10 +237,9 @@ npm run happo --notify me@example.com,you@example.com
 
 ### `--nonce <nonce>`
 
-*Available since happo v6.0.0.*
+_Available since happo v6.0.0._
 
-Nonce to use for Cypress/Playwright comparison. Use the same nonce when using
-with the `finalize` command.
+Nonce to use for Cypress/Playwright comparison. Use the same nonce when using with the `finalize` command.
 
 ```sh
 npm run happo --nonce my-unique-nonce -- playwright test
@@ -271,17 +248,15 @@ npm run happo finalize --nonce my-unique-nonce
 
 ### `--skip <json>`
 
-*Available since happo v6.10.0.*
+_Available since happo v6.10.0._
 
-JSON array of components or story files to exclude from snapshot rendering.
-Defaults to an empty array (nothing skipped).
+JSON array of components or story files to exclude from snapshot rendering. Defaults to an empty array (nothing skipped).
 
 Each entry can take one of these forms:
 
 - `{ "component": "Card" }` — skip all variants of a component
 - `{ "component": "Card", "variant": "bordered" }` — skip a specific variant
-- `{ "storyFile": "./src/stories/Card.stories.js" }` — skip all stories in a
-  file (Storybook only)
+- `{ "storyFile": "./src/stories/Card.stories.js" }` — skip all stories in a file (Storybook only)
 
 ```sh
 npm run happo --skip '[{"component":"Card"},{"component":"Button","variant":"primary"}]'
@@ -291,32 +266,25 @@ npm run happo --skip '[{"component":"Card"},{"component":"Button","variant":"pri
 npm run happo --skip '[{"storyFile":"./src/stories/Card.stories.js"}]'
 ```
 
-See [Partial runs](storybook#partial-runs) in the Storybook guide for how to use
-`--skip` to reduce quota usage.
+See [Partial runs](storybook#partial-runs) in the Storybook guide for how to use `--skip` to reduce quota usage.
 
 ### `--only <json>`
 
-*Available since happo v6.10.0.*
+_Available since happo v6.10.0._
 
-JSON array of components or story files to exclusively render, skipping all
-others. Uses the same entry format as [`--skip`](#--skip-json). The `storyFile`
-entry form is Storybook-only; the `component` form works for all integrations.
+JSON array of components or story files to exclusively render, skipping all others. Uses the same entry format as [`--skip`](#--skip-json). The `storyFile` entry form is Storybook-only; the `component` form works for all integrations.
 
 ```sh
 npm run happo --only '[{"component":"Card"},{"storyFile":"./src/stories/Button.stories.js"}]'
 ```
 
-See [Partial runs](storybook#partial-runs) in the Storybook guide for how to use
-`--only` to reduce quota usage, or [Local development](local-development) for
-using it from a developer's machine.
+See [Partial runs](storybook#partial-runs) in the Storybook guide for how to use `--only` to reduce quota usage, or [Local development](local-development) for using it from a developer's machine.
 
 ### `--githubToken <token>`
 
-*Available since happo v6.0.0.*
+_Available since happo v6.0.0._
 
-GitHub token to use for posting Happo statuses as comments. Use in combination
-with the `githubApiUrl` configuration option. Default: auto-detected from
-environment.
+GitHub token to use for posting Happo statuses as comments. Use in combination with the `githubApiUrl` configuration option. Default: auto-detected from environment.
 
 ```sh
 npm run happo --githubToken $GITHUB_TOKEN
@@ -328,10 +296,9 @@ These options apply only to the `happo flake` command.
 
 ### `--allProjects`
 
-*Available since happo v6.3.0.*
+_Available since happo v6.3.0._
 
-List flakes across all projects. By default, only flakes for the current project
-(from your config) are shown.
+List flakes across all projects. By default, only flakes for the current project (from your config) are shown.
 
 ```sh
 npm run happo flake --allProjects
@@ -339,10 +306,9 @@ npm run happo flake --allProjects
 
 ### `--format <format>`
 
-*Available since happo v6.3.0.*
+_Available since happo v6.3.0._
 
-Output format. Use `"human"` (default) for readable output or `"json"` for raw
-JSON output suitable for scripting.
+Output format. Use `"human"` (default) for readable output or `"json"` for raw JSON output suitable for scripting.
 
 ```sh
 npm run happo flake --format=json
@@ -350,7 +316,7 @@ npm run happo flake --format=json
 
 ### `--project <name>`
 
-*Available since happo v6.3.0.*
+_Available since happo v6.3.0._
 
 Project to filter flakes for. Defaults to the project defined in your config.
 
@@ -360,7 +326,7 @@ npm run happo flake --project=my-project
 
 ### `--limit <number>`
 
-*Available since happo v6.3.0.*
+_Available since happo v6.3.0._
 
 Maximum number of flake results to return. Default: `100`. Maximum: `1000`.
 
@@ -370,7 +336,7 @@ npm run happo flake --limit=50
 
 ### `--page <number>`
 
-*Available since happo v6.3.0.*
+_Available since happo v6.3.0._
 
 Page number for paginated results. Default: `1`.
 
@@ -380,7 +346,7 @@ npm run happo flake --page=2
 
 ### `--component <name>`
 
-*Available since happo v6.3.0.*
+_Available since happo v6.3.0._
 
 Filter flakes by component name.
 
@@ -390,7 +356,7 @@ npm run happo flake --component=Button
 
 ### `--variant <name>`
 
-*Available since happo v6.3.0.*
+_Available since happo v6.3.0._
 
 Filter flakes by variant name.
 
@@ -400,7 +366,7 @@ npm run happo flake --variant=primary
 
 ### `--target <name>`
 
-*Available since happo v6.3.0.*
+_Available since happo v6.3.0._
 
 Filter flakes by target name (browser/viewport).
 
@@ -410,10 +376,9 @@ npm run happo flake --target=chrome
 
 ### `--sha <sha>`
 
-*Available since happo v6.3.0.*
+_Available since happo v6.3.0._
 
-Filter flakes by a specific before/after SHA. Returns only flakes associated
-with that commit.
+Filter flakes by a specific before/after SHA. Returns only flakes associated with that commit.
 
 ```sh
 npm run happo flake --sha=ff2df74c1730341240840010c7518b2c1f4b55cb
