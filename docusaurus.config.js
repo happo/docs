@@ -70,6 +70,33 @@ export default {
         ],
       },
     ],
+    // package.json has `"type": "module"`, and Docusaurus assumes CommonJS in
+    // two places:
+    // - The files it generates into `.docusaurus/` call `require.resolveWeak`,
+    //   which the bundler withholds from a `.js` file it parses as strict ESM.
+    //   Let it detect their module type instead.
+    // - The server build's chunks are CommonJS that SSG loads with
+    //   `require()`, which Node refuses for a `.js` file under this
+    //   package.json. Name them `.cjs`.
+    () => ({
+      name: 'commonjs-under-type-module',
+      configureWebpack: (config, isServer) => ({
+        ...(isServer && {
+          output: {
+            chunkFilename: config.output.chunkFilename.replace(/\.js$/, '.cjs'),
+          },
+        }),
+        module: {
+          rules: [
+            {
+              test: /\.js$/,
+              include: /[\\/]\.docusaurus[\\/]/,
+              type: 'javascript/auto',
+            },
+          ],
+        },
+      }),
+    }),
   ],
 
   themeConfig: {

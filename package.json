@@ -4,6 +4,10 @@
   "author": "Henric Persson <henric.trotzig@gmail.com>",
   "license": "proprietary",
   "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
   "scripts": {
     "build": "docusaurus build",
     "deploy": "docusaurus deploy",
