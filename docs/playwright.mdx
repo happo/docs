@@ -13,15 +13,11 @@ import EmailNotifications from './_partials/email-notifications.mdx';
 import StylesMissing from './_partials/styles-missing.mdx';
 ```
 
-The [`happo/playwright`](https://github.com/happo/happo) module makes it easy to
-integrate a [Playwright](https://playwright.dev/) test suite with
-[Happo](https://happo.io).
+The [`happo/playwright`](https://github.com/happo/happo) module makes it easy to integrate a [Playwright](https://playwright.dev/) test suite with [Happo](https://happo.io).
 
 ## Pre-requisites
 
-Before you start following the instructions here, you'll need
-[a working Playwright setup](https://playwright.dev/docs/intro) and a
-[Happo account](https://happo.io/signup).
+Before you start following the instructions here, you'll need [a working Playwright setup](https://playwright.dev/docs/intro) and a [Happo account](https://happo.io/signup).
 
 ## Installation
 
@@ -29,8 +25,7 @@ Before you start following the instructions here, you'll need
 
 ## Setup
 
-Below is an example Playwright spec file. It takes a screenshot of a Hero image
-on an imaginary page.
+Below is an example Playwright spec file. It takes a screenshot of a Hero image on an imaginary page.
 
 ```js title="tests/test.spec.js"
 import { test } from 'happo/playwright';
@@ -47,8 +42,7 @@ test('start page', async ({ page, happoScreenshot }) => {
 });
 ```
 
-You will also need a `happo.config.ts` file with some minimal/required
-configuration:
+You will also need a `happo.config.ts` file with some minimal/required configuration:
 
 ```js title="happo.config.ts"
 import { defineConfig } from 'happo';
@@ -76,10 +70,7 @@ See [Configuration](configuration.md#targets) for more configuration options.
 
 ### With Playwright fixtures
 
-If you're using
-[Playwright fixtures](https://playwright.dev/docs/test-fixtures), you can mix
-happo-playwright in with
-[`mergeTests`](https://playwright.dev/docs/test-fixtures#combine-custom-fixtures-from-multiple-modules).
+If you're using [Playwright fixtures](https://playwright.dev/docs/test-fixtures), you can mix happo-playwright in with [`mergeTests`](https://playwright.dev/docs/test-fixtures#combine-custom-fixtures-from-multiple-modules).
 
 Here's an example of how to do this:
 
@@ -115,28 +106,23 @@ test('start page', async ({ page, happoScreenshot }) => {
 
 ### Usage
 
-To enable Happo in your test suite, wrap your test command with the `happo`
-script. Here's an example:
+To enable Happo in your test suite, wrap your test command with the `happo` script. Here's an example:
 
 ```sh
 npx happo -- playwright test
 ```
 
-If you're using [`yarn`](https://yarnpkg.com/), you might have to specify the
-double dashes twice (the first one is consumed by `yarn` itself):
+If you're using [`yarn`](https://yarnpkg.com/), you might have to specify the double dashes twice (the first one is consumed by `yarn` itself):
 
 ```sh
 yarn happo -- -- yarn playwright test
 ```
 
-If you're not using the `happo` wrapper, Happo will be disabled for the whole
-test suite.
+If you're not using the `happo` wrapper, Happo will be disabled for the whole test suite.
 
 ## Allowing failures
 
-By default, no Happo reports are produced when the Playwright run fails. In some
-cases, you might want to allow Happo to succeed even if the overall test run
-fails. The `allowFailures` configuration option can then be used:
+By default, no Happo reports are produced when the Playwright run fails. In some cases, you might want to allow Happo to succeed even if the overall test run fails. The `allowFailures` configuration option can then be used:
 
 ```js title="happo.config.ts"
 export default defineConfig({
@@ -156,9 +142,7 @@ yarn happo -- --allow-failures -- yarn playwright test
 
 ## Selecting targets
 
-If you want to avoid rendering an example in all browser targets (found in
-`happo.config.ts`), you can use the `targets` option. The example will then be
-rendered in the specified targets exclusively.
+If you want to avoid rendering an example in all browser targets (found in `happo.config.ts`), you can use the `targets` option. The example will then be rendered in the specified targets exclusively.
 
 ```js
 await happoScreenshot(heroImage, {
@@ -168,15 +152,11 @@ await happoScreenshot(heroImage, {
 });
 ```
 
-In this example, the "Footer" snapshot will only be rendered in the target named
-`'chrome-small'` found in `happo.config.ts`.
+In this example, the "Footer" snapshot will only be rendered in the target named `'chrome-small'` found in `happo.config.ts`.
 
 ### Dynamic targets
 
-If you want to create a snapshot in a target that isn't defined in the
-`happo.config.ts` config, you can use an object with `name`, `type` and
-`viewport` properties. Here's an example where a snapshot is taken in a
-dynamically generated target:
+If you want to create a snapshot in a target that isn't defined in the `happo.config.ts` config, you can use an object with `name`, `type` and `viewport` properties. Here's an example where a snapshot is taken in a dynamically generated target:
 
 ```js
 await happoScreenshot(heroImage, {
@@ -198,34 +178,28 @@ await happoScreenshot(heroImage, {
 });
 ```
 
-"Footer" is now rendered in Chrome (target specified in `happo.config.ts`) and
-Firefox (dynamic target).
+"Footer" is now rendered in Chrome (target specified in `happo.config.ts`) and Firefox (dynamic target).
 
 ## Partial runs
 
 _The `--skip` flag is available in `happo` v6.10.0 and later._
 
-To exclude specific components or variants from a run, pass the
-[`--skip`](cli#--skip-json) CLI option to the `happo` wrapper:
+To exclude specific components or variants from a run, pass the [`--skip`](cli#--skip-json) CLI option to the `happo` wrapper:
 
 ```sh
 npx happo --skip '[{"component":"Card"},{"component":"Button"}]' -- playwright test
 ```
 
-Any matching `happoScreenshot` calls will be skipped during the run. See the
-[CLI reference](cli#--skip-json) for the full list of entry forms.
+Any matching `happoScreenshot` calls will be skipped during the run. See the [CLI reference](cli#--skip-json) for the full list of entry forms.
 
 ## Continuous Integration
 
-If you run the test suite in a CI environment, the `happo` module will do its
-best to auto-detect your environment and adapt its behavior accordingly:
+If you run the test suite in a CI environment, the `happo` module will do its best to auto-detect your environment and adapt its behavior accordingly:
 
 - On PR builds, compare the screenshots against the main branch
 - On main branch builds, simply create the Happo report
 
-To get the results of the Happo jobs back to your PRs/commits, you need to
-install and configure the Happo GitHub app. Instructions are available
-[in the Continuous Integration docs](continuous-integration.md#posting-build-statuses).
+To get the results of the Happo jobs back to your PRs/commits, you need to install and configure the Happo GitHub app. Instructions are available [in the Continuous Integration docs](continuous-integration.md#posting-build-statuses).
 
 Happo auto-detects the following CI environments:
 
@@ -233,33 +207,21 @@ Happo auto-detects the following CI environments:
 - Circle CI
 - Travis CI
 
-If you are using a different CI service, you'll have to set a few CLI args when
-invoking the `happo` command:
+If you are using a different CI service, you'll have to set a few CLI args when invoking the `happo` command:
 
-- `--beforeSha` the commit SHA that the branch/PR is based on (usually a commit
-  on `main`). Only set this for PR builds.
-- `--afterSha` the SHA of the commit currently under test (typically the SHA at
-  `HEAD`). Always set this.
-- `--baseBranch` the default/base branch you use, e.g. `origin/dev`. Defaults to
-  `origin/main`, so you only need to set this if you are using a different base
-  branch.
+- `--beforeSha` the commit SHA that the branch/PR is based on (usually a commit on `main`). Only set this for PR builds.
+- `--afterSha` the SHA of the commit currently under test (typically the SHA at `HEAD`). Always set this.
+- `--baseBranch` the default/base branch you use, e.g. `origin/dev`. Defaults to `origin/main`, so you only need to set this if you are using a different base branch.
 - `--link` a URL to the PR/commit to help contextualize the report. Optional.
 
 ### Parallel builds
 
-If your Playwright test suite is spread across multiple machines and you want to
-get a combined Happo report for all the test runs, you can do the following:
+If your Playwright test suite is spread across multiple machines and you want to get a combined Happo report for all the test runs, you can do the following:
 
-- Use the `--nonce` CLI argument to tie individual runs together. Any string
-  unique to the build will do.
-- After the whole test suite is done, call `npx happo finalize`. Make sure that
-  the same `--nonce` is set as for the individual builds.
+- Use the `--nonce` CLI argument to tie individual runs together. Any string unique to the build will do.
+- After the whole test suite is done, call `npx happo finalize`. Make sure that the same `--nonce` is set as for the individual builds.
 
-In some CI tools, you can use a built-in environment variable as `--nonce`. In
-CircleCI for instance, you can use
-[ `--nonce ${CIRCLE_WORKFLOW_ID}`](https://circleci.com/docs/2.0/env-vars/#built-in-environment-variables).
-You can also use a timestamp or a randomly generated string. The important thing
-is that it's unique to the current CI run.
+In some CI tools, you can use a built-in environment variable as `--nonce`. In CircleCI for instance, you can use [ `--nonce ${CIRCLE_WORKFLOW_ID}`](https://circleci.com/docs/2.0/env-vars/#built-in-environment-variables). You can also use a timestamp or a randomly generated string. The important thing is that it's unique to the current CI run.
 
 <EmailNotifications framework="Playwright" />
 
@@ -267,11 +229,7 @@ is that it's unique to the current CI run.
 
 ### Download all assets
 
-By default, happo will download assets found locally and include them in an
-assets package sent to happo.io. Any external URL will be left as-is, which
-means they are expected to be publicly accessible by Happo workers. To include
-external assets in the assets package as well, set
-`integration.downloadAllAssets` to `true` in your `happo.config.ts` file.
+By default, happo will download assets found locally and include them in an assets package sent to happo.io. Any external URL will be left as-is, which means they are expected to be publicly accessible by Happo workers. To include external assets in the assets package as well, set `integration.downloadAllAssets` to `true` in your `happo.config.ts` file.
 
 ```js title="happo.config.ts"
 export default defineConfig({
@@ -282,26 +240,17 @@ export default defineConfig({
 });
 ```
 
-With this environment variable set, all assets are assumed to be private (i.e.
-not publicly accessible).
+With this environment variable set, all assets are assumed to be private (i.e. not publicly accessible).
 
 ### Clip snapshot strategy
 
-By default, Happo uses the hoist snapshot strategy. This works by selecting the
-element for snapshotting and hoisting it out of the document to be sent to the
-workers. This element is then rendered in isolation in your configured browsers
-for screenshots.
+By default, Happo uses the hoist snapshot strategy. This works by selecting the element for snapshotting and hoisting it out of the document to be sent to the workers. This element is then rendered in isolation in your configured browsers for screenshots.
 
-For flexible elements, the default hoist snapshot strategy may cause the
-dimensions of the element to be different than it was on the page in the context
-that it was rendered.
+For flexible elements, the default hoist snapshot strategy may cause the dimensions of the element to be different than it was on the page in the context that it was rendered.
 
-If you want your screenshot to be taken of the element as it was rendered in its
-context on the page, and not in isolation, you may use the clip snapshot
-strategy.
+If you want your screenshot to be taken of the element as it was rendered in its context on the page, and not in isolation, you may use the clip snapshot strategy.
 
-To use the clip snapshot strategy, pass `snapshotStrategy: 'clip'` as an option
-to `happoScreenshot`:
+To use the clip snapshot strategy, pass `snapshotStrategy: 'clip'` as an option to `happoScreenshot`:
 
 ```js
 happoScreenshot(page.locator('.header'), {
@@ -319,11 +268,7 @@ happoScreenshot(page.locator('.header'), {
 
 ### Happo isn't producing any screenshots
 
-The `happo/playwright` module will disable itself if it can't detect any api
-tokens (`apiKey` and `apiSecret` in config). Check to make sure your
-`happo.config.ts` config is properly set up. There might also be more
-information in the console logs from Playwright. Look for lines starting with
-`[HAPPO]`.
+The `happo/playwright` module will disable itself if it can't detect any api tokens (`apiKey` and `apiSecret` in config). Check to make sure your `happo.config.ts` config is properly set up. There might also be more information in the console logs from Playwright. Look for lines starting with `[HAPPO]`.
 
 <WhereAreMyScreenshots />
 

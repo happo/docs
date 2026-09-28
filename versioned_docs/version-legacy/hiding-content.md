@@ -3,9 +3,7 @@ id: hiding-content
 title: Hiding Content
 ---
 
-If you want to hide certain content/elements from your Happo screenshots, you
-can use the `data-happo-hide` attribute. Here's an example where a counter
-element is hidden:
+If you want to hide certain content/elements from your Happo screenshots, you can use the `data-happo-hide` attribute. Here's an example where a counter element is hidden:
 
 ```html
 <div>
@@ -14,9 +12,7 @@ element is hidden:
 </div>
 ```
 
-By adding the `data-happo-hide` attribute, the resulting screenshot will not
-show the element. Under the hood, `data-happo-hide` simply sets the following
-CSS:
+By adding the `data-happo-hide` attribute, the resulting screenshot will not show the element. Under the hood, `data-happo-hide` simply sets the following CSS:
 
 ```css
 [data-happo-hide] {
@@ -26,10 +22,7 @@ CSS:
 
 ## Ignoring instead of hiding
 
-If you don't want the element to be hidden in the screenshot, you can use the
-`hideBehavior` configuration option. Set it to `"ignore"` to make the element
-show up in the screenshot, but be ignored when Happo compares the screenshot
-with another one.
+If you don't want the element to be hidden in the screenshot, you can use the `hideBehavior` configuration option. Set it to `"ignore"` to make the element show up in the screenshot, but be ignored when Happo compares the screenshot with another one.
 
 ```js
 // .happo.js
