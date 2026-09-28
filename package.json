@@ -29,7 +29,7 @@
     "happo": "6.20.0",
     "playwright": "1.63.0",
     "prettier": "3.9.9",
-    "release-with-ease": "^2.7.2",
+    "release-with-ease": "^2.8.0",
     "serve-handler": "6.1.7",
     "sharp": "0.35.4"
   },
