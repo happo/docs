@@ -1,5 +1,15 @@
 import { themes as prismThemes } from 'prism-react-renderer';
 
+import remarkUnreleased, {
+  showUnreleasedDocs,
+  unreleasedFrontMatter,
+} from './src/remark/unreleased.js';
+
+// Docs marked unreleased are shown by the dev server and by builds with
+// DOCS_SHOW_UNRELEASED=true, and left out of every other build, which is what
+// docs.happo.io serves. See src/remark/unreleased.js.
+const showUnreleased = showUnreleasedDocs();
+
 export default {
   title: 'Happo docs',
   tagline: 'Cross-browser screenshot testing',
@@ -9,11 +19,12 @@ export default {
   projectName: 'happo',
 
   favicon: 'img/favicon.ico',
-  customFields: {},
+  customFields: { showUnreleased },
   onBrokenLinks: 'throw',
   onBrokenAnchors: 'throw',
 
   markdown: {
+    parseFrontMatter: unreleasedFrontMatter({ show: showUnreleased }),
     hooks: {
       onBrokenMarkdownLinks: 'throw',
     },
@@ -35,6 +46,9 @@ export default {
           sidebarPath: require.resolve('./sidebars.json'),
           lastVersion: 'current',
           includeCurrentVersion: true,
+          beforeDefaultRemarkPlugins: [
+            [remarkUnreleased, { show: showUnreleased }],
+          ],
           versions: {
             current: {
               label: 'Current',
