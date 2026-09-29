@@ -38,4 +38,21 @@
       --ifm-code-background: oklch(30% 0 0);
     }
   }
+
+  /* src/components/Unreleased.js, only ever seen in dev and PR builds. */
+  .unreleased {
+    margin-bottom: var(--ifm-leading);
+    padding-left: 1rem;
+    border-left: 4px dashed var(--ifm-color-warning-dark);
+  }
+
+  .unreleased__label {
+    display: inline-block;
+    padding: 0.125rem 0.5rem;
+    border-radius: var(--ifm-global-radius);
+    background: var(--ifm-color-warning-contrast-background);
+    color: var(--ifm-color-warning-contrast-foreground);
+    font-size: var(--ifm-h6-font-size);
+    font-weight: var(--ifm-font-weight-semibold);
+  }
 }

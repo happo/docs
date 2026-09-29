@@ -27,4 +27,7 @@ jobs:
         env:
           HAPPO_API_KEY: ${{ secrets.HAPPO_API_KEY }}
           HAPPO_API_SECRET: ${{ secrets.HAPPO_API_SECRET }}
+          # Screenshot docs marked unreleased too, so a PR's reviewers see
+          # them. On main as well, so the baseline has them to compare with.
+          DOCS_SHOW_UNRELEASED: 'true'
         run: node runHappo.mjs
