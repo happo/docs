@@ -46,6 +46,12 @@
     border-left: 4px dashed var(--ifm-color-warning-dark);
   }
 
+  .unreleased--inline {
+    margin-bottom: 0;
+    padding-left: 0.25rem;
+    border-left-width: 2px;
+  }
+
   .unreleased__label {
     display: inline-block;
     padding: 0.125rem 0.5rem;

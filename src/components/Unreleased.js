@@ -7,10 +7,18 @@ import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
  * Checking again costs nothing, and keeps a block the plugin missed from
  * reaching docs.happo.io.
  */
-export default function Unreleased({ page = false, children }) {
+export default function Unreleased({ page = false, inline = false, children }) {
   const { siteConfig } = useDocusaurusContext();
   if (!siteConfig.customFields.showUnreleased) {
     return null;
+  }
+  // Inside a paragraph (the remark plugin says which), so phrasing content only.
+  if (inline) {
+    return (
+      <span className="unreleased unreleased--inline">
+        <span className="unreleased__label">Unreleased</span> {children}
+      </span>
+    );
   }
   return (
     <div className="unreleased">

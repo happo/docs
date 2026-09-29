@@ -43,6 +43,27 @@ function removeUnreleasedElements(node) {
   }
 }
 
+/**
+ * Marks each inline `<Unreleased>` as such, so the component renders phrasing
+ * content: a `<div>` inside the paragraph around it is invalid HTML, which the
+ * browser reparents and React then fails to hydrate.
+ */
+function markInlineElements(node) {
+  if (!node.children) {
+    return;
+  }
+  for (const child of node.children) {
+    if (isUnreleasedElement(child) && child.type === 'mdxJsxTextElement') {
+      child.attributes.push({
+        type: 'mdxJsxAttribute',
+        name: 'inline',
+        value: null,
+      });
+    }
+    markInlineElements(child);
+  }
+}
+
 /** Labels an unreleased page, after its `# Title` if it starts with one. */
 function addPageLabel(tree) {
   const label = {
@@ -70,6 +91,7 @@ export default function remarkUnreleased({ show = showUnreleasedDocs() } = {}) {
       removeUnreleasedElements(tree);
       return;
     }
+    markInlineElements(tree);
     if (file.data.frontMatter?.unreleased === true) {
       addPageLabel(tree);
     }
