@@ -6,8 +6,9 @@ title: Ignoring diffs
 A powerful feature in the Happo review process is the ability to always ignore a diff. To use this feature, select "Always ignore this diff" from the dropdown next to any diff.
 
 <video
-  src="/video/happo-ignoring-diffs.mp4"
-  autoplay="true"
+  src="/video/happo-ignoring-diffs.webm"
+  aria-label="Choosing Always ignore this diff from the menu next to a diff"
+  autoPlay
   loop
   muted
   playsInline
