@@ -962,23 +962,6 @@ export const scenes = [
     },
     holdLastFrame: 2500,
   },
-  {
-    id: 'happo-bitbucket-api-token',
-    output: 'static/img/happo-bitbucket-api-token.gif',
-    manual: 'Record creating a Bitbucket API token (then revoke it).',
-  },
-  {
-    id: 'happo-bitbucket-repo-access-token',
-    output: 'static/img/happo-bitbucket-repo-access-token.gif',
-    manual:
-      'Record creating a Bitbucket repository access token (then revoke it).',
-  },
-  {
-    id: 'happo-azure-pat',
-    output: 'static/img/happo-azure-pat.gif',
-    manual:
-      'Record creating an Azure DevOps personal access token (then revoke it).',
-  },
 
   // docs/multi-project.md
   githubChecks('happo-github-status-splitup', showcasePRs.multiProject, {

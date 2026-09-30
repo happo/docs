@@ -218,15 +218,23 @@ To allow Happo to post build statuses to your Bitbucket repo, you need to config
 
 ##### Alternative A: API Token
 
-On your [API tokens page for your profile](https://id.atlassian.com/manage-profile/security/api-tokens), generate [a scoped API token](https://support.atlassian.com/bitbucket-cloud/docs/using-api-tokens/) with the scope `read:repository:bitbucket`.
+On your [API tokens page for your profile](https://id.atlassian.com/manage-profile/security/api-tokens), generate [a scoped API token](https://support.atlassian.com/bitbucket-cloud/docs/using-api-tokens/) with the scope `read:repository:bitbucket`:
 
-![Generating a scoped Bitbucket API token](/img/happo-bitbucket-api-token.gif) _Generating a scoped Bitbucket API token through the Bitbucket UI_
+1. Click **Create API token with scopes**.
+2. Name the token (for example `Happo`), pick an expiry date, and click **Next**.
+3. Select **Bitbucket** as the app, and click **Next**.
+4. Search for `read`, select `read:repository:bitbucket`, and click **Next**.
+5. Check the summary, and click **Create token**.
+6. Copy the token. Bitbucket won't show it again once you close the dialog.
 
 ##### Alternative B: Repository access token
 
-On your repository settings page, go to `Security > Access tokens`. Generate a token with the `Repositories > Read` scope.
+On your repository settings page, go to `Security > Access tokens`. Generate a [repository access token](https://support.atlassian.com/bitbucket-cloud/docs/repository-access-tokens/) with the `Repositories > Read` scope:
 
-![Generating a repository access token](/img/happo-bitbucket-repo-access-token.gif) _Generating a repository access token through the Bitbucket UI_
+1. Click **Create access token**.
+2. Name the token (for example `Happo`), and pick an expiry date.
+3. Under **Scopes**, select **Read** under **Repositories**, and click **Create**.
+4. Copy the access token. Bitbucket won't show it again once you close the dialog.
 
 #### Step 2: Fill in form at Happo
 
@@ -258,9 +266,14 @@ The status over on bitbucket.org will then change to success (green) for the PR/
 
 To authorize Happo to post statuses to your PRs/commits, you need to generate an [Personal Access Token](https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate).
 
-![Generating an Azure Personal Access Token](/img/happo-azure-pat.gif) _Generating a Personal Access Token through the Azure UI_
+1. In Azure DevOps, open **User settings** and choose **Personal access tokens**.
+2. Click **New Token**.
+3. Name the token (for example `Happo`), and choose the organization your repositories are in and an expiration.
+4. Under **Scopes**, choose **Custom defined**, then click **Show all scopes**.
+5. Under **Code**, select **Read** and **Status**, and click **Create**.
+6. Copy the token. Azure DevOps won't show it again once you close the dialog.
 
-Set the "Code" scope to `Read` and `Status`. We need the read scope to figure out the right baseline reports to use. The status scope is used when posting build statuses to PRs.
+We need the read scope to figure out the right baseline reports to use. The status scope is used when posting build statuses to PRs.
 
 #### Step 2: Fill in form at Happo
 
