@@ -25,8 +25,8 @@ The public documentation site for Happo, served at https://docs.happo.io. It's a
 - `versioned_docs/version-legacy/` + `versioned_sidebars/` + `versions.json` — the frozen "Legacy" version of the docs.
 - `sidebars.json` — sidebar for the current docs. Add new pages here.
 - `docusaurus.config.js` — site config (navbar, redirects, Prism, versions).
-- `src/` — site code: `pages/index.js` (redirects `/` to getting started), `clientModules/plausible.js` (analytics), `css/customTheme.css`, and the unreleased marker (`remark/unreleased.js`, `components/Unreleased.js`, registered for every page in `theme/MDXComponents.js`).
-- `static/` — images, videos and CSS served as-is.
+- `src/` — site code: `pages/index.js` (redirects `/` to getting started), `clientModules/plausible.js` (analytics), `css/customTheme.css`, the unreleased marker (`remark/unreleased.js`, `components/Unreleased.js`) and `<Video>` (`components/Video.js`, with each video's size and codecs in `data/videos.json`, which `pnpm media` writes), both registered for every page in `theme/MDXComponents.js`.
+- `static/` — images, videos and CSS served as-is. Each video in `static/video/` is a pair: an AV1 `.webm` and an H.264 `.mp4` (see [media/README.md](media/README.md)).
 - `media/` — Playwright scripts that capture and optimize the screenshots and videos in `static/` (`pnpm media`).
 - `server.mjs` + `Dockerfile` — the production image: the Dockerfile builds the site and bundles `server.mjs` (a `serve-handler` static server on port 3344) with esbuild into a distroless image.
 - `happo.config.mjs`, `buildHappoCustom.mjs`, `runHappo.mjs` — Happo visual tests of the built pages. `runHappo.mjs` skips pages a PR didn't touch.

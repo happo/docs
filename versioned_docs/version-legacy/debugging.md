@@ -9,15 +9,7 @@ Here's a list of tips & tricks you can use when your test suite isn't working th
 
 If the screenshots aren't looking right you can use the "View source" feature. You'll find it in the "…" overflow menu to the right of a screenshot. For a diff, the menu has separate "View source for before image…" and "View source for after image…" options:
 
-<video
-  src="/video/happo-view-source.webm"
-  aria-label='Opening the "…" menu on a snapshot and pointing at "View source for after image…"'
-  autoPlay
-  loop
-  muted
-  playsInline
-  width="100%"
-/>
+<Video name="happo-view-source" label='Opening the "…" menu on a snapshot and pointing at "View source for after image…"' />
 
 You'll land on the Source page. It looks something like this: ![The Source page](/img/happo-source-page.png) _The Source page for a "PricingCard" snapshot_
 

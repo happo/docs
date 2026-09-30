@@ -24,8 +24,19 @@ jobs:
         id: changed
         run: |
           files=$(git diff --name-only --no-renames --diff-filter=AM origin/main...HEAD -- \
-            ':(icase)static/*.png' ':(icase)static/*.gif' ':(icase)static/*.webm')
+            ':(icase)static/*.png' ':(icase)static/*.gif' ':(icase)static/*.webm' \
+            ':(icase)static/*.mp4')
+          # src/data/videos.json describes every video's pair, so a change to
+          # it, or any video added, changed or deleted, checks them all. The
+          # check also compares the manifest with static/video/, which catches
+          # a deleted video no file is left to stand for.
+          videos=false
+          if ! git diff --quiet origin/main...HEAD -- static/video src/data/videos.json; then
+            videos=true
+            files=$(printf '%s\n' "$files" static/video/*.webm | grep -v '\*' | grep . | sort -u || true)
+          fi
           echo "$files"
+          echo "videos=$videos" >> "$GITHUB_OUTPUT"
           {
             echo 'files<<EOF'
             echo "$files"
@@ -33,15 +44,16 @@ jobs:
           } >> "$GITHUB_OUTPUT"
 
       - name: Setup environment
-        if: steps.changed.outputs.files != ''
+        if: steps.changed.outputs.files != '' || steps.changed.outputs.videos == 'true'
         uses: ./.github/actions/setup-env
 
-      # Fails with the command to run if a file isn't optimized. Only warns
-      # about GIFs.
+      # Fails with the command to run if a file isn't optimized, or a video
+      # isn't an AV1 .webm and H.264 .mp4 pair that src/data/videos.json
+      # matches. Only warns about GIFs.
       - name: Check media
-        if: steps.changed.outputs.files != ''
+        if: steps.changed.outputs.files != '' || steps.changed.outputs.videos == 'true'
         env:
           FILES: ${{ steps.changed.outputs.files }}
         run: |
-          mapfile -t files <<< "$FILES"
+          mapfile -t files < <(printf '%s\n' "$FILES" | grep .)
           pnpm --silent media optimize --check "${files[@]}"

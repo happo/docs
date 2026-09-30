@@ -934,7 +934,7 @@ export const scenes = [
   },
   {
     id: 'happo-github-integration',
-    output: 'static/img/happo-github-integration.gif',
+    output: 'static/video/happo-github-integration.webm',
     manual: 'Record activating a repo at https://happo.io/github-integration.',
   },
   {
@@ -961,23 +961,6 @@ export const scenes = [
         .waitFor();
     },
     holdLastFrame: 2500,
-  },
-  {
-    id: 'happo-bitbucket-api-token',
-    output: 'static/img/happo-bitbucket-api-token.gif',
-    manual: 'Record creating a Bitbucket API token (then revoke it).',
-  },
-  {
-    id: 'happo-bitbucket-repo-access-token',
-    output: 'static/img/happo-bitbucket-repo-access-token.gif',
-    manual:
-      'Record creating a Bitbucket repository access token (then revoke it).',
-  },
-  {
-    id: 'happo-azure-pat',
-    output: 'static/img/happo-azure-pat.gif',
-    manual:
-      'Record creating an Azure DevOps personal access token (then revoke it).',
   },
 
   // docs/multi-project.md

@@ -1,0 +1,32 @@
+{
+  "happo-github-integration": {
+    "width": 1804,
+    "height": 1128,
+    "webm": "av01.0.08M.08",
+    "mp4": "avc1.640028"
+  },
+  "happo-ignoring-diffs": {
+    "width": 1440,
+    "height": 736,
+    "webm": "av01.0.05M.08",
+    "mp4": "avc1.640028"
+  },
+  "happo-report-flake": {
+    "width": 1280,
+    "height": 720,
+    "webm": "av01.0.05M.08",
+    "mp4": "avc1.640028"
+  },
+  "happo-status-accept": {
+    "width": 1100,
+    "height": 620,
+    "webm": "av01.0.05M.08",
+    "mp4": "avc1.640028"
+  },
+  "happo-view-source": {
+    "width": 1280,
+    "height": 720,
+    "webm": "av01.0.05M.08",
+    "mp4": "avc1.640028"
+  }
+}
