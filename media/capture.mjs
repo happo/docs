@@ -14,7 +14,9 @@ import {
   checkResult,
   CHECKED,
   emptyMargins,
+  manifestProblems,
   optimizeFile,
+  readManifest,
   VIDEO_DIR,
   videoName,
   writeOptimizedImage,
@@ -668,9 +670,40 @@ function annotate(level, file, message) {
   }
 }
 
+// What's wrong with the docs videos as a whole: src/data/videos.json against
+// static/video/, and pages showing a <Video> that isn't there.
+function videoSetProblems() {
+  const manifest = readManifest();
+  const problems = manifestProblems().map((message) => ({
+    file: 'src/data/videos.json',
+    message,
+  }));
+  for (const [mediaPath, pages] of findMediaReferences()) {
+    const name = mediaPath.match(/^static\/video\/(.+)\.webm$/)?.[1];
+    if (!name || manifest[name]) continue;
+    for (const page of pages) {
+      problems.push({
+        file: page,
+        message: `<Video name="${name}"> isn't in src/data/videos.json.`,
+      });
+    }
+  }
+  return problems;
+}
+
 async function optimize(files, { check, 'drop-audio': dropAudio }) {
+  // --check always looks at the docs videos as a whole, since deleting a
+  // video leaves no file to pass it.
+  if (check) {
+    const problems = videoSetProblems();
+    for (const { file, message } of problems) {
+      console.error(`- ${message}`);
+      annotate('error', file, message);
+    }
+    if (problems.length) process.exitCode = 1;
+  }
   if (!files.length) {
-    console.log('Pass the image or video files to optimize.');
+    if (!check) console.log('Pass the image or video files to optimize.');
     return;
   }
 

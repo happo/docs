@@ -10,8 +10,10 @@ import videos from '@site/src/data/videos.json';
  * file get it (it's the smaller one), and the rest fall back to the .mp4.
  *
  * It plays only while it's on screen, and not at all for readers who prefer
- * reduced motion: they get the controls to play it themselves. The server
- * renders it paused on its first frame, which is also what Happo screenshots.
+ * reduced motion (it follows that preference as it changes): they get the
+ * controls to play it themselves, as does anyone whose browser won't start
+ * it. The server renders it paused on its first frame, which is also what
+ * Happo screenshots.
  */
 export default function Video({ name, label }) {
   const ref = useRef(null);
@@ -30,24 +32,43 @@ export default function Video({ name, label }) {
     // Browsers only play a video without a click when it's muted, and React
     // doesn't always reflect the `muted` prop onto the element.
     element.muted = true;
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      element.controls = true;
-      return undefined;
-    }
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    let visible = false;
+    const play = () =>
+      // Rejected when the browser won't play it without a click (in power
+      // saving mode, say): the controls let the reader start it.
+      element.play().catch(() => {
+        element.controls = true;
+      });
+    // Follows the preference as it changes, not only as it was on load.
+    const followPreference = () => {
+      if (reducedMotion.matches) {
+        element.pause();
+        element.controls = true;
+      } else {
+        element.controls = false;
+        if (visible) play();
+      }
+    };
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
-          // Rejected if the browser won't autoplay (e.g. in power saving
-          // mode). The first frame stays, which is fine.
-          element.play().catch(() => {});
+        visible = entry.isIntersecting;
+        if (reducedMotion.matches) return;
+        if (visible) {
+          play();
         } else {
           element.pause();
         }
       },
       { threshold: 0.25 },
     );
+    followPreference();
+    reducedMotion.addEventListener('change', followPreference);
     observer.observe(element);
-    return () => observer.disconnect();
+    return () => {
+      observer.disconnect();
+      reducedMotion.removeEventListener('change', followPreference);
+    };
   }, []);
 
   return (

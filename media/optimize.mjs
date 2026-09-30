@@ -291,12 +291,15 @@ export function videoPaths(name) {
   );
 }
 
-// What's wrong with a video's pair, by file: missing, the wrong codec, too
-// wide or fast, sound, or a manifest entry that doesn't match. Also returns
-// the manifest entry the pair should have, when it can be worked out.
-async function inspectPair(ffmpeg, name) {
-  const paths = videoPaths(name);
-  const problems = { webm: [], mp4: [], manifest: [] };
+// What's wrong with a video's pair: each file's problems (missing, the wrong
+// codec, too wide or fast, sound), the pair's (files of different sizes), and
+// the manifest's (an entry that doesn't match). Also returns the manifest
+// entry the pair should have, when it can be worked out. `paths` checks other
+// files as the pair, such as new encodes before they replace it; the
+// manifest is only compared for the pair itself.
+async function inspectPair(ffmpeg, name, paths = videoPaths(name)) {
+  const isPair = sameFiles(paths, name);
+  const problems = { webm: [], mp4: [], pair: [], manifest: [] };
   const probes = {};
   for (const format of FORMATS) {
     if (!fs.existsSync(paths[format])) {
@@ -323,8 +326,12 @@ async function inspectPair(ffmpeg, name) {
   if (!problems.webm.length && !problems.mp4.length) {
     const { webm, mp4 } = probes;
     if (webm.width !== mp4.width || webm.height !== mp4.height) {
-      problems.mp4.push(
-        `is ${mp4.width}x${mp4.height}, but the .webm is ${webm.width}x${webm.height}`,
+      // Neither file says which size is right, so both are made again from
+      // one source (see optimizeVideo).
+      problems.pair.push(
+        `the .webm is ${webm.width}x${webm.height} but the .mp4 is ` +
+          `${mp4.width}x${mp4.height}; make both again from the original ` +
+          'recording with `pnpm media optimize <recording>`',
       );
     } else {
       entry = {
@@ -334,7 +341,7 @@ async function inspectPair(ffmpeg, name) {
         mp4: await codecString(ffmpeg, paths.mp4, 'mp4'),
       };
       const recorded = readManifest()[name];
-      if (JSON.stringify(recorded) !== JSON.stringify(entry)) {
+      if (isPair && JSON.stringify(recorded) !== JSON.stringify(entry)) {
         problems.manifest.push(
           recorded
             ? 'src/data/videos.json has an out-of-date entry for it'
@@ -346,9 +353,45 @@ async function inspectPair(ffmpeg, name) {
   return { paths, problems, probes, entry };
 }
 
+function sameFiles(paths, name) {
+  const pair = videoPaths(name);
+  return FORMATS.every((format) => paths[format] === pair[format]);
+}
+
+// What's wrong with src/data/videos.json as a whole, without looking inside
+// any file: an entry whose files are gone, or a file in static/video/ with no
+// entry. Catches a deleted video that `--check` on changed files never sees.
+export function manifestProblems() {
+  const manifest = readManifest();
+  const problems = [];
+  for (const name of Object.keys(manifest)) {
+    for (const [format, file] of Object.entries(videoPaths(name))) {
+      if (!fs.existsSync(file)) {
+        problems.push(
+          `src/data/videos.json lists ${name}, but ${VIDEO_DIR}/${name}.${format} ` +
+            "doesn't exist. Remove its entry, or make the pair again.",
+        );
+      }
+    }
+  }
+  const dir = path.join(ROOT, VIDEO_DIR);
+  const files = fs.existsSync(dir) ? fs.readdirSync(dir) : [];
+  for (const file of files.filter((file) => /\.(webm|mp4)$/i.test(file))) {
+    if (!manifest[videoName(file)]) {
+      problems.push(
+        `${VIDEO_DIR}/${file} isn't in src/data/videos.json. Run ` +
+          `\`pnpm media optimize ${VIDEO_DIR}/${file}\`, or delete it.`,
+      );
+    }
+  }
+  return problems;
+}
+
 // Encodes `inputFile` as the formats in `formats`, into static/video/ under
-// `name`, and records the pair in src/data/videos.json. Returns the bytes of
-// each file written.
+// `name`, and records the pair in src/data/videos.json. The new files are
+// checked, with whichever file of the pair is kept, before anything is
+// replaced, so a failed repair leaves the pair as it was. Returns the bytes
+// of each file written.
 async function writePair(ffmpeg, inputFile, name, formats) {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'docs-media-'));
   try {
@@ -366,15 +409,25 @@ async function writePair(ffmpeg, inputFile, name, formats) {
         input,
       );
     }
+    const candidate = Object.fromEntries(
+      FORMATS.map((format) => [
+        format,
+        formats.includes(format)
+          ? path.join(dir, `out.${format}`)
+          : paths[format],
+      ]),
+    );
+    const { problems, entry } = await inspectPair(ffmpeg, name, candidate);
+    const left = [...problems.webm, ...problems.mp4, ...problems.pair];
+    if (left.length) {
+      throw new Error(
+        `${name} wouldn't be right, so nothing was changed: ${left.join('; ')}`,
+      );
+    }
     fs.mkdirSync(path.dirname(paths.webm), { recursive: true });
     for (const format of formats) {
-      fs.copyFileSync(path.join(dir, `out.${format}`), paths[format]);
+      fs.copyFileSync(candidate[format], paths[format]);
       written[format] = fs.statSync(paths[format]).size;
-    }
-    const { problems, entry } = await inspectPair(ffmpeg, name);
-    const left = [...problems.webm, ...problems.mp4];
-    if (left.length) {
-      throw new Error(`${name} still isn't right: ${left.join('; ')}`);
     }
     writeManifest({ ...readManifest(), [name]: entry });
     return written;
@@ -394,12 +447,13 @@ async function optimizeVideo(file, { write = true, dropAudio = false } = {}) {
   const name = videoName(file);
   const inspected = await inspectPair(ffmpeg, name);
   const inPair = Object.values(inspected.paths).includes(path.resolve(file));
+  // A new docs video, which needs a <Video> on a page: from a GIF or a .mov,
+  // or a screen recorder's .mp4 saved where the pair's goes.
+  const isNew = !inPair || !readManifest()[name];
   const result = {
     kind: 'video',
     name,
-    // A new docs video, which needs a <Video> on a page: from a GIF or a
-    // .mov, or a screen recorder's .mp4 saved where the pair's goes.
-    converted: !inPair || !readManifest()[name],
+    converted: isNew,
     inputBytes: fs.statSync(file).size,
     problems: inPair
       ? Object.values(inspected.problems).flat()
@@ -424,10 +478,14 @@ async function optimizeVideo(file, { write = true, dropAudio = false } = {}) {
         'be heard. Run again with --drop-audio to remove it.',
     );
   }
-  // Re-encode only what isn't right, unless the source is new.
-  const formats = inPair
-    ? FORMATS.filter((format) => inspected.problems[format].length)
-    : FORMATS;
+  // A new video gets both files, even if it's already an H.264 .mp4, since
+  // it wasn't encoded for the docs. So does a pair whose files disagree about
+  // its size, both from the file given. Otherwise only what isn't right is
+  // re-encoded.
+  const formats =
+    isNew || inspected.problems.pair.length
+      ? FORMATS
+      : FORMATS.filter((format) => inspected.problems[format].length);
   const written = await writePair(ffmpeg, file, name, formats);
   const notes = [];
   if (input.width > MAX_WIDTH) notes.push(`resized to ${MAX_WIDTH}px wide`);
