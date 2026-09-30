@@ -39,6 +39,15 @@
     }
   }
 
+  /* src/components/Video.js. Its width and height reserve its space before it
+     loads; this shrinks it to the column the way Infima does for images. */
+  .docs-video {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    margin-bottom: var(--ifm-leading);
+  }
+
   /* src/components/Unreleased.js, only ever seen in dev and PR builds. */
   .unreleased {
     margin-bottom: var(--ifm-leading);

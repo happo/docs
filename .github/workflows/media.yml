@@ -24,7 +24,13 @@ jobs:
         id: changed
         run: |
           files=$(git diff --name-only --no-renames --diff-filter=AM origin/main...HEAD -- \
-            ':(icase)static/*.png' ':(icase)static/*.gif' ':(icase)static/*.webm')
+            ':(icase)static/*.png' ':(icase)static/*.gif' ':(icase)static/*.webm' \
+            ':(icase)static/*.mp4')
+          # src/data/videos.json describes every video's pair, so a change to
+          # it checks them all.
+          if ! git diff --quiet origin/main...HEAD -- src/data/videos.json; then
+            files=$(printf '%s\n' "$files" static/video/*.webm | grep . | sort -u)
+          fi
           echo "$files"
           {
             echo 'files<<EOF'
@@ -36,8 +42,9 @@ jobs:
         if: steps.changed.outputs.files != ''
         uses: ./.github/actions/setup-env
 
-      # Fails with the command to run if a file isn't optimized. Only warns
-      # about GIFs.
+      # Fails with the command to run if a file isn't optimized, or a video
+      # isn't an AV1 .webm and H.264 .mp4 pair that src/data/videos.json
+      # matches. Only warns about GIFs.
       - name: Check media
         if: steps.changed.outputs.files != ''
         env:

@@ -15,6 +15,8 @@ import {
   CHECKED,
   emptyMargins,
   optimizeFile,
+  VIDEO_DIR,
+  videoName,
   writeOptimizedImage,
   writeOptimizedVideo,
 } from './optimize.mjs';
@@ -44,7 +46,8 @@ function authStatePath(profile) {
 
 // Returns a map of media path (e.g. static/img/foo.png) to the docs pages that
 // reference it. Includes the legacy docs, which share many images with the
-// current docs.
+// current docs. A <Video name="foo"> counts as a reference to
+// static/video/foo.webm, which stands for its pair.
 function findMediaReferences(pages = '{docs,versioned_docs}/**/*.{md,mdx}') {
   const references = new Map();
   for (const file of fs.globSync(pages, { cwd: ROOT })) {
@@ -57,6 +60,13 @@ function findMediaReferences(pages = '{docs,versioned_docs}/**/*.{md,mdx}') {
     )) {
       if (!MEDIA_EXTENSIONS.test(url)) continue;
       const mediaPath = `static${url}`;
+      if (!references.has(mediaPath)) references.set(mediaPath, new Set());
+      references.get(mediaPath).add(file);
+    }
+    for (const [, name] of content.matchAll(
+      /<Video\b[^>]*?\bname="([^"]+)"/g,
+    )) {
+      const mediaPath = `${VIDEO_DIR}/${name}.webm`;
       if (!references.has(mediaPath)) references.set(mediaPath, new Set());
       references.get(mediaPath).add(file);
     }
@@ -97,11 +107,21 @@ async function status() {
     const scene = sceneByOutput.get(mediaPath);
     const usedIn = references.get(mediaPath);
     const exists = fs.existsSync(path.join(ROOT, mediaPath));
+    // A video's .webm stands for its pair, so its size is the pair's.
+    const files = mediaPath.endsWith('.webm')
+      ? [mediaPath, mediaPath.replace(/\.webm$/, '.mp4')]
+      : [mediaPath];
     return {
       media: mediaPath.replace(/^static\//, ''),
       updated: exists ? lastUpdated(mediaPath) : 'missing',
       size: exists
-        ? `${Math.round(fs.statSync(path.join(ROOT, mediaPath)).size / 1024)} KB`
+        ? files
+            .filter((file) => fs.existsSync(path.join(ROOT, file)))
+            .map(
+              (file) =>
+                `${Math.round(fs.statSync(path.join(ROOT, file)).size / 1024)} KB`,
+            )
+            .join(' + ')
         : '-',
       scene: scene ? `${scene.id} (${sceneKind(scene)})` : '-',
       'used in': usedIn ? [...usedIn].map(pageName).join(', ') : 'unused',
@@ -614,16 +634,19 @@ function printOlderMediaNearby(captured) {
   }
 }
 
-// Prints the docs pages that still use a GIF or video that was converted to
-// .webm. They need a <video> tag pointing at the new file.
+// Says how to show each GIF or recording that was just made into a docs
+// video, and lists the docs pages that still use the old file.
 function printConvertedReferences(converted) {
   const references = findMediaReferences('{docs,versioned_docs}/**/*.{md,mdx}');
-  for (const { file, outputFile } of converted) {
+  for (const { file, name } of converted) {
     const pages = references.get(path.relative(ROOT, path.resolve(file)));
-    console.log(`\n${file} was converted to ${outputFile}.`);
+    console.log(
+      `\n${file} is now ${VIDEO_DIR}/${name}.webm and .mp4. Show it with:\n\n` +
+        `  <Video name="${name}" label="What the video shows" />\n`,
+    );
     if (pages) {
       console.log(
-        `Update these pages to show it with a <video> tag (see media/README.md):\n` +
+        `These pages still use ${file}:\n` +
           [...pages].map((page) => `  ${page}`).join('\n'),
       );
     }
@@ -654,10 +677,16 @@ async function optimize(files, { check, 'drop-audio': dropAudio }) {
   const failed = [];
   const needsDropAudio = [];
   const converted = [];
+  // A video's .webm and .mp4 are one pair, checked and made together.
+  const videos = new Set();
   for (const file of files) {
     if (check && !CHECKED.test(file)) {
       console.log(`- ${file}: not checked`);
       continue;
+    }
+    if (/\.(webm|mp4)$/i.test(file) && file.includes(`${VIDEO_DIR}/`)) {
+      if (videos.has(videoName(file))) continue;
+      videos.add(videoName(file));
     }
     // The same work is done either way. --check only skips writing. It
     // measures videos with sound as they'd be without it, then reports the
@@ -683,7 +712,7 @@ async function optimize(files, { check, 'drop-audio': dropAudio }) {
       if (problem.level === 'error') {
         (problem.dropAudio ? needsDropAudio : failed).push(file);
       }
-    } else if (result.outputFile !== file) {
+    } else if (result.converted) {
       converted.push(result);
     }
   }
@@ -732,7 +761,7 @@ const USAGE = `Usage:
   pnpm media status                 List docs media, their scenes, and when they were last updated
   pnpm media capture <id...>        Capture specific scenes
   pnpm media capture --all          Capture every automated scene
-  pnpm media optimize <file...>     Shrink PNGs and videos made by hand before committing them (a GIF is converted to .webm)
+  pnpm media optimize <file...>     Shrink PNGs made by hand, and make videos from GIFs and screen recordings, before committing them
   pnpm media optimize --check <file...>
                                     Report what optimizing would save, without changing files. Fails if a file isn't optimized
   pnpm media login <profile>        Save a logged-in session for scenes that need one (${Object.keys(authProfiles).join(', ')})
