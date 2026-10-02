@@ -560,6 +560,32 @@ export default defineConfig({
 | `ignoreWhitespace` | `boolean` | `false` | When `true`, whitespace-only differences are ignored. |
 | `applyBlur` | `boolean` | `false` | When `true`, a blur is applied before comparing to smooth out subtle edge differences. |
 
+## `blockApproval`
+
+_Available since happo v6.21.0._
+
+Prevent a comparison from being approved until certain problems are resolved. Each condition is opt-in.
+
+```js title="happo.config.ts"
+import { defineConfig } from 'happo';
+
+export default defineConfig({
+  blockApproval: {
+    renderErrors: true,
+    accessibilityViolations: true,
+  },
+
+  // ... rest of config
+});
+```
+
+| Option | Type | Description |
+| --- | --- | --- |
+| `renderErrors` | `boolean` | When `true`, approval is blocked while the report for the current commit has examples that failed to render. |
+| `accessibilityViolations` | `boolean` | When `true`, approval is blocked while the comparison introduces new [accessibility violations](accessibility.md). |
+
+Because the conditions live in the configuration file, they apply to comparisons started from that file. You can turn one on in a single pull request, and fix the problems there, without affecting other work in the repository.
+
 ## `failOnWaitForTimeout`
 
 _Available since happo v6.12.0._
