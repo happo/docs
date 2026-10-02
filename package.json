@@ -31,7 +31,7 @@
     "prettier": "3.9.9",
     "release-with-ease": "^2.8.0",
     "serve-handler": "6.1.7",
-    "sharp": "0.35.4"
+    "sharp": "0.35.5"
   },
   "version": "3.61.3",
   "dependencies": {
