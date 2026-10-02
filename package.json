@@ -33,7 +33,7 @@
     "serve-handler": "6.1.7",
     "sharp": "0.35.4"
   },
-  "version": "3.61.2",
+  "version": "3.61.3",
   "dependencies": {
     "@docusaurus/core": "3.10.2",
     "@docusaurus/faster": "^3.10.2",
