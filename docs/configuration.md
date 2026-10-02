@@ -560,8 +560,6 @@ export default defineConfig({
 | `ignoreWhitespace` | `boolean` | `false` | When `true`, whitespace-only differences are ignored. |
 | `applyBlur` | `boolean` | `false` | When `true`, a blur is applied before comparing to smooth out subtle edge differences. |
 
-<Unreleased>
-
 ## `blockApproval`
 
 _Available since happo v6.21.0._
@@ -587,8 +585,6 @@ export default defineConfig({
 | `accessibilityViolations` | `boolean` | When `true`, approval is blocked while the comparison introduces new [accessibility violations](accessibility.md). |
 
 Because the conditions live in the configuration file, they apply to comparisons started from that file. You can turn one on in a single pull request, and fix the problems there, without affecting other work in the repository.
-
-</Unreleased>
 
 ## `failOnWaitForTimeout`
 
